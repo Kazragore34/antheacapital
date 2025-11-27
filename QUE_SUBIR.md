@@ -22,10 +22,14 @@
 public_html/
 ├── index.html          ← DEBE estar aquí (no en subcarpeta)
 ├── assets/             ← DEBE estar aquí
-│   ├── index-Cp1pKPGo.js
+│   ├── index-CDUN8FSv.js  ← NUEVO archivo (reemplaza el antiguo)
 │   └── index-DMKegeh8.css
 └── .htaccess           ← DEBE estar aquí (muy importante)
 ```
+
+**⚠️ IMPORTANTE:** 
+- El archivo antiguo `index-Cp1pKPGo.js` debe ser **ELIMINADO**
+- El nuevo archivo es `index-CDUN8FSv.js`
 
 **❌ NO subas:**
 - `frontend/src/`

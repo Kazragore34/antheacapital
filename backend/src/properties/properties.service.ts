@@ -25,25 +25,33 @@ export class PropertiesService {
     minArea?: number
     status?: string
   }): Promise<Property[]> {
-    const filter: any = {}
-    
-    if (query.status) {
-      filter.status = query.status
-    } else {
-      filter.status = 'published'
-    }
-    
-    if (query.type) filter.type = query.type
-    if (query.city) filter['location.city'] = new RegExp(query.city, 'i')
-    if (query.minPrice || query.maxPrice) {
-      filter.price = {}
-      if (query.minPrice) filter.price.$gte = query.minPrice
-      if (query.maxPrice) filter.price.$lte = query.maxPrice
-    }
-    if (query.bedrooms) filter['features.bedrooms'] = query.bedrooms
-    if (query.minArea) filter['features.area'] = { $gte: query.minArea }
+    try {
+      const filter: any = {}
+      
+      if (query.status) {
+        filter.status = query.status
+      } else {
+        filter.status = 'published'
+      }
+      
+      if (query.type) filter.type = query.type
+      if (query.city) filter['location.city'] = new RegExp(query.city, 'i')
+      if (query.minPrice || query.maxPrice) {
+        filter.price = {}
+        if (query.minPrice) filter.price.$gte = query.minPrice
+        if (query.maxPrice) filter.price.$lte = query.maxPrice
+      }
+      if (query.bedrooms) filter['features.bedrooms'] = query.bedrooms
+      if (query.minArea) filter['features.area'] = { $gte: query.minArea }
 
-    return this.propertyModel.find(filter).sort({ createdAt: -1 }).exec()
+      const properties = await this.propertyModel.find(filter).sort({ createdAt: -1 }).exec()
+      // Asegurar que siempre devolvemos un array
+      return Array.isArray(properties) ? properties : []
+    } catch (error) {
+      console.error('Error fetching properties:', error)
+      // Devolver array vacío en caso de error
+      return []
+    }
   }
 
   async findOne(id: string): Promise<Property> {
