@@ -146,7 +146,7 @@ const Home = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gold text-white">
+      <section className="py-20 bg-gradient-to-br from-gold-dark via-gold to-gold-light text-white">
         <div className="container mx-auto px-4 text-center">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}

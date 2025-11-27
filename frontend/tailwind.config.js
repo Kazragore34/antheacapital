@@ -8,9 +8,9 @@ export default {
     extend: {
       colors: {
         gold: {
-          DEFAULT: '#D4AF37',
-          light: '#C9A961',
-          dark: '#B8941F',
+          DEFAULT: '#B8860B', // DarkGoldenrod - dorado oscuro premium
+          light: '#DAA520',   // Goldenrod - dorado medio para degradados
+          dark: '#8B6914',    // Dorado muy oscuro para hover y acentos
         },
         black: {
           DEFAULT: '#000000',

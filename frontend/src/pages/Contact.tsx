@@ -116,7 +116,7 @@ const Contact = () => {
                 </div>
               </div>
 
-              <div className="bg-gold text-white rounded-lg p-8 text-center">
+              <div className="bg-gradient-to-br from-gold-dark via-gold to-gold-light text-white rounded-lg p-8 text-center shadow-lg">
                 <h3 className="font-serif text-2xl mb-4">
                   Horario de Atención
                 </h3>

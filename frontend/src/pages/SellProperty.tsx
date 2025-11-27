@@ -5,7 +5,7 @@ const SellProperty = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-gold to-gold-dark text-white py-20">
+      <section className="bg-gradient-to-br from-gold-dark via-gold to-gold-light text-white py-20 shadow-lg">
         <div className="container mx-auto px-4 text-center">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
