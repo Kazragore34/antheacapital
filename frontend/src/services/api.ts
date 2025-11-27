@@ -20,5 +20,19 @@ api.interceptors.request.use((config) => {
   return config
 })
 
+// Interceptor de respuesta para manejar errores
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // Si la API no está disponible, devolver un error controlado
+    if (!error.response) {
+      console.error('API no disponible:', error.message)
+      // Devolver un objeto con estructura esperada
+      return Promise.reject(error)
+    }
+    return Promise.reject(error)
+  }
+)
+
 export default api
 

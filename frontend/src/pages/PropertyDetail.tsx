@@ -64,7 +64,7 @@ const PropertyDetail = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Image Gallery */}
-      {property.images && property.images.length > 0 && (
+      {property.images && Array.isArray(property.images) && property.images.length > 0 && (
         <section className="relative">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             <div className="md:col-span-2">
@@ -81,7 +81,7 @@ const PropertyDetail = () => {
                 }}
               />
             </div>
-            {property.images.slice(1, 5).map((img, index) => (
+            {Array.isArray(property.images) && property.images.slice(1, 5).map((img, index) => (
               <img
                 key={index}
                 src={img}
@@ -204,7 +204,7 @@ const PropertyDetail = () => {
         </div>
       </div>
 
-      {lightboxOpen && property.images && (
+      {lightboxOpen && property.images && Array.isArray(property.images) && (
         <ImageLightbox
           images={property.images}
           initialIndex={lightboxIndex}

@@ -12,9 +12,15 @@ const Home = () => {
     const loadProperties = async () => {
       try {
         const properties = await propertiesService.getAll()
-        setFeaturedProperties(properties.slice(0, 6))
+        // Asegurar que properties es un array antes de hacer slice
+        if (Array.isArray(properties)) {
+          setFeaturedProperties(properties.slice(0, 6))
+        } else {
+          setFeaturedProperties([])
+        }
       } catch (error) {
         console.error('Error loading properties:', error)
+        setFeaturedProperties([])
       }
     }
     loadProperties()

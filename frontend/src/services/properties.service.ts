@@ -10,16 +10,24 @@ export const propertiesService = {
     bedrooms?: number
     minArea?: number
   }): Promise<Property[]> => {
-    const params = new URLSearchParams()
-    if (filters?.type) params.append('type', filters.type)
-    if (filters?.city) params.append('city', filters.city)
-    if (filters?.minPrice) params.append('minPrice', filters.minPrice.toString())
-    if (filters?.maxPrice) params.append('maxPrice', filters.maxPrice.toString())
-    if (filters?.bedrooms) params.append('bedrooms', filters.bedrooms.toString())
-    if (filters?.minArea) params.append('minArea', filters.minArea.toString())
-    
-    const response = await api.get(`/properties?${params.toString()}`)
-    return response.data
+    try {
+      const params = new URLSearchParams()
+      if (filters?.type) params.append('type', filters.type)
+      if (filters?.city) params.append('city', filters.city)
+      if (filters?.minPrice) params.append('minPrice', filters.minPrice.toString())
+      if (filters?.maxPrice) params.append('maxPrice', filters.maxPrice.toString())
+      if (filters?.bedrooms) params.append('bedrooms', filters.bedrooms.toString())
+      if (filters?.minArea) params.append('minArea', filters.minArea.toString())
+      
+      const response = await api.get(`/properties?${params.toString()}`)
+      // Asegurar que siempre devolvemos un array
+      const data = response.data
+      return Array.isArray(data) ? data : []
+    } catch (error) {
+      console.error('Error fetching properties:', error)
+      // Devolver array vacío en caso de error
+      return []
+    }
   },
 
   getById: async (id: string): Promise<Property> => {

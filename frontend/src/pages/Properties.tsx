@@ -24,9 +24,11 @@ const Properties = () => {
     setLoading(true)
     try {
       const data = await propertiesService.getAll(filters)
-      setProperties(data)
+      // Asegurar que data es un array
+      setProperties(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error('Error loading properties:', error)
+      setProperties([])
     } finally {
       setLoading(false)
     }

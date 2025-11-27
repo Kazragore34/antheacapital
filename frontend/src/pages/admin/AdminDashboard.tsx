@@ -26,12 +26,15 @@ const AdminDashboard = () => {
     try {
       const [propertiesData, statsData] = await Promise.all([
         propertiesService.getAll(),
-        api.get('/admin/dashboard').then(res => res.data),
+        api.get('/admin/dashboard').then(res => res.data).catch(() => ({})),
       ])
-      setProperties(propertiesData)
-      setStats(statsData)
+      // Asegurar que propertiesData es un array
+      setProperties(Array.isArray(propertiesData) ? propertiesData : [])
+      setStats(statsData || {})
     } catch (error) {
       console.error('Error loading data:', error)
+      setProperties([])
+      setStats({})
     } finally {
       setLoading(false)
     }
