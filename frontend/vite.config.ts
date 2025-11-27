@@ -9,18 +9,11 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  base: './',
+  base: '/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
     sourcemap: false,
-    rollupOptions: {
-      output: {
-        assetFileNames: 'assets/[name].[ext]',
-        chunkFileNames: 'assets/[name].js',
-        entryFileNames: 'assets/[name].js',
-      },
-    },
   },
   server: {
     port: 3000,
@@ -32,4 +25,3 @@ export default defineConfig({
     },
   },
 })
-
