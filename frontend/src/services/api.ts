@@ -22,13 +22,24 @@ api.interceptors.request.use((config) => {
 
 // Interceptor de respuesta para manejar errores
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Asegurar que la respuesta tenga la estructura esperada
+    if (response.data && !Array.isArray(response.data) && typeof response.data !== 'object') {
+      console.warn('Respuesta de API con formato inesperado:', response.data)
+    }
+    return response
+  },
   (error) => {
-    // Si la API no está disponible, devolver un error controlado
+    // Si la API no está disponible, no romper la aplicación
     if (!error.response) {
-      console.error('API no disponible:', error.message)
-      // Devolver un objeto con estructura esperada
-      return Promise.reject(error)
+      console.warn('API no disponible, continuando sin datos:', error.message)
+      // Devolver una respuesta vacía en lugar de rechazar
+      return Promise.resolve({ data: [] })
+    }
+    // Para otros errores, devolver array vacío si es una petición GET a /properties
+    if (error.config?.url?.includes('/properties') && error.config?.method === 'get') {
+      console.warn('Error al obtener propiedades, devolviendo array vacío:', error.message)
+      return Promise.resolve({ data: [] })
     }
     return Promise.reject(error)
   }

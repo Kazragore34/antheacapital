@@ -30,9 +30,14 @@ export const propertiesService = {
     }
   },
 
-  getById: async (id: string): Promise<Property> => {
-    const response = await api.get(`/properties/${id}`)
-    return response.data
+  getById: async (id: string): Promise<Property | null> => {
+    try {
+      const response = await api.get(`/properties/${id}`)
+      return response.data || null
+    } catch (error) {
+      console.error('Error fetching property:', error)
+      return null
+    }
   },
 
   create: async (property: Partial<Property>): Promise<Property> => {

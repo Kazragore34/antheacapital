@@ -21,9 +21,14 @@ const PropertyDetail = () => {
   const loadProperty = async () => {
     try {
       const data = await propertiesService.getById(id!)
-      setProperty(data)
+      if (data) {
+        setProperty(data)
+      } else {
+        setProperty(null)
+      }
     } catch (error) {
       console.error('Error loading property:', error)
+      setProperty(null)
     } finally {
       setLoading(false)
     }
