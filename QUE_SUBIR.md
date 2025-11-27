@@ -1,21 +1,37 @@
 # 📦 Archivos a Subir a Hostinger
 
-## ✅ Proyecto Compilado - Listo para Subir
+## ⚠️ IMPORTANTE: Para evitar Error 403
+
+**SOLO sube los archivos de `frontend/dist/`, NO los archivos fuente.**
 
 ### 🎯 Frontend (Subir a la raíz de `public_html/`)
 
 **Carpeta:** `frontend/dist/`
 
-Sube TODO el contenido de `frontend/dist/` directamente a la raíz de `public_html/` en Hostinger:
+**PASO 1:** Abre la carpeta `frontend/dist/` en tu computadora
 
+**PASO 2:** Selecciona TODOS los archivos dentro de `frontend/dist/`:
+- ✅ `index.html`
+- ✅ `assets/` (carpeta completa)
+- ✅ `.htaccess` (ya está dentro de dist/)
+
+**PASO 3:** Sube estos archivos directamente a la raíz de `public_html/` en Hostinger
+
+**Estructura final en Hostinger:**
 ```
 public_html/
-├── index.html          ← De frontend/dist/
-├── assets/             ← De frontend/dist/assets/
-│   ├── index-*.css
-│   └── index-*.js
-└── .htaccess           ← De la raíz del proyecto (ya creado)
+├── index.html          ← DEBE estar aquí (no en subcarpeta)
+├── assets/             ← DEBE estar aquí
+│   ├── index-Cp1pKPGo.js
+│   └── index-DMKegeh8.css
+└── .htaccess           ← DEBE estar aquí (muy importante)
 ```
+
+**❌ NO subas:**
+- `frontend/src/`
+- `frontend/package.json`
+- `frontend/vite.config.ts`
+- Cualquier archivo que NO esté en `frontend/dist/`
 
 ### 🔧 Backend (Subir a `public_html/backend/`)
 
