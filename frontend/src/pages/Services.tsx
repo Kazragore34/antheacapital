@@ -118,7 +118,7 @@ const Services = () => {
           </div>
 
           {/* CTA Section */}
-          <div className="bg-gradient-to-br from-gold-dark via-gold to-gold-light text-white rounded-lg p-12 text-center shadow-xl">
+          <div className="bg-gradient-to-br from-gold via-gold-light to-gold-bright text-white rounded-lg p-12 text-center shadow-xl dark:from-gold-dark dark:via-gold dark:to-gold-light">
             <h2 className="font-serif text-3xl md:text-4xl mb-4">
               ¿Necesita más información?
             </h2>

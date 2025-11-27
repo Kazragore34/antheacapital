@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply bg-white text-black-soft font-sans antialiased;
+    @apply bg-white dark:bg-gray-900 text-black-soft dark:text-gray-100 font-sans antialiased transition-colors duration-300;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-serif;
@@ -13,19 +13,19 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-gradient-to-r from-gold via-gold-light to-gold text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:from-gold-dark hover:via-gold hover:to-gold-light hover:shadow-lg transform hover:-translate-y-0.5 shadow-md;
+    @apply bg-gradient-to-r from-gold via-gold-light to-gold-bright text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:from-gold-dark hover:via-gold hover:to-gold-light hover:shadow-lg transform hover:-translate-y-0.5 shadow-md dark:from-gold-dark dark:via-gold dark:to-gold;
   }
   
   .btn-secondary {
-    @apply bg-transparent border-2 border-gold text-gold px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:bg-gradient-to-r hover:from-gold hover:via-gold-light hover:to-gold hover:text-white hover:border-gold-dark;
+    @apply bg-transparent border-2 border-gold dark:border-gold-light text-gold dark:text-gold-light px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:bg-gradient-to-r hover:from-gold hover:via-gold-light hover:to-gold-bright hover:text-white hover:border-gold-dark dark:hover:from-gold-dark dark:hover:via-gold dark:hover:to-gold;
   }
   
   .card {
-    @apply bg-white rounded-lg shadow-md transition-all duration-300 hover:shadow-xl;
+    @apply bg-white dark:bg-gray-800 rounded-lg shadow-md transition-all duration-300 hover:shadow-xl;
   }
   
   .input-field {
-    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent transition-all;
+    @apply w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-black-soft dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-gold dark:focus:ring-gold-light focus:border-transparent transition-all;
   }
 }
 

@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTheme } from '../../context/ThemeContext'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const location = useLocation()
+  const { theme, toggleTheme } = useTheme()
 
   const navLinks = [
     { path: '/', label: 'Inicio' },
@@ -17,26 +19,26 @@ const Header = () => {
   const isActive = (path: string) => location.pathname === path
 
   return (
-    <header className="bg-white shadow-md sticky top-0 z-50">
+    <header className="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-50 transition-colors duration-300">
       <nav className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3">
-            <div className="font-serif text-2xl font-bold text-gold">
+            <div className="font-serif text-2xl font-bold text-gold dark:text-gold-light">
               ANTHEA CAPITAL
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
                 className={`relative font-medium transition-colors ${
                   isActive(link.path)
-                    ? 'text-gold'
-                    : 'text-black-soft hover:text-gold'
+                    ? 'text-gold dark:text-gold-light'
+                    : 'text-black-soft dark:text-gray-300 hover:text-gold dark:hover:text-gold-light'
                 }`}
               >
                 {link.label}
@@ -54,14 +56,47 @@ const Header = () => {
             >
               Valorar Propiedad
             </Link>
+            {/* Toggle Theme Button */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg text-gold dark:text-gold-light hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              aria-label="Toggle theme"
+              title={theme === 'light' ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro'}
+            >
+              {theme === 'light' ? (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              ) : (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              )}
+            </button>
           </div>
 
           {/* Mobile Menu Button */}
-          <button
-            className="md:hidden text-black-soft"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle menu"
-          >
+          <div className="md:hidden flex items-center space-x-2">
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg text-gold dark:text-gold-light hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              aria-label="Toggle theme"
+            >
+              {theme === 'light' ? (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              ) : (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              )}
+            </button>
+            <button
+              className="text-black-soft dark:text-white"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label="Toggle menu"
+            >
             <svg
               className="w-6 h-6"
               fill="none"
@@ -78,6 +113,7 @@ const Header = () => {
               )}
             </svg>
           </button>
+          </div>
         </div>
 
         {/* Mobile Menu */}
@@ -96,8 +132,8 @@ const Header = () => {
                   onClick={() => setIsMenuOpen(false)}
                   className={`block py-2 font-medium ${
                     isActive(link.path)
-                      ? 'text-gold'
-                      : 'text-black-soft'
+                      ? 'text-gold dark:text-gold-light'
+                      : 'text-black-soft dark:text-gray-300'
                   }`}
                 >
                   {link.label}

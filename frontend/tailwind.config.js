@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class', // Habilitar modo oscuro con clase
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -8,9 +9,10 @@ export default {
     extend: {
       colors: {
         gold: {
-          DEFAULT: '#B8860B', // DarkGoldenrod - dorado oscuro premium
-          light: '#DAA520',   // Goldenrod - dorado medio para degradados
-          dark: '#8B6914',    // Dorado muy oscuro para hover y acentos
+          DEFAULT: '#D4AF37', // Dorado brillante claro (no marrón)
+          light: '#F4D03F',   // Dorado muy claro para degradados
+          dark: '#B8860B',   // Dorado oscuro para modo oscuro
+          bright: '#FFD700', // Dorado brillante para acentos
         },
         black: {
           DEFAULT: '#000000',
