@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTheme } from '../../context/ThemeContext'
+import logoWhite from '../../assets/logo-white.svg'
+import logoBlack from '../../assets/logo-black.png'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -19,12 +21,22 @@ const Header = () => {
   const isActive = (path: string) => location.pathname === path
 
   return (
-    <header className="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-50 transition-colors duration-300">
+    <header className="bg-black-soft dark:bg-gray-900 shadow-lg sticky top-0 z-50 transition-colors duration-300">
       <nav className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3">
-            <div className="font-serif text-2xl font-bold text-gold dark:text-gold-light">
+          <Link to="/" className="flex items-center space-x-3 group">
+            <img 
+              src={logoWhite} 
+              alt="Anthea Capital" 
+              className="h-12 w-auto dark:hidden transition-opacity group-hover:opacity-80"
+            />
+            <img 
+              src={logoBlack} 
+              alt="Anthea Capital" 
+              className="h-12 w-auto hidden dark:block transition-opacity group-hover:opacity-80"
+            />
+            <div className="font-serif text-xl font-semibold text-white dark:text-gold-light group-hover:text-gold transition-colors">
               ANTHEA CAPITAL
             </div>
           </Link>
@@ -38,7 +50,7 @@ const Header = () => {
                 className={`relative font-medium transition-colors ${
                   isActive(link.path)
                     ? 'text-gold dark:text-gold-light'
-                    : 'text-black-soft dark:text-gray-300 hover:text-gold dark:hover:text-gold-light'
+                    : 'text-white dark:text-gray-300 hover:text-gold dark:hover:text-gold-light'
                 }`}
               >
                 {link.label}
@@ -59,7 +71,7 @@ const Header = () => {
             {/* Toggle Theme Button */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg text-gold dark:text-gold-light hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              className="p-2 rounded-lg text-white dark:text-gold-light hover:bg-gray-800 dark:hover:bg-gray-700 transition-colors"
               aria-label="Toggle theme"
               title={theme === 'light' ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro'}
             >
@@ -79,7 +91,7 @@ const Header = () => {
           <div className="md:hidden flex items-center space-x-2">
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg text-gold dark:text-gold-light hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              className="p-2 rounded-lg text-white dark:text-gold-light hover:bg-gray-800 dark:hover:bg-gray-700 transition-colors"
               aria-label="Toggle theme"
             >
               {theme === 'light' ? (
@@ -93,7 +105,7 @@ const Header = () => {
               )}
             </button>
             <button
-              className="text-black-soft dark:text-white"
+              className="text-white dark:text-white"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               aria-label="Toggle menu"
             >
@@ -133,7 +145,7 @@ const Header = () => {
                   className={`block py-2 font-medium ${
                     isActive(link.path)
                       ? 'text-gold dark:text-gold-light'
-                      : 'text-black-soft dark:text-gray-300'
+                      : 'text-white dark:text-gray-300'
                   }`}
                 >
                   {link.label}
