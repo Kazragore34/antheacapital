@@ -43,9 +43,18 @@ jobs:
     - name: Prepare Deployment
       run: |
         mkdir -p deploy
+        # Copiar archivos compilados del frontend
         cp -r frontend/dist/* deploy/
-        cp frontend/.htaccess deploy/ 2>/dev/null || true
-        cp .htaccess deploy/ 2>/dev/null || true
+        # Copiar .htaccess (prioridad: raíz > frontend/dist)
+        cp .htaccess deploy/ 2>/dev/null || cp frontend/dist/.htaccess deploy/ 2>/dev/null || true
+        # Si hay archivos en la raíz (index.html, assets/), también copiarlos
+        if [ -f index.html ]; then
+          cp index.html deploy/ 2>/dev/null || true
+        fi
+        if [ -d assets ]; then
+          cp -r assets deploy/ 2>/dev/null || true
+        fi
+        # Backend
         mkdir -p deploy/backend
         cp -r backend/dist deploy/backend/
         cp backend/package.json deploy/backend/
