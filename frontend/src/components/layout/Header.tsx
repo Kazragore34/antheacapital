@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import logoWhite from '../../assets/logo-white.svg'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -23,14 +22,9 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3">
-            <img 
-              src={logoWhite || '/logo-white.svg'} 
-              alt="Anthea Capital" 
-              className="h-12 w-auto"
-              onError={(e) => {
-                e.currentTarget.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 50"><text x="10" y="30" font-family="serif" font-size="24" fill="%23D4AF37">ANTHEA CAPITAL</text></svg>'
-              }}
-            />
+            <div className="font-serif text-2xl font-bold text-gold">
+              ANTHEA CAPITAL
+            </div>
           </Link>
 
           {/* Desktop Navigation */}

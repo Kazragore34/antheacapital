@@ -25,7 +25,7 @@ const AdminDashboard = () => {
   const loadData = async () => {
     try {
       const [propertiesData, statsData] = await Promise.all([
-        propertiesService.getAll({ status: undefined }),
+        propertiesService.getAll(),
         api.get('/admin/dashboard').then(res => res.data),
       ])
       setProperties(propertiesData)

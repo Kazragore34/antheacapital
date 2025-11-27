@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useCookies } from '../../context/CookieContext'
 import { motion, AnimatePresence } from 'framer-motion'
 import CookieSettings from './CookieSettings'

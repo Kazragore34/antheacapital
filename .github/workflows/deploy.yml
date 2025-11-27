@@ -1,0 +1,62 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: |
+          frontend/package-lock.json
+          backend/package-lock.json
+    
+    - name: Install Frontend Dependencies
+      run: |
+        cd frontend
+        npm ci
+    
+    - name: Build Frontend
+      run: |
+        cd frontend
+        npm run build
+    
+    - name: Install Backend Dependencies
+      run: |
+        cd backend
+        npm ci
+    
+    - name: Build Backend
+      run: |
+        cd backend
+        npm run build
+    
+    - name: Prepare Deployment
+      run: |
+        mkdir -p deploy
+        cp -r frontend/dist/* deploy/
+        cp frontend/.htaccess deploy/ 2>/dev/null || true
+        cp .htaccess deploy/ 2>/dev/null || true
+        mkdir -p deploy/backend
+        cp -r backend/dist deploy/backend/
+        cp backend/package.json deploy/backend/
+        cp backend/.env.example deploy/backend/.env.example
+    
+    - name: Deploy to Hostinger
+      uses: SamKirkland/FTP-Deploy-Action@4.3.0
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: ./deploy/
+        server-dir: /public_html/
+

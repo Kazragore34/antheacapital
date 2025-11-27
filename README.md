@@ -2,6 +2,31 @@
 
 Sitio web profesional para inmobiliaria con panel de administración.
 
+## ⚠️ IMPORTANTE: Compilar antes de subir
+
+**NO subas los archivos fuente directamente.** Debes compilar el proyecto primero.
+
+### Compilación Rápida:
+
+```bash
+# Frontend
+cd frontend
+npm install
+npm run build
+
+# Backend
+cd ../backend
+npm install
+npm run build
+```
+
+Luego sube:
+- **`frontend/dist/`** → raíz de `public_html/` en Hostinger
+- **`backend/dist/`** → `public_html/backend/` en Hostinger
+- **`.htaccess`** → raíz de `public_html/` en Hostinger
+
+Ver `DEPLOY_INSTRUCTIONS.md` para más detalles.
+
 ## Stack Tecnológico
 
 - **Frontend**: React 18 + TypeScript + Tailwind CSS
@@ -14,12 +39,12 @@ Sitio web profesional para inmobiliaria con panel de administración.
 
 ```
 .
-├── frontend/     # Aplicación React
-├── backend/      # API NestJS
+├── frontend/     # Aplicación React (compilar antes de subir)
+├── backend/      # API NestJS (compilar antes de subir)
 └── uploads/      # Imágenes (si se usa almacenamiento local)
 ```
 
-## Desarrollo
+## Desarrollo Local
 
 ### Frontend
 ```bash
@@ -39,3 +64,6 @@ npm run start:dev
 
 Crear archivos `.env` en frontend y backend según `.env.example`
 
+## Deployment
+
+Ver `DEPLOY_INSTRUCTIONS.md` para instrucciones detalladas de deployment.

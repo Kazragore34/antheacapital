@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Property } from '../../types'
 
 interface PropertyFiltersProps {
   onFilterChange: (filters: {
