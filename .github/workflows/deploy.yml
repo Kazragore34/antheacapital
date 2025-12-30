@@ -43,22 +43,41 @@ jobs:
     - name: Prepare Deployment
       run: |
         mkdir -p deploy
-        # Copiar archivos compilados del frontend
-        cp -r frontend/dist/* deploy/
-        # Copiar .htaccess (prioridad: raíz > frontend/dist)
-        cp .htaccess deploy/ 2>/dev/null || cp frontend/dist/.htaccess deploy/ 2>/dev/null || true
-        # Si hay archivos en la raíz (index.html, assets/), también copiarlos
+        # PRIORIDAD: Copiar archivos de la raíz primero (generados por deploy-frontend.bat)
+        # Estos son los archivos que realmente se deben subir
         if [ -f index.html ]; then
-          cp index.html deploy/ 2>/dev/null || true
+          cp index.html deploy/
+          echo "✅ Copiado index.html de la raíz"
+        else
+          # Fallback: usar el de frontend/dist
+          cp frontend/dist/index.html deploy/
+          echo "⚠️ Usando index.html de frontend/dist (fallback)"
         fi
+        
         if [ -d assets ]; then
-          cp -r assets deploy/ 2>/dev/null || true
+          cp -r assets deploy/
+          echo "✅ Copiado assets/ de la raíz"
+        else
+          # Fallback: usar el de frontend/dist
+          cp -r frontend/dist/assets deploy/ 2>/dev/null || true
+          echo "⚠️ Usando assets/ de frontend/dist (fallback)"
         fi
+        
+        # Copiar .htaccess (prioridad: raíz > frontend/dist)
+        if [ -f .htaccess ]; then
+          cp .htaccess deploy/
+          echo "✅ Copiado .htaccess de la raíz"
+        elif [ -f frontend/dist/.htaccess ]; then
+          cp frontend/dist/.htaccess deploy/
+          echo "⚠️ Usando .htaccess de frontend/dist (fallback)"
+        fi
+        
         # Backend
         mkdir -p deploy/backend
         cp -r backend/dist deploy/backend/
         cp backend/package.json deploy/backend/
         cp backend/.env.example deploy/backend/.env.example
+        echo "✅ Backend copiado"
     
     - name: Deploy to Hostinger
       uses: SamKirkland/FTP-Deploy-Action@4.3.0
