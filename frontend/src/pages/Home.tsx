@@ -146,6 +146,62 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Insurance Preview */}
+      <section className="py-20 bg-black-soft">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <h2 className="font-serif text-4xl md:text-5xl mb-4 text-white">
+              Nuestros Mejores Seguros
+            </h2>
+            <p className="text-gray-300 text-lg">
+              Protección integral para profesionales, pymes y empresas
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {[
+              { id: 'vida', title: 'Vida', icon: '💼', description: 'Protege tu negocio ante pérdidas financieras' },
+              { id: 'oficina-comercio', title: 'Oficina Comercio', icon: '🏢', description: 'Cobertura para instalaciones de la empresa' },
+              { id: 'baja-laboral', title: 'Baja Laboral', icon: '🏥', description: 'Protección para autónomos' },
+              { id: 'rc-profesional', title: 'RC Profesional', icon: '⚖️', description: 'Cobertura de responsabilidad profesional' },
+            ].map((insurance, index) => (
+              <motion.div
+                key={insurance.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="card p-6 text-center hover:border-gold transition-all group"
+              >
+                <div className="text-4xl mb-4">{insurance.icon}</div>
+                <h3 className="font-semibold text-lg mb-2 text-white group-hover:text-gold transition-colors">
+                  {insurance.title}
+                </h3>
+                <p className="text-gray-300 text-sm mb-4">{insurance.description}</p>
+                <Link
+                  to={`/seguros/${insurance.id}`}
+                  className="btn-primary text-sm inline-block"
+                >
+                  Calcular Precio
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="text-center">
+            <Link to="/seguros" className="btn-secondary">
+              Ver Todos los Seguros
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-br from-gold-dark via-gold to-gold-light text-black-soft">
         <div className="container mx-auto px-4 text-center">

@@ -13,6 +13,8 @@ import PropertyDetail from './pages/PropertyDetail'
 import Valuation from './pages/Valuation'
 import SellProperty from './pages/SellProperty'
 import Services from './pages/Services'
+import Insurance from './pages/Insurance'
+import InsuranceForm from './pages/InsuranceForm'
 import About from './pages/About'
 import Contact from './pages/Contact'
 import PrivacyPolicy from './pages/PrivacyPolicy'
@@ -36,6 +38,8 @@ function App() {
                 <Route path="/valoracion" element={<Valuation />} />
                 <Route path="/vender" element={<SellProperty />} />
                 <Route path="/servicios" element={<Services />} />
+                <Route path="/seguros" element={<Insurance />} />
+                <Route path="/seguros/:tipo" element={<InsuranceForm />} />
                 <Route path="/empresa" element={<About />} />
                 <Route path="/contacto" element={<Contact />} />
                 <Route path="/politica-privacidad" element={<PrivacyPolicy />} />

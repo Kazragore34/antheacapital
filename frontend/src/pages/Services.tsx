@@ -156,9 +156,15 @@ const Services = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Link to="/contacto" className="btn-secondary inline-block relative z-10">
-                    Más Información
-                  </Link>
+                  {service.title === 'Seguros' ? (
+                    <Link to="/seguros" className="btn-secondary inline-block relative z-10">
+                      Ver Seguros
+                    </Link>
+                  ) : (
+                    <Link to="/contacto" className="btn-secondary inline-block relative z-10">
+                      Más Información
+                    </Link>
+                  )}
                 </motion.div>
                 
                 {/* Línea decorativa dorada */}
