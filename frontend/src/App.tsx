@@ -4,6 +4,7 @@ import { CookieProvider } from './context/CookieContext'
 import Header from './components/layout/Header'
 import Footer from './components/layout/Footer'
 import CookieBanner from './components/legal/CookieBanner'
+import FloatingAssistant from './components/ui/FloatingAssistant'
 
 // Pages
 import Home from './pages/Home'
@@ -46,6 +47,7 @@ function App() {
             </main>
             <Footer />
             <CookieBanner />
+            <FloatingAssistant />
           </div>
         </Router>
       </CookieProvider>

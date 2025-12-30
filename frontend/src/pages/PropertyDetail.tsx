@@ -137,7 +137,7 @@ const PropertyDetail = () => {
                 {property.title}
               </h1>
               <p className="text-gray-300 text-lg mb-6">
-                {property.location.address}, {property.location.city}, {property.location.province}
+                {property.location?.address || 'Dirección no disponible'}, {property.location?.city || 'Ciudad no disponible'}, {property.location?.province || 'Provincia no disponible'}
               </p>
             </div>
 

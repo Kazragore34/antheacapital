@@ -31,7 +31,7 @@ const LanguageSelector = () => {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 px-3 py-2 rounded-lg text-white hover:bg-gray-800 transition-colors border border-gray-700"
+        className="flex items-center justify-center space-x-2 px-3 py-2 rounded-lg text-white hover:bg-gray-800 transition-colors border border-gray-700 h-10"
         aria-label="Seleccionar idioma"
       >
         <span className="text-xl">{currentLang.flag}</span>

@@ -32,15 +32,25 @@ const Valuation = () => {
   const propertyType = watch('propertyType')
   const area = watch('area')
 
-  // Provincias y ciudades de España (simplificado)
+  // Provincias y ciudades de España (completo)
   const provinces = [
-    'Madrid', 'Barcelona', 'Valencia', 'Sevilla', 'Zaragoza', 'Málaga', 'Murcia', 'Palma', 'Las Palmas', 'Bilbao'
+    'Álava', 'Albacete', 'Alicante', 'Almería', 'Asturias', 'Ávila', 'Badajoz', 'Barcelona', 'Burgos', 
+    'Cáceres', 'Cádiz', 'Cantabria', 'Castellón', 'Ciudad Real', 'Córdoba', 'Cuenca', 'Girona', 'Granada', 
+    'Guadalajara', 'Guipúzcoa', 'Huelva', 'Huesca', 'Jaén', 'La Coruña', 'La Rioja', 'Las Palmas', 'León', 
+    'Lleida', 'Lugo', 'Madrid', 'Málaga', 'Murcia', 'Navarra', 'Ourense', 'Palencia', 'Pontevedra', 
+    'Salamanca', 'Santa Cruz de Tenerife', 'Segovia', 'Sevilla', 'Soria', 'Tarragona', 'Teruel', 'Toledo', 
+    'Valencia', 'Valladolid', 'Vizcaya', 'Zamora', 'Zaragoza'
   ]
 
   const citiesByProvince: Record<string, string[]> = {
-    'Madrid': ['Aranjuez', 'Madrid', 'Alcalá de Henares', 'Getafe', 'Móstoles', 'Fuenlabrada', 'Leganés'],
-    'Barcelona': ['Barcelona', 'Badalona', 'Sabadell', 'Terrassa', 'L\'Hospitalet de Llobregat'],
-    'Valencia': ['Valencia', 'Alicante', 'Elche', 'Castellón de la Plana'],
+    'Madrid': ['Aranjuez', 'Madrid', 'Alcalá de Henares', 'Getafe', 'Móstoles', 'Fuenlabrada', 'Leganés', 'Alcorcón', 'Torrejón de Ardoz', 'Parla', 'Alcobendas', 'Las Rozas', 'San Sebastián de los Reyes', 'Rivas-Vaciamadrid', 'Coslada', 'Majadahonda', 'Valdemoro', 'Collado Villalba', 'Arganda del Rey', 'Boadilla del Monte'],
+    'Barcelona': ['Barcelona', 'Badalona', 'Sabadell', 'Terrassa', 'L\'Hospitalet de Llobregat', 'Santa Coloma de Gramenet', 'Mataró', 'Sant Cugat del Vallès', 'Cornellà de Llobregat', 'Sant Boi de Llobregat'],
+    'Valencia': ['Valencia', 'Alicante', 'Elche', 'Castellón de la Plana', 'Torrevieja', 'Orihuela', 'Gandía', 'Paterna', 'Sagunto', 'Alcoy'],
+    'Sevilla': ['Sevilla', 'Dos Hermanas', 'Alcalá de Guadaíra', 'Utrera', 'Écija', 'Mairena del Alcor', 'Coria del Río', 'Carmona', 'Lebrija', 'Osuna'],
+    'Málaga': ['Málaga', 'Marbella', 'Vélez-Málaga', 'Fuengirola', 'Torremolinos', 'Estepona', 'Benalmádena', 'Ronda', 'Antequera', 'Nerja'],
+    'Murcia': ['Murcia', 'Cartagena', 'Lorca', 'Molina de Segura', 'Alcantarilla', 'Cieza', 'Yecla', 'San Javier', 'Caravaca de la Cruz', 'Totana'],
+    'Zaragoza': ['Zaragoza', 'Calatayud', 'Utebo', 'Ejea de los Caballeros', 'Tarazona', 'Alagón', 'Caspe', 'La Almunia de Doña Godina', 'Borja', 'Fraga'],
+    'Las Palmas': ['Las Palmas de Gran Canaria', 'Telde', 'Santa Lucía de Tirajana', 'San Bartolomé de Tirajana', 'Arucas', 'Ingenio', 'Gáldar', 'Agüimes', 'Moya', 'Valsequillo'],
   }
 
   const handlePlaceSelect = (place: google.maps.places.PlaceResult) => {
@@ -50,11 +60,13 @@ const Valuation = () => {
         if (component.types.includes('postal_code')) {
           setValue('postalCode', component.long_name)
         }
-        if (component.types.includes('locality')) {
+        if (component.types.includes('locality') || component.types.includes('administrative_area_level_2')) {
           setValue('city', component.long_name)
         }
         if (component.types.includes('administrative_area_level_1')) {
-          setValue('province', component.long_name)
+          // Limpiar el nombre de la provincia (ej: "Comunidad de Madrid" -> "Madrid")
+          const provinceName = component.long_name.replace(/^(Comunidad de |Provincia de |Región de )/i, '')
+          setValue('province', provinceName)
         }
         if (component.types.includes('street_number')) {
           setValue('streetNumber', component.long_name)
@@ -63,10 +75,11 @@ const Valuation = () => {
     }
 
     if (place.geometry?.location) {
-      setValue('coordinates', [
+      const coords: [number, number] = [
         place.geometry.location.lat(),
         place.geometry.location.lng()
-      ])
+      ]
+      setValue('coordinates', coords)
     }
   }
 
@@ -197,9 +210,18 @@ const Valuation = () => {
                           value={option.value}
                           {...register('valuationType', { required: true })}
                           className="hidden"
-                          onChange={() => {
-                            setValue('valuationType', option.value as any)
-                            setTimeout(handleNext, 300)
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setValue('valuationType', option.value as any)
+                              // Usar requestAnimationFrame para asegurar que el estado se actualice
+                              requestAnimationFrame(() => {
+                                setTimeout(() => {
+                                  if (currentStep === 'type') {
+                                    setCurrentStep('address')
+                                  }
+                                }, 100)
+                              })
+                            }
                           }}
                         />
                         <div className="text-center">
@@ -369,14 +391,23 @@ const Valuation = () => {
                         </motion.div>
                       )}
 
-                      {address && (
-                        <button
-                          type="button"
-                          onClick={handleNext}
-                          className="btn-primary w-full"
+                      {address && watch('coordinates') && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
                         >
-                          Buscar en el mapa
-                        </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (watch('coordinates')) {
+                                setCurrentStep('map')
+                              }
+                            }}
+                            className="btn-primary w-full"
+                          >
+                            Ver en el mapa
+                          </button>
+                        </motion.div>
                       )}
                     </motion.div>
                   )}

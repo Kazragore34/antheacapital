@@ -112,7 +112,7 @@ const Header = () => {
                   <img
                     src={logoText}
                     alt="Anthea Capital"
-                    className="h-5 w-auto"
+                    className="h-4 w-auto"
                   />
                 </motion.div>
               )}
