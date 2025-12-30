@@ -33,8 +33,8 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
               }}
             />
           ) : (
-            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-              <span className="text-gray-400">Sin imagen</span>
+            <div className="w-full h-full bg-gray-800 flex items-center justify-center">
+              <span className="text-gray-500">Sin imagen</span>
             </div>
           )}
           <div className="absolute top-4 left-4">
@@ -53,13 +53,13 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
           </div>
         </div>
         <div className="p-6">
-          <h3 className="font-serif text-xl mb-2 text-black-soft group-hover:text-gold transition-colors">
+          <h3 className="font-serif text-xl mb-2 text-white group-hover:text-gold transition-colors">
             {property.title}
           </h3>
-          <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+          <p className="text-gray-300 text-sm mb-4 line-clamp-2">
             {property.description}
           </p>
-          <div className="flex items-center justify-between text-sm text-gray-500">
+          <div className="flex items-center justify-between text-sm text-gray-400">
             <div className="flex items-center space-x-4">
               <span className="flex items-center">
                 <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -76,7 +76,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
               <span>{property.features.area} m²</span>
             </div>
           </div>
-          <p className="text-gray-600 text-sm mt-2">
+          <p className="text-gray-300 text-sm mt-2">
             {property.location.city}, {property.location.province}
           </p>
         </div>

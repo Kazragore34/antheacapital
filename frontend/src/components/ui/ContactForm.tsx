@@ -35,9 +35,9 @@ const ContactForm = ({ propertyId }: ContactFormProps) => {
 
   if (submitted) {
     return (
-      <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
-        <p className="text-green-700 font-semibold">¡Mensaje enviado correctamente!</p>
-        <p className="text-green-600 text-sm mt-2">Te contactaremos pronto.</p>
+      <div className="bg-green-900/20 border border-green-700 rounded-lg p-4 text-center">
+        <p className="text-green-300 font-semibold">¡Mensaje enviado correctamente!</p>
+        <p className="text-green-400 text-sm mt-2">Te contactaremos pronto.</p>
       </div>
     )
   }
@@ -45,13 +45,13 @@ const ContactForm = ({ propertyId }: ContactFormProps) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 text-sm">
+        <div className="bg-red-900/20 border border-red-800 rounded-lg p-3 text-red-300 text-sm">
           {error}
         </div>
       )}
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-300 mb-1">
           Nombre *
         </label>
         <input
@@ -60,12 +60,12 @@ const ContactForm = ({ propertyId }: ContactFormProps) => {
           className="input-field"
         />
         {errors.name && (
-          <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
+          <p className="text-red-400 text-xs mt-1">{errors.name.message}</p>
         )}
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-300 mb-1">
           Email *
         </label>
         <input
@@ -85,7 +85,7 @@ const ContactForm = ({ propertyId }: ContactFormProps) => {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-300 mb-1">
           Teléfono
         </label>
         <input
@@ -96,7 +96,7 @@ const ContactForm = ({ propertyId }: ContactFormProps) => {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-300 mb-1">
           Mensaje *
         </label>
         <textarea
@@ -121,7 +121,7 @@ const ContactForm = ({ propertyId }: ContactFormProps) => {
             })}
             className="mt-1"
           />
-          <span className="text-sm text-gray-700">
+          <span className="text-sm text-gray-300">
             Consiento que se lleve a cabo el tratamiento de mis datos tal y como se detalla en la{' '}
             <a href="/politica-privacidad" className="text-gold hover:underline">
               Política de privacidad
@@ -143,7 +143,7 @@ const ContactForm = ({ propertyId }: ContactFormProps) => {
             {...register('marketing')}
             className="mt-1"
           />
-          <span className="text-sm text-gray-700">
+          <span className="text-sm text-gray-300">
             Consiento que se lleve a cabo el tratamiento de mis datos personales para recibir publicidad de su Organización.
           </span>
         </label>

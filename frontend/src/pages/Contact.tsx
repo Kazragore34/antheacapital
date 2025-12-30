@@ -3,7 +3,7 @@ import ContactForm from '../components/ui/ContactForm'
 
 const Contact = () => {
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-black-soft py-12">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <motion.div
@@ -11,10 +11,10 @@ const Contact = () => {
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-12"
           >
-            <h1 className="font-serif text-4xl md:text-5xl mb-4 text-black-soft">
+            <h1 className="font-serif text-4xl md:text-5xl mb-4 text-white">
               Contacto
             </h1>
-            <p className="text-gray-600 text-lg">
+            <p className="text-gray-300 text-lg">
               Estamos aquí para ayudarle. Póngase en contacto con nosotros
             </p>
           </motion.div>
@@ -25,9 +25,9 @@ const Contact = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white rounded-lg shadow-md p-8"
+              className="bg-gray-900 rounded-lg shadow-lg border border-gray-800 p-8"
             >
-              <h2 className="font-serif text-2xl mb-6 text-black-soft">
+              <h2 className="font-serif text-2xl mb-6 text-white">
                 Envíenos un Mensaje
               </h2>
               <ContactForm />
@@ -40,8 +40,8 @@ const Contact = () => {
               transition={{ delay: 0.4 }}
               className="space-y-6"
             >
-              <div className="bg-white rounded-lg shadow-md p-8">
-                <h2 className="font-serif text-2xl mb-6 text-black-soft">
+              <div className="bg-gray-900 rounded-lg shadow-lg border border-gray-800 p-8">
+                <h2 className="font-serif text-2xl mb-6 text-white">
                   Información de Contacto
                 </h2>
                 <div className="space-y-6">
@@ -49,20 +49,20 @@ const Contact = () => {
                     <h3 className="font-semibold text-lg mb-2 text-gold">
                       Ana María Sánchez Trillo
                     </h3>
-                    <p className="text-gray-700 mb-1">
+                    <p className="text-gray-300 mb-1">
                       Directora y Asesora Inmobiliaria
                     </p>
-                    <p className="text-gray-700">
+                    <p className="text-gray-300">
                       <a href="mailto:ana@antheacapital.es" className="hover:text-gold transition-colors">
                         ana@antheacapital.es
                       </a>
                     </p>
-                    <p className="text-gray-700">
+                    <p className="text-gray-300">
                       <a href="tel:+34656617465" className="hover:text-gold transition-colors">
                         +34 656 61 74 65
                       </a>
                     </p>
-                    <p className="text-gray-700 mt-2">
+                    <p className="text-gray-300 mt-2">
                       <a
                         href="https://wa.me/34656617465"
                         target="_blank"
@@ -77,11 +77,11 @@ const Contact = () => {
                     </p>
                   </div>
 
-                  <div className="border-t pt-6">
+                  <div className="border-t border-gray-800 pt-6">
                     <h3 className="font-semibold text-lg mb-4 text-gold">
                       Otros Contactos
                     </h3>
-                    <div className="space-y-2 text-gray-700">
+                    <div className="space-y-2 text-gray-300">
                       <p>
                         <strong>Administración:</strong>{' '}
                         <a href="mailto:admin@antheacapital.es" className="hover:text-gold transition-colors">
@@ -103,11 +103,11 @@ const Contact = () => {
                     </div>
                   </div>
 
-                  <div className="border-t pt-6">
+                  <div className="border-t border-gray-800 pt-6">
                     <h3 className="font-semibold text-lg mb-4 text-gold">
                       Dirección
                     </h3>
-                    <p className="text-gray-700">
+                    <p className="text-gray-300">
                       Calle Magnolias 32°A<br />
                       28300, Aranjuez<br />
                       Madrid, España
@@ -116,7 +116,7 @@ const Contact = () => {
                 </div>
               </div>
 
-              <div className="bg-gradient-to-br from-gold via-gold-light to-gold-bright text-white rounded-lg p-8 text-center shadow-lg dark:from-gold-dark dark:via-gold dark:to-gold-light">
+              <div className="bg-gradient-to-br from-gold-dark via-gold to-gold-light text-black-soft rounded-lg p-8 text-center shadow-lg">
                 <h3 className="font-serif text-2xl mb-4">
                   Horario de Atención
                 </h3>

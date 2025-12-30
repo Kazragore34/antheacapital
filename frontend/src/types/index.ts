@@ -46,16 +46,28 @@ export interface ContactForm {
 }
 
 export interface ValuationForm {
-  address: string
-  type: string
-  area: number
-  bedrooms: number
-  state: string
+  valuationType: 'vender' | 'comprar' | 'alquilar' | 'alquilarlo' | 'informacion'
+  addressType: 'direccion' | 'catastral'
+  province?: string
+  city?: string
+  postalCode?: string
+  address?: string
+  streetNumber?: string
+  floor?: string
+  door?: string
+  cadastralRef?: string
+  propertyType?: string
+  area?: number
+  bedrooms?: number
+  bathrooms?: number
+  state?: string
+  yearBuilt?: number
   name: string
   email: string
   phone: string
   consent: boolean
   marketing?: boolean
+  coordinates?: [number, number]
 }
 
 export interface CookiePreferences {

@@ -4,28 +4,28 @@
 
 @layer base {
   body {
-    @apply bg-white dark:bg-gray-900 text-black-soft dark:text-gray-100 font-sans antialiased transition-colors duration-300;
+    @apply bg-black-soft text-white font-sans antialiased;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-serif;
+    @apply font-serif text-white;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-gradient-to-r from-gold via-gold-light to-gold-bright text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:from-gold-dark hover:via-gold hover:to-gold-light hover:shadow-lg transform hover:-translate-y-0.5 shadow-md dark:from-gold-dark dark:via-gold dark:to-gold;
+    @apply bg-gradient-to-r from-gold via-gold-light to-gold-bright text-black-soft px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:from-gold-dark hover:via-gold hover:to-gold-light hover:shadow-lg transform hover:-translate-y-0.5 shadow-md;
   }
   
   .btn-secondary {
-    @apply bg-transparent border-2 border-gold dark:border-gold-light text-gold dark:text-gold-light px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:bg-gradient-to-r hover:from-gold hover:via-gold-light hover:to-gold-bright hover:text-white hover:border-gold-dark dark:hover:from-gold-dark dark:hover:via-gold dark:hover:to-gold;
+    @apply bg-transparent border-2 border-gold text-gold px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:bg-gradient-to-r hover:from-gold hover:via-gold-light hover:to-gold-bright hover:text-black-soft hover:border-gold-dark;
   }
   
   .card {
-    @apply bg-white dark:bg-gray-800 rounded-lg shadow-md transition-all duration-300 hover:shadow-xl;
+    @apply bg-gray-900 border border-gray-800 rounded-lg shadow-lg transition-all duration-300 hover:shadow-gold/20;
   }
   
   .input-field {
-    @apply w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-black-soft dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-gold dark:focus:ring-gold-light focus:border-transparent transition-all;
+    @apply w-full px-4 py-3 border border-gray-700 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent transition-all placeholder-gray-500;
   }
 }
 

@@ -3,9 +3,9 @@ import { motion } from 'framer-motion'
 
 const SellProperty = () => {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-black-soft">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-gold via-gold-light to-gold-bright text-white py-20 shadow-lg dark:from-gold-dark dark:via-gold dark:to-gold-light">
+      <section className="bg-gradient-to-br from-gold-dark via-gold to-gold-light text-black-soft py-20 shadow-lg">
         <div className="container mx-auto px-4 text-center">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
@@ -26,10 +26,10 @@ const SellProperty = () => {
       </section>
 
       {/* Services Section */}
-      <section className="py-20">
+      <section className="py-20 bg-black-soft">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <h2 className="font-serif text-3xl md:text-4xl mb-8 text-center text-black-soft">
+            <h2 className="font-serif text-3xl md:text-4xl mb-8 text-center text-white">
               ¿Por qué elegir Anthea Capital?
             </h2>
 
@@ -65,14 +65,14 @@ const SellProperty = () => {
                   className="card p-6"
                 >
                   <div className="text-4xl mb-4">{service.icon}</div>
-                  <h3 className="font-serif text-xl mb-3">{service.title}</h3>
-                  <p className="text-gray-600">{service.description}</p>
+                  <h3 className="font-serif text-xl mb-3 text-white">{service.title}</h3>
+                  <p className="text-gray-300">{service.description}</p>
                 </motion.div>
               ))}
             </div>
 
-            <div className="bg-white rounded-lg shadow-md p-8 mb-12">
-              <h3 className="font-serif text-2xl mb-4 text-black-soft">
+            <div className="bg-gray-900 border border-gray-800 rounded-lg shadow-lg p-8 mb-12">
+              <h3 className="font-serif text-2xl mb-4 text-white">
                 Proceso de Venta
               </h3>
               <ol className="space-y-4">
@@ -86,10 +86,10 @@ const SellProperty = () => {
                   'Le acompañamos hasta la firma de la escritura',
                 ].map((step, index) => (
                   <li key={index} className="flex items-start space-x-3">
-                    <span className="flex-shrink-0 w-8 h-8 bg-gold text-white rounded-full flex items-center justify-center font-semibold">
+                    <span className="flex-shrink-0 w-8 h-8 bg-gold text-black-soft rounded-full flex items-center justify-center font-semibold">
                       {index + 1}
                     </span>
-                    <span className="text-gray-700 pt-1">{step}</span>
+                    <span className="text-gray-300 pt-1">{step}</span>
                   </li>
                 ))}
               </ol>
@@ -97,10 +97,10 @@ const SellProperty = () => {
 
             <div className="text-center space-y-6">
               <div>
-                <h3 className="font-serif text-2xl mb-4 text-black-soft">
+                <h3 className="font-serif text-2xl mb-4 text-white">
                   ¿Listo para vender su propiedad?
                 </h3>
-                <p className="text-gray-600 mb-6">
+                <p className="text-gray-300 mb-6">
                   Solicite una valoración gratuita y sin compromiso. Nuestro equipo se pondrá en contacto con usted.
                 </p>
               </div>

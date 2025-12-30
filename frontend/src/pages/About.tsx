@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 
 const About = () => {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-black-soft">
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-black-soft to-gray-900 text-white py-20">
         <div className="container mx-auto px-4 text-center">
@@ -25,7 +25,7 @@ const About = () => {
       </section>
 
       {/* Mission Section */}
-      <section className="py-20">
+      <section className="py-20 bg-black-soft">
         <div className="container mx-auto px-4 max-w-4xl">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -33,10 +33,10 @@ const About = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="font-serif text-4xl md:text-5xl mb-6 text-black-soft">
+            <h2 className="font-serif text-4xl md:text-5xl mb-6 text-white">
               Nuestra Misión
             </h2>
-            <p className="text-lg text-gray-700 leading-relaxed">
+            <p className="text-lg text-gray-300 leading-relaxed">
               En Anthea Capital Consulting, nos dedicamos a ofrecer un servicio inmobiliario de excelencia, 
               proporcionando asesoramiento integral y personalizado a nuestros clientes. Nuestra misión es 
               ayudarle a encontrar la propiedad perfecta o a vender su inmueble con el máximo valor, siempre 
@@ -51,10 +51,10 @@ const About = () => {
             transition={{ delay: 0.2 }}
             className="text-center mb-16"
           >
-            <h2 className="font-serif text-4xl md:text-5xl mb-6 text-black-soft">
+            <h2 className="font-serif text-4xl md:text-5xl mb-6 text-white">
               Nuestra Visión
             </h2>
-            <p className="text-lg text-gray-700 leading-relaxed">
+            <p className="text-lg text-gray-300 leading-relaxed">
               Aspiramos a ser la inmobiliaria de referencia en Aranjuez y la Comunidad de Madrid, reconocida 
               por nuestro compromiso con la calidad, la innovación y la satisfacción del cliente. Queremos 
               ser el socio de confianza para todas sus necesidades inmobiliarias, desde la compra y venta 
@@ -69,7 +69,7 @@ const About = () => {
             transition={{ delay: 0.4 }}
             className="mb-16"
           >
-            <h2 className="font-serif text-4xl md:text-5xl mb-8 text-center text-black-soft">
+            <h2 className="font-serif text-4xl md:text-5xl mb-8 text-center text-white">
               Nuestros Valores
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -107,8 +107,8 @@ const About = () => {
               ].map((value, index) => (
                 <div key={index} className="card p-6 text-center">
                   <div className="text-4xl mb-4">{value.icon}</div>
-                  <h3 className="font-serif text-xl mb-3">{value.title}</h3>
-                  <p className="text-gray-600 text-sm">{value.description}</p>
+                  <h3 className="font-serif text-xl mb-3 text-white">{value.title}</h3>
+                  <p className="text-gray-300 text-sm">{value.description}</p>
                 </div>
               ))}
             </div>
@@ -119,19 +119,19 @@ const About = () => {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-gray-50 rounded-lg p-8 text-center"
+            className="bg-gray-900 border border-gray-800 rounded-lg p-8 text-center"
           >
-            <h2 className="font-serif text-3xl mb-6 text-black-soft">
+            <h2 className="font-serif text-3xl mb-6 text-white">
               Nuestro Equipo
             </h2>
             <div className="max-w-md mx-auto">
-              <div className="bg-white rounded-lg p-6 shadow-md">
-                <div className="w-32 h-32 bg-gold rounded-full mx-auto mb-4 flex items-center justify-center text-4xl text-white">
+              <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 shadow-lg">
+                <div className="w-32 h-32 bg-gold rounded-full mx-auto mb-4 flex items-center justify-center text-4xl text-black-soft">
                   AM
                 </div>
-                <h3 className="font-serif text-xl mb-2">Ana María Sánchez Trillo</h3>
-                <p className="text-gray-600 mb-4">Directora y Asesora Inmobiliaria</p>
-                <div className="space-y-2 text-sm text-gray-700">
+                <h3 className="font-serif text-xl mb-2 text-white">Ana María Sánchez Trillo</h3>
+                <p className="text-gray-300 mb-4">Directora y Asesora Inmobiliaria</p>
+                <div className="space-y-2 text-sm text-gray-300">
                   <p>
                     <a href="mailto:ana@antheacapital.es" className="text-gold hover:underline">
                       ana@antheacapital.es

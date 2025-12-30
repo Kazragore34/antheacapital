@@ -54,7 +54,7 @@ const Services = () => {
   ]
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-black-soft">
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-black-soft to-gray-900 text-white py-20">
         <div className="container mx-auto px-4 text-center">
@@ -77,7 +77,7 @@ const Services = () => {
       </section>
 
       {/* Services Grid */}
-      <section className="py-20 bg-gray-50 dark:bg-gray-900">
+      <section className="py-20 bg-gray-900">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             {services.map((service, index) => (
@@ -114,11 +114,11 @@ const Services = () => {
                   {service.icon}
                 </motion.div>
                 
-                <h2 className="font-serif text-2xl mb-4 text-black-soft dark:text-white relative z-10 group-hover:text-gold transition-colors">
+                <h2 className="font-serif text-2xl mb-4 text-white relative z-10 group-hover:text-gold transition-colors">
                   {service.title}
                 </h2>
                 
-                <p className="text-gray-600 dark:text-gray-300 mb-6 relative z-10 leading-relaxed">
+                <p className="text-gray-300 mb-6 relative z-10 leading-relaxed">
                   {service.description}
                 </p>
                 
@@ -126,7 +126,7 @@ const Services = () => {
                   {service.features.map((feature, idx) => (
                     <motion.li 
                       key={idx} 
-                      className="flex items-center text-gray-700 dark:text-gray-300"
+                      className="flex items-center text-gray-300"
                       initial={{ opacity: 0, x: -20 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
@@ -173,7 +173,7 @@ const Services = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="bg-gradient-to-br from-gold via-gold-light to-gold-bright text-white rounded-2xl p-12 text-center shadow-2xl dark:from-gold-dark dark:via-gold dark:to-gold-light relative overflow-hidden"
+            className="bg-gradient-to-br from-gold-dark via-gold to-gold-light text-black-soft rounded-2xl p-12 text-center shadow-2xl relative overflow-hidden"
           >
             {/* Efecto de brillo animado */}
             <motion.div
@@ -211,7 +211,7 @@ const Services = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Link to="/contacto" className="btn-secondary bg-white text-gold hover:bg-gray-100 inline-block">
+                <Link to="/contacto" className="btn-secondary bg-black-soft text-gold hover:bg-gray-900 border-black-soft inline-block">
                   Contactar Ahora
                 </Link>
               </motion.div>

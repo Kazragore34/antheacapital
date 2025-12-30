@@ -49,10 +49,10 @@ const PropertyFilters = ({ onFilterChange }: PropertyFiltersProps) => {
   }
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+    <div className="bg-gray-900 border border-gray-800 p-6 rounded-lg shadow-lg mb-8">
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-300 mb-2">
             Tipo
           </label>
           <select
@@ -67,7 +67,7 @@ const PropertyFilters = ({ onFilterChange }: PropertyFiltersProps) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-300 mb-2">
             Ciudad
           </label>
           <input
@@ -80,7 +80,7 @@ const PropertyFilters = ({ onFilterChange }: PropertyFiltersProps) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-300 mb-2">
             Precio Mín.
           </label>
           <input
@@ -93,7 +93,7 @@ const PropertyFilters = ({ onFilterChange }: PropertyFiltersProps) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-300 mb-2">
             Precio Máx.
           </label>
           <input
@@ -106,7 +106,7 @@ const PropertyFilters = ({ onFilterChange }: PropertyFiltersProps) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-300 mb-2">
             Habitaciones
           </label>
           <select
@@ -124,7 +124,7 @@ const PropertyFilters = ({ onFilterChange }: PropertyFiltersProps) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-300 mb-2">
             Superficie Mín.
           </label>
           <input
@@ -140,7 +140,7 @@ const PropertyFilters = ({ onFilterChange }: PropertyFiltersProps) => {
       <div className="mt-4 flex justify-end">
         <button
           onClick={clearFilters}
-          className="text-sm text-gray-600 hover:text-gold transition-colors"
+          className="text-sm text-gray-300 hover:text-gold transition-colors"
         >
           Limpiar filtros
         </button>

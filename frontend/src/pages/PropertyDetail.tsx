@@ -44,10 +44,10 @@ const PropertyDetail = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-black-soft">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-gold"></div>
-          <p className="mt-4 text-gray-600">Cargando propiedad...</p>
+          <p className="mt-4 text-gray-300">Cargando propiedad...</p>
         </div>
       </div>
     )
@@ -55,9 +55,9 @@ const PropertyDetail = () => {
 
   if (!property) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-black-soft">
         <div className="text-center">
-          <h2 className="text-2xl font-semibold mb-4">Propiedad no encontrada</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-white">Propiedad no encontrada</h2>
           <Link to="/propiedades" className="btn-primary">
             Volver a Propiedades
           </Link>
@@ -67,7 +67,7 @@ const PropertyDetail = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-black-soft">
       {/* Image Gallery */}
       {property.images && Array.isArray(property.images) && property.images.length > 0 && (
         <section className="relative">
@@ -133,65 +133,65 @@ const PropertyDetail = () => {
                   {formatPrice(property.price)}
                 </span>
               </div>
-              <h1 className="font-serif text-4xl mb-4 text-black-soft">
+              <h1 className="font-serif text-4xl mb-4 text-white">
                 {property.title}
               </h1>
-              <p className="text-gray-600 text-lg mb-6">
+              <p className="text-gray-300 text-lg mb-6">
                 {property.location.address}, {property.location.city}, {property.location.province}
               </p>
             </div>
 
             <div className="mb-8">
-              <h2 className="font-serif text-2xl mb-4">Descripción</h2>
-              <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+              <h2 className="font-serif text-2xl mb-4 text-white">Descripción</h2>
+              <p className="text-gray-300 leading-relaxed whitespace-pre-line">
                 {property.description}
               </p>
             </div>
 
             <div className="mb-8">
-              <h2 className="font-serif text-2xl mb-4">Características</h2>
+              <h2 className="font-serif text-2xl mb-4 text-white">Características</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-gray-50 p-4 rounded-lg text-center">
+                <div className="bg-gray-900 border border-gray-800 p-4 rounded-lg text-center">
                   <div className="text-2xl mb-2">🛏️</div>
-                  <div className="font-semibold">{property.features.bedrooms}</div>
-                  <div className="text-sm text-gray-600">Habitaciones</div>
+                  <div className="font-semibold text-white">{property.features.bedrooms}</div>
+                  <div className="text-sm text-gray-400">Habitaciones</div>
                 </div>
-                <div className="bg-gray-50 p-4 rounded-lg text-center">
+                <div className="bg-gray-900 border border-gray-800 p-4 rounded-lg text-center">
                   <div className="text-2xl mb-2">🚿</div>
-                  <div className="font-semibold">{property.features.bathrooms}</div>
-                  <div className="text-sm text-gray-600">Baños</div>
+                  <div className="font-semibold text-white">{property.features.bathrooms}</div>
+                  <div className="text-sm text-gray-400">Baños</div>
                 </div>
-                <div className="bg-gray-50 p-4 rounded-lg text-center">
+                <div className="bg-gray-900 border border-gray-800 p-4 rounded-lg text-center">
                   <div className="text-2xl mb-2">📐</div>
-                  <div className="font-semibold">{property.features.area}</div>
-                  <div className="text-sm text-gray-600">m²</div>
+                  <div className="font-semibold text-white">{property.features.area}</div>
+                  <div className="text-sm text-gray-400">m²</div>
                 </div>
                 {property.features.floor && (
-                  <div className="bg-gray-50 p-4 rounded-lg text-center">
+                  <div className="bg-gray-900 border border-gray-800 p-4 rounded-lg text-center">
                     <div className="text-2xl mb-2">🏢</div>
-                    <div className="font-semibold">{property.features.floor}º</div>
-                    <div className="text-sm text-gray-600">Planta</div>
+                    <div className="font-semibold text-white">{property.features.floor}º</div>
+                    <div className="text-sm text-gray-400">Planta</div>
                   </div>
                 )}
               </div>
               <div className="mt-4 flex flex-wrap gap-2">
                 {property.features.parking && (
-                  <span className="px-3 py-1 bg-gray-100 rounded-full text-sm">Parking</span>
+                  <span className="px-3 py-1 bg-gray-900 border border-gray-800 rounded-full text-sm text-white">Parking</span>
                 )}
                 {property.features.elevator && (
-                  <span className="px-3 py-1 bg-gray-100 rounded-full text-sm">Ascensor</span>
+                  <span className="px-3 py-1 bg-gray-900 border border-gray-800 rounded-full text-sm text-white">Ascensor</span>
                 )}
                 {property.features.terrace && (
-                  <span className="px-3 py-1 bg-gray-100 rounded-full text-sm">Terraza</span>
+                  <span className="px-3 py-1 bg-gray-900 border border-gray-800 rounded-full text-sm text-white">Terraza</span>
                 )}
                 {property.features.garden && (
-                  <span className="px-3 py-1 bg-gray-100 rounded-full text-sm">Jardín</span>
+                  <span className="px-3 py-1 bg-gray-900 border border-gray-800 rounded-full text-sm text-white">Jardín</span>
                 )}
                 {property.features.pool && (
-                  <span className="px-3 py-1 bg-gray-100 rounded-full text-sm">Piscina</span>
+                  <span className="px-3 py-1 bg-gray-900 border border-gray-800 rounded-full text-sm text-white">Piscina</span>
                 )}
                 {property.features.furnished && (
-                  <span className="px-3 py-1 bg-gray-100 rounded-full text-sm">Amueblado</span>
+                  <span className="px-3 py-1 bg-gray-900 border border-gray-800 rounded-full text-sm text-white">Amueblado</span>
                 )}
               </div>
             </div>
@@ -200,8 +200,8 @@ const PropertyDetail = () => {
           {/* Sidebar - Contact Form */}
           <div className="lg:col-span-1">
             <div className="sticky top-24">
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <h3 className="font-serif text-2xl mb-4">Solicitar Información</h3>
+              <div className="bg-gray-900 border border-gray-800 p-6 rounded-lg">
+                <h3 className="font-serif text-2xl mb-4 text-white">Solicitar Información</h3>
                 <ContactForm propertyId={property._id} />
               </div>
             </div>

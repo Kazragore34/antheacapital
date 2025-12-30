@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { propertiesService } from '../services/properties.service'
 import { Property } from '../types'
 import PropertyCard from '../components/properties/PropertyCard'
+import inicioImage from '../assets/inicio.jpg'
 
 const Home = () => {
   const [featuredProperties, setFeaturedProperties] = useState<Property[]>([])
@@ -29,12 +30,12 @@ const Home = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative h-[90vh] flex items-center justify-center bg-gradient-to-br from-black-soft via-gray-900 to-black-soft text-white">
-        <div className="absolute inset-0 bg-black opacity-40"></div>
+      <section className="relative h-[90vh] flex items-center justify-center bg-black-soft text-white">
+        <div className="absolute inset-0 bg-black/50"></div>
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: 'url(https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1920)',
+            backgroundImage: `url(${inicioImage})`,
           }}
         ></div>
         <motion.div
@@ -61,7 +62,7 @@ const Home = () => {
       </section>
 
       {/* Featured Properties */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-black-soft">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -70,10 +71,10 @@ const Home = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-12"
           >
-            <h2 className="font-serif text-4xl md:text-5xl mb-4 text-black-soft">
+            <h2 className="font-serif text-4xl md:text-5xl mb-4 text-white">
               Propiedades Destacadas
             </h2>
-            <p className="text-gray-600 text-lg">
+            <p className="text-gray-300 text-lg">
               Selección de las mejores propiedades disponibles
             </p>
           </motion.div>
@@ -86,7 +87,7 @@ const Home = () => {
             </div>
           ) : (
             <div className="text-center py-12">
-              <p className="text-gray-500">No hay propiedades disponibles en este momento.</p>
+              <p className="text-gray-400">No hay propiedades disponibles en este momento.</p>
             </div>
           )}
 
@@ -99,7 +100,7 @@ const Home = () => {
       </section>
 
       {/* Services Preview */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-gray-900">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -108,10 +109,10 @@ const Home = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-12"
           >
-            <h2 className="font-serif text-4xl md:text-5xl mb-4 text-black-soft">
+            <h2 className="font-serif text-4xl md:text-5xl mb-4 text-white">
               Nuestros Servicios
             </h2>
-            <p className="text-gray-600 text-lg">
+            <p className="text-gray-300 text-lg">
               Soluciones integrales para todas tus necesidades inmobiliarias
             </p>
           </motion.div>
@@ -146,7 +147,7 @@ const Home = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-gold via-gold-light to-gold-bright text-white dark:from-gold-dark dark:via-gold dark:to-gold-light">
+      <section className="py-20 bg-gradient-to-br from-gold-dark via-gold to-gold-light text-black-soft">
         <div className="container mx-auto px-4 text-center">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -165,7 +166,7 @@ const Home = () => {
           >
             Contacta con nosotros y te ayudaremos a encontrar la propiedad perfecta
           </motion.p>
-          <Link to="/contacto" className="btn-secondary bg-white text-gold hover:bg-gray-100">
+          <Link to="/contacto" className="btn-secondary bg-black-soft text-gold hover:bg-gray-900 border-black-soft">
             Contactar Ahora
           </Link>
         </div>
