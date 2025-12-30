@@ -34,10 +34,10 @@ const LanguageSelector = () => {
         className="flex items-center justify-center space-x-2 px-3 py-2 rounded-lg text-white hover:bg-gray-800 transition-colors border border-gray-700 h-10"
         aria-label="Seleccionar idioma"
       >
-        <span className="text-xl">{currentLang.flag}</span>
-        <span className="hidden md:inline text-sm font-medium">{currentLang.code.toUpperCase()}</span>
+        <span className="text-xl leading-none">{currentLang.flag}</span>
+        <span className="hidden md:inline text-sm font-medium leading-none">{currentLang.code.toUpperCase()}</span>
         <svg
-          className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          className={`w-4 h-4 transition-transform leading-none ${isOpen ? 'rotate-180' : ''}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -52,7 +52,7 @@ const LanguageSelector = () => {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="absolute right-0 mt-2 w-48 bg-gray-900 border border-gray-700 rounded-lg shadow-xl z-50 overflow-hidden"
+            className="absolute right-0 mt-2 w-48 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-50 overflow-hidden"
           >
             <div className="py-1">
               {/* Idiomas principales */}

@@ -51,7 +51,7 @@ const FloatingAssistant = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.9 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed bottom-24 right-6 w-96 max-w-[calc(100vw-3rem)] bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl z-50 overflow-hidden"
+              className="fixed bottom-24 right-6 w-96 max-w-[calc(100vw-3rem)] bg-gray-800 border border-gray-700 rounded-2xl shadow-2xl z-50 overflow-hidden"
             >
               {/* Header */}
               <div className="bg-gradient-to-r from-gold-dark via-gold to-gold-light text-black-soft p-4 flex items-center justify-between">

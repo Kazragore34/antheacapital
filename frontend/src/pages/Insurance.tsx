@@ -71,7 +71,7 @@ const Insurance = () => {
       </section>
 
       {/* Insurance Grid */}
-      <section className="py-20 bg-gray-900">
+      <section className="py-20 bg-gray-800">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {insuranceTypes.map((insurance, index) => (
@@ -91,7 +91,7 @@ const Insurance = () => {
                   scale: 1.02,
                   transition: { duration: 0.3 }
                 }}
-                className="card p-8 relative overflow-hidden group cursor-pointer"
+                className="card p-8 relative overflow-hidden group cursor-pointer flex flex-col h-full"
               >
                 {/* Efecto de brillo al hover */}
                 <div className="absolute inset-0 bg-gradient-to-br from-gold/0 via-gold/0 to-gold/0 group-hover:from-gold/5 group-hover:via-gold/10 group-hover:to-gold/5 transition-all duration-500"></div>
@@ -112,13 +112,14 @@ const Insurance = () => {
                   {insurance.title}
                 </h2>
 
-                <p className="text-gray-300 mb-6 relative z-10 leading-relaxed">
+                <p className="text-gray-300 mb-6 relative z-10 leading-relaxed flex-grow">
                   {insurance.description}
                 </p>
 
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
+                  className="mt-auto"
                 >
                   <Link
                     to={`/seguros/${insurance.id}`}

@@ -119,7 +119,7 @@ const About = () => {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-gray-900 border border-gray-800 rounded-lg p-8 text-center"
+            className="bg-gray-800 border border-gray-700 rounded-lg p-8 text-center"
           >
             <h2 className="font-serif text-3xl mb-6 text-white">
               Nuestro Equipo

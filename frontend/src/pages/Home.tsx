@@ -100,7 +100,7 @@ const Home = () => {
       </section>
 
       {/* Services Preview */}
-      <section className="py-20 bg-gray-900">
+      <section className="py-20 bg-gray-800">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -222,7 +222,7 @@ const Home = () => {
           >
             Contacta con nosotros y te ayudaremos a encontrar la propiedad perfecta
           </motion.p>
-          <Link to="/contacto" className="btn-secondary bg-black-soft text-gold hover:bg-gray-900 border-black-soft">
+          <Link to="/contacto" className="btn-secondary bg-black-soft text-gold hover:bg-gray-800 border-black-soft">
             Contactar Ahora
           </Link>
         </div>

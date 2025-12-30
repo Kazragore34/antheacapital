@@ -132,7 +132,7 @@ const Valuation = () => {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-gray-900 rounded-lg shadow-lg border border-gray-800 p-8 text-center max-w-md"
+          className="bg-gray-800 rounded-lg shadow-lg border border-gray-700 p-8 text-center max-w-md"
         >
           <div className="text-6xl mb-4">✅</div>
           <h2 className="font-serif text-2xl mb-4 text-white">

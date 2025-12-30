@@ -148,53 +148,61 @@ const PropertyDetail = () => {
               </p>
             </div>
 
-            <div className="mb-8">
-              <h2 className="font-serif text-2xl mb-4 text-white">Características</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-gray-900 border border-gray-800 p-4 rounded-lg text-center">
-                  <div className="text-2xl mb-2">🛏️</div>
-                  <div className="font-semibold text-white">{property.features.bedrooms}</div>
-                  <div className="text-sm text-gray-400">Habitaciones</div>
+            {property.features && (
+              <div className="mb-8">
+                <h2 className="font-serif text-2xl mb-4 text-white">Características</h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {property.features.bedrooms !== undefined && (
+                    <div className="bg-gray-800 border border-gray-700 p-4 rounded-lg text-center">
+                      <div className="text-2xl mb-2">🛏️</div>
+                      <div className="font-semibold text-white">{property.features.bedrooms}</div>
+                      <div className="text-sm text-gray-400">Habitaciones</div>
+                    </div>
+                  )}
+                  {property.features.bathrooms !== undefined && (
+                    <div className="bg-gray-800 border border-gray-700 p-4 rounded-lg text-center">
+                      <div className="text-2xl mb-2">🚿</div>
+                      <div className="font-semibold text-white">{property.features.bathrooms}</div>
+                      <div className="text-sm text-gray-400">Baños</div>
+                    </div>
+                  )}
+                  {property.features.area !== undefined && (
+                    <div className="bg-gray-800 border border-gray-700 p-4 rounded-lg text-center">
+                      <div className="text-2xl mb-2">📐</div>
+                      <div className="font-semibold text-white">{property.features.area}</div>
+                      <div className="text-sm text-gray-400">m²</div>
+                    </div>
+                  )}
+                  {property.features.floor && (
+                    <div className="bg-gray-800 border border-gray-700 p-4 rounded-lg text-center">
+                      <div className="text-2xl mb-2">🏢</div>
+                      <div className="font-semibold text-white">{property.features.floor}º</div>
+                      <div className="text-sm text-gray-400">Planta</div>
+                    </div>
+                  )}
                 </div>
-                <div className="bg-gray-900 border border-gray-800 p-4 rounded-lg text-center">
-                  <div className="text-2xl mb-2">🚿</div>
-                  <div className="font-semibold text-white">{property.features.bathrooms}</div>
-                  <div className="text-sm text-gray-400">Baños</div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {property.features.parking && (
+                    <span className="px-3 py-1 bg-gray-800 border border-gray-700 rounded-full text-sm text-white">Parking</span>
+                  )}
+                  {property.features.elevator && (
+                    <span className="px-3 py-1 bg-gray-800 border border-gray-700 rounded-full text-sm text-white">Ascensor</span>
+                  )}
+                  {property.features.terrace && (
+                    <span className="px-3 py-1 bg-gray-800 border border-gray-700 rounded-full text-sm text-white">Terraza</span>
+                  )}
+                  {property.features.garden && (
+                    <span className="px-3 py-1 bg-gray-800 border border-gray-700 rounded-full text-sm text-white">Jardín</span>
+                  )}
+                  {property.features.pool && (
+                    <span className="px-3 py-1 bg-gray-800 border border-gray-700 rounded-full text-sm text-white">Piscina</span>
+                  )}
+                  {property.features.furnished && (
+                    <span className="px-3 py-1 bg-gray-800 border border-gray-700 rounded-full text-sm text-white">Amueblado</span>
+                  )}
                 </div>
-                <div className="bg-gray-900 border border-gray-800 p-4 rounded-lg text-center">
-                  <div className="text-2xl mb-2">📐</div>
-                  <div className="font-semibold text-white">{property.features.area}</div>
-                  <div className="text-sm text-gray-400">m²</div>
-                </div>
-                {property.features.floor && (
-                  <div className="bg-gray-900 border border-gray-800 p-4 rounded-lg text-center">
-                    <div className="text-2xl mb-2">🏢</div>
-                    <div className="font-semibold text-white">{property.features.floor}º</div>
-                    <div className="text-sm text-gray-400">Planta</div>
-                  </div>
-                )}
               </div>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {property.features.parking && (
-                  <span className="px-3 py-1 bg-gray-900 border border-gray-800 rounded-full text-sm text-white">Parking</span>
-                )}
-                {property.features.elevator && (
-                  <span className="px-3 py-1 bg-gray-900 border border-gray-800 rounded-full text-sm text-white">Ascensor</span>
-                )}
-                {property.features.terrace && (
-                  <span className="px-3 py-1 bg-gray-900 border border-gray-800 rounded-full text-sm text-white">Terraza</span>
-                )}
-                {property.features.garden && (
-                  <span className="px-3 py-1 bg-gray-900 border border-gray-800 rounded-full text-sm text-white">Jardín</span>
-                )}
-                {property.features.pool && (
-                  <span className="px-3 py-1 bg-gray-900 border border-gray-800 rounded-full text-sm text-white">Piscina</span>
-                )}
-                {property.features.furnished && (
-                  <span className="px-3 py-1 bg-gray-900 border border-gray-800 rounded-full text-sm text-white">Amueblado</span>
-                )}
-              </div>
-            </div>
+            )}
           </div>
 
           {/* Sidebar - Contact Form */}

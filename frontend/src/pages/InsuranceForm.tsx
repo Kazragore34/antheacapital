@@ -208,7 +208,7 @@ const InsuranceForm = () => {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-gray-900 rounded-lg shadow-lg border border-gray-800 p-12 text-center max-w-2xl mx-4 w-full"
+          className="bg-gray-800 rounded-lg shadow-lg border border-gray-700 p-12 text-center max-w-2xl mx-4 w-full"
         >
           <div className="mb-6">
             <div className="w-16 h-16 border-4 border-gold border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
@@ -233,7 +233,7 @@ const InsuranceForm = () => {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-gray-900 rounded-lg shadow-lg border border-gray-800 p-12 text-center max-w-2xl mx-4"
+          className="bg-gray-800 rounded-lg shadow-lg border border-gray-700 p-12 text-center max-w-2xl mx-4"
         >
           <motion.div
             initial={{ scale: 0 }}
@@ -581,7 +581,7 @@ const InsuranceForm = () => {
                                 setValue('activity', suggestion)
                                 setActivitySuggestions([])
                               }}
-                              className="w-full text-left p-3 rounded-lg bg-gray-900 hover:bg-gray-700 transition-colors flex items-center justify-between text-gray-300"
+                              className="w-full text-left p-3 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors flex items-center justify-between text-gray-300"
                             >
                               <span>{suggestion}</span>
                               <svg className="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">

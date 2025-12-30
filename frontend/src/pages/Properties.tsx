@@ -213,7 +213,7 @@ const Properties = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12 bg-gray-900 rounded-lg border border-gray-800">
+          <div className="text-center py-12 bg-gray-800 rounded-lg border border-gray-700">
             <p className="text-gray-400 text-lg">
               No se encontraron propiedades con los filtros seleccionados.
             </p>

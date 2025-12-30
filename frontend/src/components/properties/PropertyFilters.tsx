@@ -49,7 +49,7 @@ const PropertyFilters = ({ onFilterChange }: PropertyFiltersProps) => {
   }
 
   return (
-    <div className="bg-gray-900 border border-gray-800 p-6 rounded-lg shadow-lg mb-8">
+    <div className="bg-gray-800 border border-gray-700 p-6 rounded-lg shadow-lg mb-8">
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-300 mb-2">

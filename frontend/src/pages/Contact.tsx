@@ -25,7 +25,7 @@ const Contact = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-gray-900 rounded-lg shadow-lg border border-gray-800 p-8"
+              className="bg-gray-800 rounded-lg shadow-lg border border-gray-700 p-8"
             >
               <h2 className="font-serif text-2xl mb-6 text-white">
                 Envíenos un Mensaje
