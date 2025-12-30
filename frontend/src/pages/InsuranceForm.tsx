@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { validateDocument } from '../utils/nifValidator'
 import AddressAutocomplete from '../components/valuation/AddressAutocomplete'
 import PrivacyInfoDropdown from '../components/ui/PrivacyInfoDropdown'
+import logoIcon from '../assets/logo-icon.svg'
 
 // Componente para mostrar el mapa
 const MapDisplay = ({ coordinates }: { coordinates: [number, number] }) => {
@@ -137,34 +138,331 @@ const InsuranceForm = () => {
     }
   }, [activity])
 
-  const generateActivitySuggestions = (input: string): string[] => {
-    const lowerInput = input.toLowerCase()
-    const allActivities = [
-      'Programador aplicaciones informáticas',
-      'Informático',
-      'Ingeniero informático',
-      'Analista de aplicaciones',
-      'Técnico mantenimiento y reparación informático',
-      'Arquitecto',
-      'Ingeniero de construcción',
-      'Abogado',
-      'Médico',
-      'Enfermero',
-      'Contador',
-      'Asesor fiscal',
-      'Diseñador gráfico',
-      'Marketing digital',
-      'Consultor',
-      'Comercial',
-      'Veterinario',
-      'Farmacéutico',
-      'Fisioterapeuta',
-      'Psicólogo',
-    ]
+  // Base de datos de actividades con keywords y sinónimos
+  const activityDatabase = [
+    {
+      name: 'Administración y gestión',
+      keywords: ['administración', 'administrador', 'administradora', 'secretario', 'secretaria', 'gestión', 'gestionar', 'oficina', 'administrativo', 'administrativa', 'gestor', 'gestora', 'asistente', 'asistencia', 'recepción', 'recepcionista'],
+      category: 'administración'
+    },
+    {
+      name: 'Programador aplicaciones informáticas',
+      keywords: ['programador', 'programadora', 'desarrollador', 'desarrolladora', 'informático', 'informática', 'software', 'aplicaciones', 'apps', 'desarrollo', 'codificar', 'código', 'programación'],
+      category: 'tecnología'
+    },
+    {
+      name: 'Informático',
+      keywords: ['informático', 'informática', 'sistemas', 'tecnología', 'it', 'tic', 'computación'],
+      category: 'tecnología'
+    },
+    {
+      name: 'Ingeniero informático',
+      keywords: ['ingeniero', 'ingeniera', 'informático', 'informática', 'sistemas', 'software', 'computación'],
+      category: 'tecnología'
+    },
+    {
+      name: 'Analista de aplicaciones',
+      keywords: ['analista', 'aplicaciones', 'apps', 'sistemas', 'software', 'análisis', 'analizar'],
+      category: 'tecnología'
+    },
+    {
+      name: 'Técnico mantenimiento y reparación informático',
+      keywords: ['técnico', 'técnica', 'mantenimiento', 'reparación', 'informático', 'informática', 'soporte', 'hardware', 'equipos'],
+      category: 'tecnología'
+    },
+    {
+      name: 'Arquitecto',
+      keywords: ['arquitecto', 'arquitecta', 'arquitectura', 'diseño', 'edificios', 'construcción', 'proyectos'],
+      category: 'construcción'
+    },
+    {
+      name: 'Ingeniero de construcción',
+      keywords: ['ingeniero', 'ingeniera', 'construcción', 'obra', 'edificación', 'civil', 'arquitectura'],
+      category: 'construcción'
+    },
+    {
+      name: 'Abogado',
+      keywords: ['abogado', 'abogada', 'derecho', 'legal', 'jurídico', 'jurídica', 'ley', 'asesoría', 'asesor', 'asesora'],
+      category: 'legal'
+    },
+    {
+      name: 'Médico',
+      keywords: ['médico', 'médica', 'doctor', 'doctora', 'medicina', 'salud', 'clínica', 'hospital'],
+      category: 'salud'
+    },
+    {
+      name: 'Enfermero',
+      keywords: ['enfermero', 'enfermera', 'enfermería', 'cuidados', 'salud', 'hospital', 'clínica'],
+      category: 'salud'
+    },
+    {
+      name: 'Contador',
+      keywords: ['contador', 'contadora', 'contabilidad', 'contable', 'cuentas', 'finanzas', 'fiscal'],
+      category: 'finanzas'
+    },
+    {
+      name: 'Asesor fiscal',
+      keywords: ['asesor', 'asesora', 'fiscal', 'impuestos', 'hacienda', 'tributario', 'tributaria', 'fiscalidad'],
+      category: 'finanzas'
+    },
+    {
+      name: 'Diseñador gráfico',
+      keywords: ['diseñador', 'diseñadora', 'gráfico', 'gráfica', 'diseño', 'creativo', 'creativa', 'visual', 'publicidad'],
+      category: 'diseño'
+    },
+    {
+      name: 'Marketing digital',
+      keywords: ['marketing', 'digital', 'publicidad', 'promoción', 'comunicación', 'redes sociales', 'seo', 'sem'],
+      category: 'marketing'
+    },
+    {
+      name: 'Consultor',
+      keywords: ['consultor', 'consultora', 'consultoría', 'asesor', 'asesora', 'asesoramiento', 'consejo'],
+      category: 'consultoría'
+    },
+    {
+      name: 'Comercial',
+      keywords: ['comercial', 'ventas', 'vendedor', 'vendedora', 'comercio', 'negocios', 'cliente', 'clientes'],
+      category: 'comercial'
+    },
+    {
+      name: 'Veterinario',
+      keywords: ['veterinario', 'veterinaria', 'animales', 'mascotas', 'clínica veterinaria', 'vet'],
+      category: 'salud'
+    },
+    {
+      name: 'Farmacéutico',
+      keywords: ['farmacéutico', 'farmacéutica', 'farmacia', 'medicamentos', 'fármacos'],
+      category: 'salud'
+    },
+    {
+      name: 'Fisioterapeuta',
+      keywords: ['fisioterapeuta', 'fisioterapia', 'rehabilitación', 'terapia física', 'masaje'],
+      category: 'salud'
+    },
+    {
+      name: 'Psicólogo',
+      keywords: ['psicólogo', 'psicóloga', 'psicología', 'terapia', 'mental', 'salud mental'],
+      category: 'salud'
+    },
+    {
+      name: 'Profesor',
+      keywords: ['profesor', 'profesora', 'docente', 'enseñanza', 'educación', 'maestro', 'maestra', 'educador', 'educadora'],
+      category: 'educación'
+    },
+    {
+      name: 'Notario',
+      keywords: ['notario', 'notaria', 'notaría', 'documentos', 'legal', 'jurídico'],
+      category: 'legal'
+    },
+    {
+      name: 'Ingeniero industrial',
+      keywords: ['ingeniero', 'ingeniera', 'industrial', 'producción', 'fabricación', 'procesos'],
+      category: 'ingeniería'
+    },
+    {
+      name: 'Electricista',
+      keywords: ['electricista', 'electricidad', 'instalaciones', 'electricidad', 'iluminación'],
+      category: 'construcción'
+    },
+    {
+      name: 'Fontanero',
+      keywords: ['fontanero', 'fontanería', 'plomería', 'agua', 'instalaciones', 'fontanería'],
+      category: 'construcción'
+    },
+    {
+      name: 'Carpintero',
+      keywords: ['carpintero', 'carpintería', 'madera', 'muebles', 'ebanista'],
+      category: 'construcción'
+    },
+    {
+      name: 'Peluquero',
+      keywords: ['peluquero', 'peluquera', 'peluquería', 'estilista', 'belleza', 'corte', 'cabello'],
+      category: 'belleza'
+    },
+    {
+      name: 'Esteticista',
+      keywords: ['esteticista', 'estética', 'belleza', 'cosmética', 'tratamientos', 'spa'],
+      category: 'belleza'
+    },
+    {
+      name: 'Nutricionista',
+      keywords: ['nutricionista', 'nutrición', 'dietista', 'dieta', 'alimentación', 'salud'],
+      category: 'salud'
+    },
+    {
+      name: 'Fotógrafo',
+      keywords: ['fotógrafo', 'fotógrafa', 'fotografía', 'fotos', 'imágenes', 'cámara'],
+      category: 'arte'
+    },
+    {
+      name: 'Periodista',
+      keywords: ['periodista', 'periodismo', 'comunicación', 'medios', 'prensa', 'noticias'],
+      category: 'comunicación'
+    },
+    {
+      name: 'Traductor',
+      keywords: ['traductor', 'traductora', 'traducción', 'idiomas', 'lenguas', 'interpretación'],
+      category: 'comunicación'
+    },
+    {
+      name: 'Economista',
+      keywords: ['economista', 'economía', 'finanzas', 'análisis económico', 'macroeconomía'],
+      category: 'finanzas'
+    },
+    {
+      name: 'Asesor financiero',
+      keywords: ['asesor', 'asesora', 'financiero', 'financiera', 'inversiones', 'ahorro', 'pensiones'],
+      category: 'finanzas'
+    },
+    {
+      name: 'Ingeniero de telecomunicaciones',
+      keywords: ['ingeniero', 'ingeniera', 'telecomunicaciones', 'telecom', 'redes', 'comunicaciones'],
+      category: 'tecnología'
+    },
+    {
+      name: 'Diseñador web',
+      keywords: ['diseñador', 'diseñadora', 'web', 'páginas web', 'sitios web', 'frontend', 'ui', 'ux'],
+      category: 'tecnología'
+    },
+    {
+      name: 'Community Manager',
+      keywords: ['community manager', 'redes sociales', 'social media', 'comunidad', 'marketing digital'],
+      category: 'marketing'
+    },
+    {
+      name: 'Chef',
+      keywords: ['chef', 'cocinero', 'cocinera', 'cocina', 'restaurante', 'gastronomía'],
+      category: 'hostelería'
+    },
+    {
+      name: 'Camarero',
+      keywords: ['camarero', 'camarera', 'servicio', 'restaurante', 'bar', 'hostelería'],
+      category: 'hostelería'
+    },
+    {
+      name: 'Taxista',
+      keywords: ['taxista', 'taxi', 'conductor', 'conductora', 'transporte', 'vehículo'],
+      category: 'transporte'
+    },
+    {
+      name: 'Mecánico',
+      keywords: ['mecánico', 'mecánica', 'taller', 'reparación', 'automóviles', 'coches'],
+      category: 'automoción'
+    },
+  ]
 
-    return allActivities
-      .filter(act => act.toLowerCase().includes(lowerInput))
+  // Función para calcular similitud entre dos strings (Levenshtein simplificado)
+  const calculateSimilarity = (str1: string, str2: string): number => {
+    const longer = str1.length > str2.length ? str1 : str2
+    const shorter = str1.length > str2.length ? str2 : str1
+    if (longer.length === 0) return 1.0
+    
+    const distance = levenshteinDistance(longer, shorter)
+    return (longer.length - distance) / longer.length
+  }
+
+  // Algoritmo de distancia de Levenshtein
+  const levenshteinDistance = (str1: string, str2: string): number => {
+    const matrix: number[][] = []
+    
+    for (let i = 0; i <= str2.length; i++) {
+      matrix[i] = [i]
+    }
+    
+    for (let j = 0; j <= str1.length; j++) {
+      matrix[0][j] = j
+    }
+    
+    for (let i = 1; i <= str2.length; i++) {
+      for (let j = 1; j <= str1.length; j++) {
+        if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
+          matrix[i][j] = matrix[i - 1][j - 1]
+        } else {
+          matrix[i][j] = Math.min(
+            matrix[i - 1][j - 1] + 1,
+            matrix[i][j - 1] + 1,
+            matrix[i - 1][j] + 1
+          )
+        }
+      }
+    }
+    
+    return matrix[str2.length][str1.length]
+  }
+
+  const generateActivitySuggestions = (input: string): string[] => {
+    const lowerInput = input.toLowerCase().trim()
+    if (lowerInput.length < 2) return []
+
+    const results: Array<{ name: string; score: number }> = []
+
+    activityDatabase.forEach((activity) => {
+      let score = 0
+      const lowerName = activity.name.toLowerCase()
+
+      // 1. Coincidencia exacta en el nombre (máxima prioridad)
+      if (lowerName.includes(lowerInput)) {
+        score += 100
+        // Si empieza con el input, más puntos
+        if (lowerName.startsWith(lowerInput)) {
+          score += 50
+        }
+      }
+
+      // 2. Búsqueda en keywords/sinónimos
+      activity.keywords.forEach(keyword => {
+        const lowerKeyword = keyword.toLowerCase()
+        if (lowerKeyword.includes(lowerInput)) {
+          score += 80
+          if (lowerKeyword.startsWith(lowerInput)) {
+            score += 30
+          }
+        }
+      })
+
+      // 3. Similitud por palabras individuales
+      const inputWords = lowerInput.split(/\s+/)
+      const nameWords = lowerName.split(/\s+/)
+      
+      inputWords.forEach(inputWord => {
+        nameWords.forEach(nameWord => {
+          if (nameWord.includes(inputWord) || inputWord.includes(nameWord)) {
+            score += 20
+          }
+        })
+        
+        activity.keywords.forEach(keyword => {
+          const lowerKeyword = keyword.toLowerCase()
+          if (lowerKeyword.includes(inputWord) || inputWord.includes(lowerKeyword)) {
+            score += 15
+          }
+        })
+      })
+
+      // 4. Similitud por distancia (solo si no hay coincidencias fuertes)
+      if (score < 50) {
+        const nameSimilarity = calculateSimilarity(lowerInput, lowerName)
+        const maxKeywordSimilarity = Math.max(
+          ...activity.keywords.map(k => calculateSimilarity(lowerInput, k.toLowerCase()))
+        )
+        const similarity = Math.max(nameSimilarity, maxKeywordSimilarity)
+        
+        if (similarity > 0.5) {
+          score += similarity * 30
+        }
+      }
+
+      if (score > 0) {
+        results.push({ name: activity.name, score })
+      }
+    })
+
+    // Ordenar por score descendente y retornar top 6
+    return results
+      .sort((a, b) => b.score - a.score)
       .slice(0, 6)
+      .map(r => r.name)
   }
 
   const handlePlaceSelect = (place: google.maps.places.PlaceResult) => {
@@ -236,12 +534,17 @@ const InsuranceForm = () => {
           className="bg-gray-800 rounded-lg shadow-lg border border-gray-700 p-12 text-center max-w-2xl mx-4"
         >
           <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: "spring" }}
-            className="text-8xl mb-6"
+            initial={{ scale: 0, rotate: -180 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+            className="mb-6"
           >
-            ✅
+            <img 
+              src={logoIcon} 
+              alt="Anthea Capital" 
+              className="w-24 h-24 mx-auto"
+              style={{ filter: 'brightness(0) invert(1)' }}
+            />
           </motion.div>
           <h2 className="font-serif text-3xl md:text-4xl mb-4 text-white">
             ¡Gracias por confiar en nosotros!
