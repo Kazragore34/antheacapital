@@ -6,11 +6,8 @@ import { Property } from '../types'
 import PropertyCard from '../components/properties/PropertyCard'
 import inicioImage from '../assets/inicio.jpg'
 
-const Home = () => {
-  const [featuredProperties, setFeaturedProperties] = useState<Property[]>([])
-
-  // Propiedades de ejemplo para mostrar cuando no hay datos
-  const exampleProperties: Property[] = [
+// Propiedades de ejemplo para mostrar cuando no hay datos
+const exampleProperties: Property[] = [
     {
       _id: 'example-1',
       title: 'Piso en el Centro de Aranjuez',
@@ -154,7 +151,11 @@ const Home = () => {
       createdAt: new Date() as any,
       updatedAt: new Date() as any,
     },
-  ]
+]
+
+const Home = () => {
+  // Inicializar con propiedades de ejemplo para que siempre se muestren
+  const [featuredProperties, setFeaturedProperties] = useState<Property[]>(exampleProperties)
 
   useEffect(() => {
     const loadProperties = async () => {
@@ -164,12 +165,12 @@ const Home = () => {
         if (Array.isArray(properties) && properties.length > 0) {
           setFeaturedProperties(properties.slice(0, 6))
         } else {
-          // Si no hay propiedades, mostrar las de ejemplo
+          // Si no hay propiedades, mantener las de ejemplo
           setFeaturedProperties(exampleProperties)
         }
       } catch (error) {
         console.error('Error loading properties:', error)
-        // En caso de error, mostrar propiedades de ejemplo
+        // En caso de error, mantener propiedades de ejemplo
         setFeaturedProperties(exampleProperties)
       }
     }

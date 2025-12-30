@@ -33,11 +33,12 @@ const LanguageSelector = () => {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-white hover:bg-gray-800 transition-colors border border-gray-700 h-10"
         aria-label="Seleccionar idioma"
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       >
-        <span className="text-xl flex items-center">{currentLang.flag}</span>
-        <span className="hidden md:inline text-sm font-medium flex items-center">{currentLang.code.toUpperCase()}</span>
+        <span className="text-xl leading-none inline-flex items-center justify-center">{currentLang.flag}</span>
+        <span className="hidden md:inline-block text-sm font-medium leading-none">{currentLang.code.toUpperCase()}</span>
         <svg
-          className={`w-4 h-4 transition-transform flex items-center ${isOpen ? 'rotate-180' : ''}`}
+          className={`w-4 h-4 transition-transform leading-none inline-flex items-center justify-center ${isOpen ? 'rotate-180' : ''}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
