@@ -40,8 +40,8 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
           <div className="absolute top-4 left-4">
             <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
               property.type === 'venta' 
-                ? 'bg-gold text-white' 
-                : 'bg-blue-600 text-white'
+                ? 'bg-gold text-black-soft' 
+                : 'bg-gray-700 text-white'
             }`}>
               {property.type === 'venta' ? 'Venta' : 'Alquiler'}
             </span>

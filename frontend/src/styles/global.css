@@ -13,11 +13,11 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-gradient-to-r from-gold via-gold-light to-gold-bright text-black-soft px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:from-gold-dark hover:via-gold hover:to-gold-light hover:shadow-lg transform hover:-translate-y-0.5 shadow-md;
+    @apply bg-gradient-to-r from-gold-dark via-gold to-gold-light text-black-soft px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:from-gold hover:via-gold-light hover:to-gold-bright hover:shadow-lg transform hover:-translate-y-0.5 shadow-md;
   }
   
   .btn-secondary {
-    @apply bg-transparent border-2 border-gold text-gold px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:bg-gradient-to-r hover:from-gold hover:via-gold-light hover:to-gold-bright hover:text-black-soft hover:border-gold-dark;
+    @apply bg-transparent border-2 border-gold text-gold px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:bg-gradient-to-r hover:from-gold-dark hover:via-gold hover:to-gold-light hover:text-black-soft hover:border-gold-light;
   }
   
   .card {

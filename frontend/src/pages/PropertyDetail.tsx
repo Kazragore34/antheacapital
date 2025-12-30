@@ -124,8 +124,8 @@ const PropertyDetail = () => {
               <div className="flex items-center gap-4 mb-4">
                 <span className={`px-4 py-2 rounded-full text-sm font-semibold ${
                   property.type === 'venta' 
-                    ? 'bg-gold text-white' 
-                    : 'bg-blue-600 text-white'
+                    ? 'bg-gold text-black-soft' 
+                    : 'bg-gray-700 text-white'
                 }`}>
                   {property.type === 'venta' ? 'Venta' : 'Alquiler'}
                 </span>

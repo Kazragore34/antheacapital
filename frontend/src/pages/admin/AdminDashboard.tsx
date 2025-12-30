@@ -97,7 +97,7 @@ const AdminDashboard = () => {
               <div className="text-gray-600">Publicadas</div>
             </div>
             <div className="bg-white rounded-lg shadow-md p-6">
-              <div className="text-2xl font-bold text-blue-600">{stats.venta}</div>
+              <div className="text-2xl font-bold text-gold">{stats.venta}</div>
               <div className="text-gray-600">En Venta</div>
             </div>
             <div className="bg-white rounded-lg shadow-md p-6">
@@ -129,7 +129,7 @@ const AdminDashboard = () => {
                     <td className="px-6 py-4 whitespace-nowrap">{property.title}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-2 py-1 rounded text-xs ${
-                        property.type === 'venta' ? 'bg-gold text-white' : 'bg-blue-600 text-white'
+                        property.type === 'venta' ? 'bg-gold text-black-soft' : 'bg-gray-700 text-white'
                       }`}>
                         {property.type}
                       </span>

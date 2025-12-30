@@ -9,10 +9,10 @@ export default {
     extend: {
       colors: {
         gold: {
-          DEFAULT: '#D4AF37', // Dorado brillante claro (no marrón)
-          light: '#F4D03F',   // Dorado muy claro para degradados
-          dark: '#B8860B',   // Dorado oscuro para modo oscuro
-          bright: '#FFD700', // Dorado brillante para acentos
+          DEFAULT: '#C9A961', // Dorado medio premium
+          light: '#E5C17C',   // Dorado claro con brillo
+          dark: '#8B6914',    // Dorado oscuro profundo
+          bright: '#D4AF37',  // Dorado brillante para acentos
         },
         black: {
           DEFAULT: '#000000',

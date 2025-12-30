@@ -31,7 +31,7 @@ const Home = () => {
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative h-[90vh] flex items-center justify-center bg-black-soft text-white">
-        <div className="absolute inset-0 bg-black/50"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/30"></div>
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
