@@ -31,32 +31,49 @@ const Home = () => {
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative h-[90vh] flex items-center justify-center bg-black-soft text-white">
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/30"></div>
+        {/* Overlay más oscuro y uniforme */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/80 to-black/70"></div>
+        
+        {/* Imagen de fondo con opacidad reducida */}
         <div
-          className="absolute inset-0 bg-cover bg-center"
+          className="absolute inset-0 bg-cover bg-center opacity-90"
           style={{
             backgroundImage: `url(${inicioImage})`,
           }}
         ></div>
+        
+        {/* Contenedor de texto con fondo semi-transparente */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="relative z-10 text-center px-4 max-w-4xl mx-auto"
         >
-          <h1 className="font-serif text-5xl md:text-7xl mb-6">
-            Encuentra tu hogar perfecto
-          </h1>
-          <p className="text-xl md:text-2xl mb-8 text-gray-200">
-            Propiedades premium en Aranjuez y Madrid
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/propiedades" className="btn-primary text-lg px-8 py-4">
-              Ver Propiedades
-            </Link>
-            <Link to="/valoracion" className="btn-secondary text-lg px-8 py-4">
-              Valorar Propiedad
-            </Link>
+          <div className="bg-black/60 backdrop-blur-sm rounded-lg p-8 md:p-12 border border-gold/20">
+            <h1 
+              className="font-serif text-5xl md:text-7xl mb-6"
+              style={{ 
+                textShadow: '0 4px 12px rgba(0, 0, 0, 0.8), 0 2px 4px rgba(0, 0, 0, 0.6)' 
+              }}
+            >
+              Encuentra tu hogar perfecto
+            </h1>
+            <p 
+              className="text-xl md:text-2xl mb-8 text-gray-200"
+              style={{ 
+                textShadow: '0 2px 8px rgba(0, 0, 0, 0.8)' 
+              }}
+            >
+              Propiedades premium en Aranjuez y Madrid
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link to="/propiedades" className="btn-primary text-lg px-8 py-4">
+                Ver Propiedades
+              </Link>
+              <Link to="/valoracion" className="btn-secondary text-lg px-8 py-4">
+                Valorar Propiedad
+              </Link>
+            </div>
           </div>
         </motion.div>
       </section>
