@@ -31,14 +31,13 @@ const LanguageSelector = () => {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-white hover:bg-gray-800 transition-colors border border-gray-700 h-10"
+        className="flex items-center justify-center gap-1.5 md:gap-2 px-2.5 md:px-3 py-2 rounded-lg text-white hover:bg-gray-800 transition-colors border border-gray-700 h-10"
         aria-label="Seleccionar idioma"
-        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       >
-        <span className="text-xl leading-none inline-flex items-center justify-center">{currentLang.flag}</span>
-        <span className="hidden md:inline-block text-sm font-medium leading-none">{currentLang.code.toUpperCase()}</span>
+        <span className="text-xl leading-none flex items-center justify-center w-5">{currentLang.flag}</span>
+        <span className="hidden md:inline-block text-sm font-medium leading-none text-center w-8">{currentLang.code.toUpperCase()}</span>
         <svg
-          className={`w-4 h-4 transition-transform leading-none inline-flex items-center justify-center ${isOpen ? 'rotate-180' : ''}`}
+          className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
