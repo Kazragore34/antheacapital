@@ -4,36 +4,39 @@ import { motion } from 'framer-motion'
 const Services = () => {
   const services = [
     {
-      title: 'Gestoría y Financiación',
-      description: 'Gestionamos todos los trámites necesarios para la compra, venta o alquiler de su propiedad. Asesoramiento en financiación hipotecaria y gestión de documentación.',
-      icon: '📋',
-      features: [
-        'Gestión de documentación',
-        'Asesoramiento hipotecario',
-        'Tramitación de escrituras',
-        'Gestión de impuestos',
-      ],
-    },
-    {
       title: 'Asesoramiento Integral',
-      description: 'Ofrecemos un servicio completo de asesoramiento inmobiliario adaptado a sus necesidades específicas.',
+      description: 'Servicio completo de gestión integral y asesoramiento personalizado adaptado a sus necesidades específicas.',
       icon: '💼',
       features: [
+        'Gestión integral de su propiedad',
+        'Asesoramiento personalizado',
         'Análisis de mercado',
-        'Estrategia personalizada',
-        'Asesoramiento legal',
+        'Estrategia adaptada a sus necesidades',
         'Seguimiento continuo',
       ],
     },
     {
-      title: 'Financiamiento y Seguros',
-      description: 'Le ayudamos a encontrar la mejor opción de financiación y seguros para proteger su inversión.',
+      title: 'Financiación',
+      description: 'Le ayudamos a encontrar la mejor opción de financiación hipotecaria para su inversión inmobiliaria.',
       icon: '🏦',
       features: [
         'Comparativa de hipotecas',
+        'Asesoramiento hipotecario',
+        'Gestión de documentación',
+        'Tramitación de escrituras',
+        'Asesoramiento financiero',
+      ],
+    },
+    {
+      title: 'Seguros',
+      description: 'Protección completa para su inversión con los mejores seguros del mercado.',
+      icon: '🛡️',
+      features: [
         'Seguros de hogar',
         'Seguros de vida',
-        'Asesoramiento financiero',
+        'Seguros de impago',
+        'Asesoramiento personalizado',
+        'Comparativa de ofertas',
       ],
     },
     {
@@ -45,6 +48,7 @@ const Services = () => {
         'Gestión de inquilinos',
         'Mantenimiento incluido',
         'Seguro de impago',
+        'Tranquilidad total',
       ],
     },
   ]

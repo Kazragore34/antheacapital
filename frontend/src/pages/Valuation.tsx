@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { motion } from 'framer-motion'
 import { contactService } from '../services/contact.service'
 import { ValuationForm } from '../types'
+import PrivacyInfoDropdown from '../components/ui/PrivacyInfoDropdown'
 
 const Valuation = () => {
   const [submitted, setSubmitted] = useState(false)
@@ -64,41 +66,27 @@ const Valuation = () => {
                 </div>
               )}
 
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm mb-6">
-                <p className="font-semibold mb-2">Información Protección de Datos:</p>
-                <p className="text-gray-700 mb-2">
-                  <strong>Responsable:</strong> Anthea Capital Consulting
-                </p>
-                <p className="text-gray-700 mb-2">
-                  <strong>Finalidad:</strong> La finalidad de la recogida de sus datos es para poder atender sus solicitudes de información y prestarle nuestros servicios, así como enviarle comunicaciones comerciales sobre nuestros productos y/o servicios.
-                </p>
-                <p className="text-gray-700 mb-2">
-                  <strong>Legitimación:</strong> Su consentimiento previo facilitado mediante la casilla correspondiente establecida a tal efecto más abajo o en su caso la ejecución de un contrato del que usted sea parte.
-                </p>
-                <p className="text-gray-700 mb-2">
-                  <strong>Destinatarios:</strong> Con carácter general los datos no se cederán a terceros salvo en los casos en que exista una obligación legal.
-                </p>
-                <p className="text-gray-700 mb-2">
-                  <strong>Derechos:</strong> Podrá ejercer los derechos de acceso, rectificación, limitación de tratamiento, supresión, portabilidad y oposición al tratamiento de sus datos de carácter personal, así como a la retirada del consentimiento prestado para el tratamiento de los mismos.
-                </p>
-                <p className="text-gray-700">
-                  <strong>Información adicional:</strong> Puede consultar la información detallada sobre Protección de Datos en{' '}
-                  <a href="/politica-privacidad" className="text-gold hover:underline">
-                    Política de Privacidad
-                  </a>
-                  .
-                </p>
-              </div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+              >
+                <h2 className="font-serif text-2xl mb-6 text-black-soft dark:text-white">Datos de la Propiedad</h2>
+              </motion.div>
 
-              <h2 className="font-serif text-2xl mb-4">Datos de la Propiedad</h2>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="grid grid-cols-1 md:grid-cols-2 gap-4"
+              >
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Dirección *
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Dirección completa *
                   </label>
                   <input
                     type="text"
+                    placeholder="Ej: Calle Mayor 15, Aranjuez"
                     {...register('address', { required: 'La dirección es obligatoria' })}
                     className="input-field"
                   />
@@ -108,7 +96,7 @@ const Valuation = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Tipo de Propiedad *
                   </label>
                   <select
@@ -131,7 +119,7 @@ const Valuation = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Superficie (m²) *
                   </label>
                   <input
@@ -145,7 +133,7 @@ const Valuation = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Habitaciones *
                   </label>
                   <select
@@ -165,7 +153,7 @@ const Valuation = () => {
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Estado *
                   </label>
                   <select
@@ -183,13 +171,25 @@ const Valuation = () => {
                     <p className="text-red-500 text-xs mt-1">{errors.state.message}</p>
                   )}
                 </div>
-              </div>
+              </motion.div>
 
-              <h2 className="font-serif text-2xl mb-4 mt-8">Datos de Contacto</h2>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="mt-8"
+              >
+                <h2 className="font-serif text-2xl mb-6 text-black-soft dark:text-white">Datos de Contacto</h2>
+              </motion.div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="grid grid-cols-1 md:grid-cols-2 gap-4"
+              >
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Nombre *
                   </label>
                   <input
@@ -203,7 +203,7 @@ const Valuation = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Email *
                   </label>
                   <input
@@ -223,7 +223,7 @@ const Valuation = () => {
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Teléfono *
                   </label>
                   <input
@@ -235,48 +235,69 @@ const Valuation = () => {
                     <p className="text-red-500 text-xs mt-1">{errors.phone.message}</p>
                   )}
                 </div>
-              </div>
+              </motion.div>
 
-              <div className="space-y-2 mt-6">
-                <label className="flex items-start space-x-2 cursor-pointer">
+              {/* Información de Protección de Datos - Desplegable al final */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="mt-8"
+              >
+                <PrivacyInfoDropdown />
+              </motion.div>
+
+              {/* Checkboxes de consentimiento */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+                className="space-y-3 mt-6"
+              >
+                <label className="flex items-start space-x-3 cursor-pointer p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                   <input
                     type="checkbox"
                     {...register('consent', {
                       required: 'Debe aceptar el consentimiento para continuar',
                     })}
-                    className="mt-1"
+                    className="mt-1 w-4 h-4 text-gold border-gray-300 rounded focus:ring-gold"
                   />
-                  <span className="text-sm text-gray-700">
+                  <span className="text-sm text-gray-700 dark:text-gray-300">
                     Consiento que se lleve a cabo el tratamiento de mis datos tal y como se detalla en la{' '}
-                    <a href="/politica-privacidad" className="text-gold hover:underline">
+                    <a href="/politica-privacidad" className="text-gold hover:underline font-medium">
                       Política de privacidad
                     </a>{' '}
                     y el{' '}
-                    <a href="/aviso-legal" className="text-gold hover:underline">
+                    <a href="/aviso-legal" className="text-gold hover:underline font-medium">
                       Aviso legal
                     </a>
                     . *
                   </span>
                 </label>
                 {errors.consent && (
-                  <p className="text-red-500 text-xs">{errors.consent.message}</p>
+                  <p className="text-red-500 text-xs ml-7">{errors.consent.message}</p>
                 )}
 
-                <label className="flex items-start space-x-2 cursor-pointer">
+                <label className="flex items-start space-x-3 cursor-pointer p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                   <input
                     type="checkbox"
                     {...register('marketing')}
-                    className="mt-1"
+                    className="mt-1 w-4 h-4 text-gold border-gray-300 rounded focus:ring-gold"
                   />
-                  <span className="text-sm text-gray-700">
+                  <span className="text-sm text-gray-700 dark:text-gray-300">
                     Consiento que se lleve a cabo el tratamiento de mis datos personales para recibir publicidad de su Organización.
                   </span>
                 </label>
-              </div>
+              </motion.div>
 
-              <button type="submit" className="btn-primary w-full mt-6">
+              <motion.button
+                type="submit"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="btn-primary w-full mt-6 text-lg py-4"
+              >
                 Solicitar Valoración Gratuita
-              </button>
+              </motion.button>
             </form>
           </div>
         )}
