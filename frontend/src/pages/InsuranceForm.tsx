@@ -746,17 +746,7 @@ const InsuranceForm = () => {
                   </div>
 
                   {address && watch('coordinates') && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="h-64 rounded-lg overflow-hidden border border-gray-700"
-                    >
-                      <div
-                        id="map"
-                        className="w-full h-full"
-                        style={{ minHeight: '256px' }}
-                      />
-                    </motion.div>
+                    <MapDisplay coordinates={watch('coordinates')!} />
                   )}
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
