@@ -56,7 +56,7 @@ const Services = () => {
   return (
     <div className="min-h-screen bg-black-soft">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-black-soft to-gray-900 text-white py-20">
+      <section className="bg-black-soft text-white py-20">
         <div className="container mx-auto px-4 text-center">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
