@@ -37,8 +37,9 @@ export interface User {
 
 export interface ContactForm {
   name: string
+  surname: string
   email: string
-  phone?: string
+  phone: string
   message: string
   propertyId?: string
   consent: boolean

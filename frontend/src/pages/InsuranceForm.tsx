@@ -62,8 +62,10 @@ interface InsuranceFormData {
   consent: boolean
   marketing?: boolean
   
-  // Paso 2: CIF/NIF y fecha
+  // Paso 2: Tipo de cliente, CIF/NIF y fecha
+  clientType: 'empresa' | 'persona'
   cifNif: string
+  cif?: string
   birthDate: string
   
   // Paso 3: Actividad
@@ -97,6 +99,7 @@ const InsuranceForm = () => {
   const [cifValidating, setCifValidating] = useState(false)
   const [cifValid, setCifValid] = useState<boolean | null>(null)
   const [activitySuggestions, setActivitySuggestions] = useState<string[]>([])
+  const [clientType, setClientType] = useState<'empresa' | 'persona'>('persona')
 
   const {
     register,
@@ -105,7 +108,11 @@ const InsuranceForm = () => {
     watch,
     setValue,
     trigger,
-  } = useForm<InsuranceFormData>()
+  } = useForm<InsuranceFormData>({
+    defaultValues: {
+      clientType: 'persona',
+    },
+  })
 
   const cifNif = watch('cifNif')
   const activity = watch('activity')
@@ -725,7 +732,7 @@ const InsuranceForm = () => {
                 </motion.div>
               )}
 
-              {/* Paso 2: CIF/NIF y Fecha de Nacimiento */}
+              {/* Paso 2: Tipo de Cliente, CIF/NIF y Fecha */}
               {currentStep === 2 && (
                 <motion.div
                   key="step2"
@@ -748,35 +755,126 @@ const InsuranceForm = () => {
                       2
                     </div>
                     <h2 className="font-serif text-2xl text-white">
-                      ¡Hola {watch('name')}! Cuéntanos sobre tu negocio
+                      ¡Hola {watch('name')}! Cuéntanos sobre {watch('clientType') === 'empresa' ? 'tu empresa' : 'ti'}
                     </h2>
                   </div>
 
                   <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-3">
+                      ¿Eres una empresa o una persona? *
+                    </label>
+                    <div className="grid grid-cols-2 gap-4">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setClientType('persona')
+                          setValue('clientType', 'persona')
+                        }}
+                        className={`p-4 rounded-lg border-2 transition-all ${
+                          clientType === 'persona'
+                            ? 'border-gold bg-gold/10 text-gold'
+                            : 'border-gray-700 bg-gray-800 text-gray-300 hover:border-gray-600'
+                        }`}
+                      >
+                        <div className="text-2xl mb-2">👤</div>
+                        <div className="font-semibold">Persona</div>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setClientType('empresa')
+                          setValue('clientType', 'empresa')
+                        }}
+                        className={`p-4 rounded-lg border-2 transition-all ${
+                          clientType === 'empresa'
+                            ? 'border-gold bg-gold/10 text-gold'
+                            : 'border-gray-700 bg-gray-800 text-gray-300 hover:border-gray-600'
+                        }`}
+                      >
+                        <div className="text-2xl mb-2">🏢</div>
+                        <div className="font-semibold">Empresa</div>
+                      </button>
+                    </div>
+                    <input type="hidden" {...register('clientType', { required: true })} />
+                    {errors.clientType && (
+                      <p className="text-red-500 text-xs mt-1">Debe seleccionar un tipo</p>
+                    )}
+                  </div>
+
+                  {clientType === 'empresa' && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        CIF (Código de Identificación Fiscal) *
+                      </label>
+                      <p className="text-sm text-gray-400 mb-2">
+                        Gracias a la información que nos da tu CIF, nos ahorramos pedirte varios datos adicionales.
+                      </p>
+                      <div className="relative mt-2">
+                        <input
+                          type="text"
+                          {...register('cif', {
+                            required: clientType === 'empresa' ? 'El CIF es obligatorio para empresas' : false,
+                            validate: (value) => {
+                              if (clientType === 'empresa' && value && value.length >= 9) {
+                                const validation = validateDocument(value)
+                                return validation.isValid || 'CIF inválido'
+                              }
+                              return true
+                            },
+                          })}
+                          className="input-field pr-10"
+                          placeholder="Ej: B12345678"
+                        />
+                        {cifValidating && (
+                          <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                            <div className="w-5 h-5 border-2 border-gold border-t-transparent rounded-full animate-spin"></div>
+                          </div>
+                        )}
+                        {cifValid === true && !cifValidating && (
+                          <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                            <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                          </div>
+                        )}
+                        {cifValid === false && !cifValidating && (
+                          <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                            <svg className="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+                      {errors.cif && (
+                        <p className="text-red-500 text-xs mt-1">{errors.cif.message}</p>
+                      )}
+                    </div>
+                  )}
+
+                  <div>
                     <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Indica el CIF o NIF *
+                      {clientType === 'empresa' ? 'DNI/NIE/NIF del representante legal *' : 'DNI, NIE o NIF *'}
                     </label>
                     <p className="text-sm text-gray-400 mb-2">
-                      Gracias a la información que nos da tu CIF, nos ahorramos pedirte varios datos adicionales.
+                      {clientType === 'empresa' 
+                        ? 'Documento de identidad de la persona que representa a la empresa.'
+                        : 'Tu documento de identidad (DNI, NIE o NIF).'}
                     </p>
-                    <a href="#" className="text-gold hover:underline text-sm">
-                      ¡Si no lo sabes, clica aquí!
-                    </a>
                     <div className="relative mt-2">
                       <input
                         type="text"
                         {...register('cifNif', {
-                          required: 'El CIF o NIF es obligatorio',
+                          required: 'El DNI/NIE/NIF es obligatorio',
                           validate: (value) => {
                             if (value && value.length >= 9) {
                               const validation = validateDocument(value)
-                              return validation.isValid || 'CIF/NIF inválido'
+                              return validation.isValid || 'DNI/NIE/NIF inválido'
                             }
                             return true
                           },
                         })}
                         className="input-field pr-10"
-                        placeholder="Ej: Z0939017R"
+                        placeholder={clientType === 'empresa' ? 'Ej: 12345678A' : 'Ej: 12345678A o X1234567L'}
                       />
                       {cifValidating && (
                         <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -798,12 +896,6 @@ const InsuranceForm = () => {
                         </div>
                       )}
                     </div>
-                    {cifValidating && (
-                      <div className="mt-2 flex items-center gap-2 text-sm text-gray-400">
-                        <div className="w-4 h-4 border-2 border-gold border-t-transparent rounded-full animate-spin"></div>
-                        Cargando tus datos...
-                      </div>
-                    )}
                     {errors.cifNif && (
                       <p className="text-red-500 text-xs mt-1">{errors.cifNif.message}</p>
                     )}
@@ -818,6 +910,12 @@ const InsuranceForm = () => {
                       {...register('birthDate', { required: 'La fecha de nacimiento es obligatoria' })}
                       className="input-field"
                       max={new Date().toISOString().split('T')[0]}
+                      style={{
+                        colorScheme: 'dark',
+                        backgroundColor: '#1f2937',
+                        color: '#ffffff',
+                        borderColor: '#374151'
+                      }}
                     />
                     {errors.birthDate && (
                       <p className="text-red-500 text-xs mt-1">{errors.birthDate.message}</p>
@@ -1000,6 +1098,12 @@ const InsuranceForm = () => {
                       {...register('effectiveDate', { required: 'La fecha de efecto es obligatoria' })}
                       className="input-field"
                       min={new Date().toISOString().split('T')[0]}
+                      style={{
+                        colorScheme: 'dark',
+                        backgroundColor: '#1f2937',
+                        color: '#ffffff',
+                        borderColor: '#374151'
+                      }}
                     />
                     {errors.effectiveDate && (
                       <p className="text-red-500 text-xs mt-1">{errors.effectiveDate.message}</p>

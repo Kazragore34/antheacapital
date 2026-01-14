@@ -61,8 +61,12 @@ const PropertyFilters = ({ onFilterChange }: PropertyFiltersProps) => {
             className="input-field"
           >
             <option value="">Todos</option>
+            <option value="propiedades">Propiedades</option>
+            <option value="habitaciones">Habitaciones</option>
+            <option value="traspasos">Traspasos</option>
             <option value="venta">Venta</option>
             <option value="alquiler">Alquiler</option>
+            <option value="alquiler-opcion-compra">Alquiler con opción a compra</option>
           </select>
         </div>
 

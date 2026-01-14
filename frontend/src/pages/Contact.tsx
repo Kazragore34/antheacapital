@@ -83,12 +83,6 @@ const Contact = () => {
                     </h3>
                     <div className="space-y-2 text-gray-300">
                       <p>
-                        <strong>Administración:</strong>{' '}
-                        <a href="mailto:admin@antheacapital.es" className="hover:text-gold transition-colors">
-                          admin@antheacapital.es
-                        </a>
-                      </p>
-                      <p>
                         <strong>Información:</strong>{' '}
                         <a href="mailto:info@antheacapital.es" className="hover:text-gold transition-colors">
                           info@antheacapital.es

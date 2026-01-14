@@ -9,6 +9,11 @@
   h1, h2, h3, h4, h5, h6 {
     @apply font-serif text-white;
   }
+  
+  /* Reemplazar color #1F2937 (gray-800) con color más armonioso */
+  .bg-gray-800 {
+    background-color: #0f1419 !important;
+  }
 }
 
 @layer components {
@@ -21,11 +26,13 @@
   }
   
   .card {
-    @apply bg-gray-800 border border-gray-700 rounded-lg shadow-lg transition-all duration-300 hover:shadow-gold/20;
+    @apply border border-gray-700 rounded-lg shadow-lg transition-all duration-300 hover:shadow-gold/20;
+    background-color: #0f1419; /* Color más armonioso que #1F2937 */
   }
   
   .input-field {
-    @apply w-full px-4 py-3 border border-gray-700 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent transition-all placeholder-gray-500;
+    @apply w-full px-4 py-3 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent transition-all placeholder-gray-500;
+    background-color: #0f1419; /* Color más armonioso que #1F2937 */
   }
 }
 

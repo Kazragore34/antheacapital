@@ -50,18 +50,34 @@ const ContactForm = ({ propertyId }: ContactFormProps) => {
         </div>
       )}
 
-      <div>
-        <label className="block text-sm font-medium text-gray-300 mb-1">
-          Nombre *
-        </label>
-        <input
-          type="text"
-          {...register('name', { required: 'El nombre es obligatorio' })}
-          className="input-field"
-        />
-        {errors.name && (
-          <p className="text-red-400 text-xs mt-1">{errors.name.message}</p>
-        )}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-1">
+            Nombre *
+          </label>
+          <input
+            type="text"
+            {...register('name', { required: 'El nombre es obligatorio' })}
+            className="input-field"
+          />
+          {errors.name && (
+            <p className="text-red-400 text-xs mt-1">{errors.name.message}</p>
+          )}
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-1">
+            Apellidos *
+          </label>
+          <input
+            type="text"
+            {...register('surname', { required: 'Los apellidos son obligatorios' })}
+            className="input-field"
+          />
+          {errors.surname && (
+            <p className="text-red-400 text-xs mt-1">{errors.surname.message}</p>
+          )}
+        </div>
       </div>
 
       <div>
@@ -86,13 +102,16 @@ const ContactForm = ({ propertyId }: ContactFormProps) => {
 
       <div>
         <label className="block text-sm font-medium text-gray-300 mb-1">
-          Teléfono
+          Teléfono *
         </label>
         <input
           type="tel"
-          {...register('phone')}
+          {...register('phone', { required: 'El teléfono es obligatorio' })}
           className="input-field"
         />
+        {errors.phone && (
+          <p className="text-red-400 text-xs mt-1">{errors.phone.message}</p>
+        )}
       </div>
 
       <div>
