@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Contactos - Anthea Capital</title>
+    <title>Lista de Propiedades - Anthea Capital</title>
     <style>
         * {
             margin: 0;
@@ -20,12 +20,8 @@
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
-            background: #0f1419;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
         }
 
         h1 {
@@ -71,11 +67,6 @@
             cursor: pointer;
         }
 
-        .filter-select:focus {
-            outline: none;
-            border-color: #C9A961;
-        }
-
         .stats {
             display: flex;
             gap: 20px;
@@ -92,81 +83,211 @@
             font-size: 18px;
         }
 
-        .table-container {
-            overflow-x: auto;
-            border-radius: 8px;
+        /* Vista de tarjetas */
+        .properties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .property-card {
+            background: #0f1419;
             border: 1px solid #374151;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s;
+            cursor: pointer;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: #1a1f2e;
+        .property-card:hover {
+            border-color: #C9A961;
+            box-shadow: 0 8px 24px rgba(201, 169, 97, 0.2);
+            transform: translateY(-4px);
         }
 
-        thead {
-            background: linear-gradient(135deg, #C9A961 0%, #8B6914 100%);
-            color: #000000;
-            position: sticky;
-            top: 0;
-            z-index: 10;
+        .property-card.expanded {
+            grid-column: 1 / -1;
         }
 
-        th {
-            padding: 15px;
-            text-align: left;
-            font-weight: bold;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        td {
-            padding: 12px 15px;
+        .property-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
             border-bottom: 1px solid #374151;
-            font-size: 14px;
         }
 
-        tbody tr {
-            transition: background-color 0.2s;
-        }
-
-        tbody tr:hover {
-            background: #2d3748;
-        }
-
-        tbody tr:nth-child(even) {
-            background: #1f2937;
-        }
-
-        tbody tr:nth-child(even):hover {
-            background: #2d3748;
-        }
-
-        .empty-cell {
-            color: #6b7280;
-            font-style: italic;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 50px;
-            font-size: 18px;
+        .property-id {
+            font-size: 1.5em;
+            font-weight: bold;
             color: #C9A961;
         }
 
-        .error {
-            text-align: center;
-            padding: 50px;
-            color: #ef4444;
-            font-size: 18px;
+        .property-ref {
+            background: #1a1f2e;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.9em;
+        }
+
+        .property-section {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            color: #C9A961;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-content {
+            background: #1a1f2e;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            color: #9ca3af;
+            font-size: 0.85em;
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .images-button {
+            background: linear-gradient(135deg, #C9A961 0%, #8B6914 100%);
+            color: #000000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .images-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(201, 169, 97, 0.4);
+        }
+
+        .images-gallery {
+            display: none;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #374151;
+        }
+
+        .images-gallery.show {
+            display: grid;
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            border: 2px solid #374151;
+        }
+
+        .gallery-image:hover {
+            transform: scale(1.05);
+            border-color: #C9A961;
+        }
+
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lightbox.show {
+            display: flex;
+        }
+
+        .lightbox-image {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: #ffffff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(201, 169, 97, 0.8);
+            color: #000000;
+            border: none;
+            padding: 15px 20px;
+            font-size: 24px;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        .lightbox-prev {
+            left: 20px;
+        }
+
+        .lightbox-next {
+            right: 20px;
+        }
+
+        .empty-value {
+            color: #6b7280;
+            font-style: italic;
         }
 
         .pagination {
             display: flex;
             justify-content: center;
             gap: 10px;
-            margin-top: 25px;
+            margin-top: 30px;
             flex-wrap: wrap;
         }
 
@@ -197,48 +318,42 @@
             cursor: not-allowed;
         }
 
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 18px;
+            color: #C9A961;
+        }
+
+        .error {
+            text-align: center;
+            padding: 50px;
+            color: #ef4444;
+            font-size: 18px;
+        }
+
         @media (max-width: 768px) {
-            .container {
-                padding: 15px;
+            .properties-grid {
+                grid-template-columns: 1fr;
             }
-
-            h1 {
-                font-size: 1.8em;
-            }
-
-            .controls {
-                flex-direction: column;
-            }
-
-            .search-box,
-            .filter-select {
-                width: 100%;
-            }
-
-            table {
-                font-size: 12px;
-            }
-
-            th, td {
-                padding: 8px;
+            
+            .info-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📋 Lista de Contactos - Propiedades</h1>
+        <h1>🏠 Lista de Propiedades - Anthea Capital</h1>
         
         <div class="controls">
             <input 
                 type="text" 
                 id="searchInput" 
                 class="search-box" 
-                placeholder="🔍 Buscar en todas las columnas..."
+                placeholder="🔍 Buscar propiedades..."
             />
-            <select id="columnFilter" class="filter-select">
-                <option value="">Todas las columnas</option>
-            </select>
         </div>
 
         <div class="stats">
@@ -250,24 +365,37 @@
             </div>
         </div>
 
-        <div class="table-container">
-            <div id="loading" class="loading">Cargando datos...</div>
-            <div id="error" class="error" style="display: none;"></div>
-            <table id="dataTable" style="display: none;">
-                <thead id="tableHead"></thead>
-                <tbody id="tableBody"></tbody>
-            </table>
-        </div>
+        <div id="loading" class="loading">Cargando datos...</div>
+        <div id="error" class="error" style="display: none;"></div>
+        <div id="propertiesGrid" class="properties-grid" style="display: none;"></div>
 
         <div class="pagination" id="pagination"></div>
     </div>
 
+    <!-- Lightbox para imágenes -->
+    <div class="lightbox" id="lightbox">
+        <span class="lightbox-close" id="lightboxClose">&times;</span>
+        <button class="lightbox-nav lightbox-prev" id="lightboxPrev">‹</button>
+        <img class="lightbox-image" id="lightboxImage" src="" alt="">
+        <button class="lightbox-nav lightbox-next" id="lightboxNext">›</button>
+    </div>
+
     <script>
-        let allData = [];
-        let filteredData = [];
+        let allProperties = [];
+        let filteredProperties = [];
         let currentPage = 1;
-        const itemsPerPage = 50;
-        let columns = [];
+        const itemsPerPage = 12;
+        let currentLightboxImages = [];
+        let currentLightboxIndex = 0;
+
+        // Campos importantes a mostrar
+        const importantFields = {
+            basic: ['id', 'ofertas_cod_ofer', 'ofertas_ref', 'ofertas_precio', 'ofertas_precioinmo', 'ofertas_precioalq'],
+            location: ['ciudad_ciudad', 'provincias_provincia', 'ofertas_calle', 'ofertas_numero', 'ofertas_cp', 'zonas_zona'],
+            features: ['tipo_tipo_ofer', 'totalhab', 'ofertas_banyos', 'ofertas_m_cons', 'ofertas_m_uties', 'ofertas_ascensor', 'parking'],
+            contact: ['users_captador_nombre', 'users_captador_apellidos', 'users_captador_telefono2'],
+            description: ['ofertas_titulo1', 'ofertas_descrip1']
+        };
 
         // Cargar y parsear XML
         async function loadXML() {
@@ -280,7 +408,6 @@
                 const parser = new DOMParser();
                 const xmlDoc = parser.parseFromString(text, 'text/xml');
                 
-                // Verificar errores de parsing
                 const parserError = xmlDoc.querySelector('parsererror');
                 if (parserError) {
                     throw new Error('Error al parsear el XML: ' + parserError.textContent);
@@ -292,40 +419,55 @@
                     throw new Error('No se encontraron propiedades en el XML');
                 }
 
-                // Extraer todas las columnas únicas de la primera propiedad
-                const firstProp = propiedades[0];
-                const allNodes = firstProp.querySelectorAll('*');
-                columns = Array.from(allNodes).map(node => node.tagName).filter((v, i, a) => a.indexOf(v) === i);
+                // Procesar propiedades
+                allProperties = Array.from(propiedades).map(prop => {
+                    const property = {
+                        id: '',
+                        images: [],
+                        data: {}
+                    };
 
-                // Procesar todas las propiedades
-                allData = Array.from(propiedades).map(prop => {
-                    const row = {};
-                    columns.forEach(col => {
-                        const node = prop.querySelector(col);
-                        if (node) {
-                            row[col] = node.textContent.trim() || '';
-                        } else {
-                            row[col] = '';
+                    // Extraer ID
+                    const idNode = prop.querySelector('id');
+                    if (idNode) property.id = idNode.textContent.trim();
+
+                    // Extraer imágenes
+                    const fotos = prop.querySelectorAll('fotos');
+                    fotos.forEach(fotoGroup => {
+                        fotoGroup.querySelectorAll('*').forEach(fotoNode => {
+                            const url = fotoNode.textContent.trim();
+                            if (url && url.startsWith('http')) {
+                                // Intentar usar imagen local primero
+                                const filename = url.split('/').pop();
+                                const localPath = `archivos en bruto/imagenes/${property.id}_${filename}`;
+                                property.images.push({
+                                    original: url,
+                                    local: localPath,
+                                    filename: filename
+                                });
+                            }
+                        });
+                    });
+
+                    // Extraer todos los datos
+                    prop.querySelectorAll('*').forEach(node => {
+                        if (node.tagName !== 'fotos' && node.parentElement?.tagName !== 'fotos') {
+                            const value = node.textContent.trim();
+                            if (value) {
+                                property.data[node.tagName] = value;
+                            }
                         }
                     });
-                    return row;
+
+                    return property;
                 });
 
-                filteredData = [...allData];
-                document.getElementById('totalCount').textContent = allData.length;
+                filteredProperties = [...allProperties];
+                document.getElementById('totalCount').textContent = allProperties.length;
                 
-                // Llenar el selector de columnas
-                const columnFilter = document.getElementById('columnFilter');
-                columns.forEach(col => {
-                    const option = document.createElement('option');
-                    option.value = col;
-                    option.textContent = col.replace(/_/g, ' ').replace(/([A-Z])/g, ' $1').trim();
-                    columnFilter.appendChild(option);
-                });
-
-                renderTable();
+                renderProperties();
                 document.getElementById('loading').style.display = 'none';
-                document.getElementById('dataTable').style.display = 'table';
+                document.getElementById('propertiesGrid').style.display = 'grid';
             } catch (error) {
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('error').style.display = 'block';
@@ -334,60 +476,234 @@
             }
         }
 
-        // Renderizar tabla
-        function renderTable() {
-            const tableHead = document.getElementById('tableHead');
-            const tableBody = document.getElementById('tableBody');
-            
-            // Limpiar tabla
-            tableHead.innerHTML = '';
-            tableBody.innerHTML = '';
+        // Renderizar propiedades
+        function renderProperties() {
+            const grid = document.getElementById('propertiesGrid');
+            grid.innerHTML = '';
 
-            // Crear encabezados
-            const headerRow = document.createElement('tr');
-            columns.forEach(col => {
-                const th = document.createElement('th');
-                th.textContent = col.replace(/_/g, ' ').replace(/([A-Z])/g, ' $1').trim();
-                headerRow.appendChild(th);
-            });
-            tableHead.appendChild(headerRow);
-
-            // Calcular paginación
             const startIndex = (currentPage - 1) * itemsPerPage;
             const endIndex = startIndex + itemsPerPage;
-            const pageData = filteredData.slice(startIndex, endIndex);
+            const pageProperties = filteredProperties.slice(startIndex, endIndex);
 
-            // Crear filas
-            pageData.forEach(row => {
-                const tr = document.createElement('tr');
-                columns.forEach(col => {
-                    const td = document.createElement('td');
-                    const value = row[col] || '';
-                    td.textContent = value || '';
-                    if (!value) {
-                        td.classList.add('empty-cell');
-                        td.textContent = '-';
-                    }
-                    tr.appendChild(td);
-                });
-                tableBody.appendChild(tr);
+            pageProperties.forEach(prop => {
+                const card = createPropertyCard(prop);
+                grid.appendChild(card);
             });
 
-            // Actualizar estadísticas
             document.getElementById('showingCount').textContent = 
-                `${startIndex + 1}-${Math.min(endIndex, filteredData.length)} de ${filteredData.length}`;
+                `${startIndex + 1}-${Math.min(endIndex, filteredProperties.length)} de ${filteredProperties.length}`;
 
-            // Renderizar paginación
             renderPagination();
         }
 
+        // Crear tarjeta de propiedad
+        function createPropertyCard(prop) {
+            const card = document.createElement('div');
+            card.className = 'property-card';
+            card.onclick = () => toggleCard(card);
+
+            const id = prop.data.id || prop.id || 'N/A';
+            const ref = prop.data.ofertas_ref || 'Sin referencia';
+            const precio = formatPrice(prop.data.ofertas_precio || prop.data.ofertas_precioinmo || prop.data.ofertas_precioalq);
+            const ciudad = prop.data.ciudad_ciudad || 'N/A';
+            const provincia = prop.data.provincias_provincia || '';
+            const tipo = prop.data.tipo_tipo_ofer || 'N/A';
+            const habitaciones = prop.data.totalhab || prop.data.ofertas_habitaciones || 'N/A';
+            const banos = prop.data.ofertas_banyos || 'N/A';
+            const superficie = prop.data.ofertas_m_cons || 'N/A';
+            const titulo = prop.data.ofertas_titulo1 || '';
+            const descripcion = prop.data.ofertas_descrip1 || '';
+
+            card.innerHTML = `
+                <div class="property-header">
+                    <div class="property-id">ID: ${id}</div>
+                    <div class="property-ref">Ref: ${ref}</div>
+                </div>
+
+                <div class="property-section">
+                    <div class="section-title">💰 Precio</div>
+                    <div class="section-content">
+                        <div style="font-size: 1.3em; font-weight: bold; color: #C9A961;">${precio}</div>
+                    </div>
+                </div>
+
+                <div class="property-section">
+                    <div class="section-title">📍 Ubicación</div>
+                    <div class="section-content">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Ciudad</span>
+                                <span class="info-value">${ciudad}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Provincia</span>
+                                <span class="info-value">${provincia}</span>
+                            </div>
+                            ${prop.data.ofertas_calle ? `
+                            <div class="info-item">
+                                <span class="info-label">Calle</span>
+                                <span class="info-value">${prop.data.ofertas_calle} ${prop.data.ofertas_numero || ''}</span>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="property-section">
+                    <div class="section-title">🏠 Características</div>
+                    <div class="section-content">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Tipo</span>
+                                <span class="info-value">${tipo}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Habitaciones</span>
+                                <span class="info-value">${habitaciones}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Baños</span>
+                                <span class="info-value">${banos}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Superficie</span>
+                                <span class="info-value">${superficie} m²</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                ${titulo ? `
+                <div class="property-section">
+                    <div class="section-title">📝 Descripción</div>
+                    <div class="section-content">
+                        <strong>${titulo}</strong>
+                        ${descripcion ? `<p style="margin-top: 8px;">${descripcion.substring(0, 200)}${descripcion.length > 200 ? '...' : ''}</p>` : ''}
+                    </div>
+                </div>
+                ` : ''}
+
+                ${prop.images.length > 0 ? `
+                <button class="images-button" onclick="event.stopPropagation(); showImages('${prop.id}', ${JSON.stringify(prop.images).replace(/"/g, '&quot;')})">
+                    🖼️ Ver Imágenes (${prop.images.length})
+                </button>
+                <div class="images-gallery" id="gallery-${prop.id}"></div>
+                ` : ''}
+
+                <div class="property-details" style="display: none;">
+                    <div class="property-section">
+                        <div class="section-title">📞 Contacto</div>
+                        <div class="section-content">
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">Agente</span>
+                                    <span class="info-value">${prop.data.users_captador_nombre || ''} ${prop.data.users_captador_apellidos || ''}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Teléfono</span>
+                                    <span class="info-value">${prop.data.users_captador_telefono2 || 'N/A'}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        function toggleCard(card) {
+            const details = card.querySelector('.property-details');
+            if (details.style.display === 'none') {
+                details.style.display = 'block';
+                card.classList.add('expanded');
+            } else {
+                details.style.display = 'none';
+                card.classList.remove('expanded');
+            }
+        }
+
+        function formatPrice(price) {
+            if (!price || price === '0') return 'Consultar precio';
+            const numPrice = parseFloat(price);
+            if (isNaN(numPrice)) return 'Consultar precio';
+            return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(numPrice);
+        }
+
+        function showImages(propId, images) {
+            const gallery = document.getElementById(`gallery-${propId}`);
+            if (gallery.classList.contains('show')) {
+                gallery.classList.remove('show');
+                return;
+            }
+
+            gallery.innerHTML = '';
+            images.forEach((img, index) => {
+                const imgElement = document.createElement('img');
+                imgElement.className = 'gallery-image';
+                imgElement.src = img.local;
+                imgElement.onerror = function() {
+                    this.src = img.original;
+                };
+                imgElement.onclick = () => openLightbox(images, index);
+                gallery.appendChild(imgElement);
+            });
+            gallery.classList.add('show');
+        }
+
+        function openLightbox(images, index) {
+            currentLightboxImages = images;
+            currentLightboxIndex = index;
+            updateLightbox();
+            document.getElementById('lightbox').classList.add('show');
+        }
+
+        function updateLightbox() {
+            if (currentLightboxImages.length === 0) return;
+            const img = currentLightboxImages[currentLightboxIndex];
+            const lightboxImg = document.getElementById('lightboxImage');
+            lightboxImg.src = img.local;
+            lightboxImg.onerror = function() {
+                this.src = img.original;
+            };
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('show');
+        }
+
+        function nextImage() {
+            if (currentLightboxIndex < currentLightboxImages.length - 1) {
+                currentLightboxIndex++;
+            } else {
+                currentLightboxIndex = 0;
+            }
+            updateLightbox();
+        }
+
+        function prevImage() {
+            if (currentLightboxIndex > 0) {
+                currentLightboxIndex--;
+            } else {
+                currentLightboxIndex = currentLightboxImages.length - 1;
+            }
+            updateLightbox();
+        }
+
+        // Event listeners para lightbox
+        document.getElementById('lightboxClose').onclick = closeLightbox;
+        document.getElementById('lightboxNext').onclick = nextImage;
+        document.getElementById('lightboxPrev').onclick = prevImage;
+        document.getElementById('lightbox').onclick = function(e) {
+            if (e.target === this) closeLightbox();
+        };
+
         // Renderizar paginación
         function renderPagination() {
-            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+            const totalPages = Math.ceil(filteredProperties.length / itemsPerPage);
             const pagination = document.getElementById('pagination');
             pagination.innerHTML = '';
 
-            // Botón anterior
             const prevBtn = document.createElement('button');
             prevBtn.className = 'page-btn';
             prevBtn.textContent = '← Anterior';
@@ -395,31 +711,24 @@
             prevBtn.onclick = () => {
                 if (currentPage > 1) {
                     currentPage--;
-                    renderTable();
+                    renderProperties();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
             };
             pagination.appendChild(prevBtn);
 
-            // Números de página
-            const maxVisible = 5;
-            let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
-            let endPage = Math.min(totalPages, startPage + maxVisible - 1);
-
-            if (endPage - startPage < maxVisible - 1) {
-                startPage = Math.max(1, endPage - maxVisible + 1);
-            }
-
-            if (startPage > 1) {
-                const firstBtn = document.createElement('button');
-                firstBtn.className = 'page-btn';
-                firstBtn.textContent = '1';
-                firstBtn.onclick = () => {
-                    currentPage = 1;
-                    renderTable();
-                };
-                pagination.appendChild(firstBtn);
-
-                if (startPage > 2) {
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
+                    const pageBtn = document.createElement('button');
+                    pageBtn.className = 'page-btn' + (i === currentPage ? ' active' : '');
+                    pageBtn.textContent = i;
+                    pageBtn.onclick = () => {
+                        currentPage = i;
+                        renderProperties();
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    };
+                    pagination.appendChild(pageBtn);
+                } else if (i === currentPage - 3 || i === currentPage + 3) {
                     const ellipsis = document.createElement('span');
                     ellipsis.textContent = '...';
                     ellipsis.style.padding = '10px';
@@ -427,36 +736,6 @@
                 }
             }
 
-            for (let i = startPage; i <= endPage; i++) {
-                const pageBtn = document.createElement('button');
-                pageBtn.className = 'page-btn' + (i === currentPage ? ' active' : '');
-                pageBtn.textContent = i;
-                pageBtn.onclick = () => {
-                    currentPage = i;
-                    renderTable();
-                };
-                pagination.appendChild(pageBtn);
-            }
-
-            if (endPage < totalPages) {
-                if (endPage < totalPages - 1) {
-                    const ellipsis = document.createElement('span');
-                    ellipsis.textContent = '...';
-                    ellipsis.style.padding = '10px';
-                    pagination.appendChild(ellipsis);
-                }
-
-                const lastBtn = document.createElement('button');
-                lastBtn.className = 'page-btn';
-                lastBtn.textContent = totalPages;
-                lastBtn.onclick = () => {
-                    currentPage = totalPages;
-                    renderTable();
-                };
-                pagination.appendChild(lastBtn);
-            }
-
-            // Botón siguiente
             const nextBtn = document.createElement('button');
             nextBtn.className = 'page-btn';
             nextBtn.textContent = 'Siguiente →';
@@ -464,43 +743,31 @@
             nextBtn.onclick = () => {
                 if (currentPage < totalPages) {
                     currentPage++;
-                    renderTable();
+                    renderProperties();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
             };
             pagination.appendChild(nextBtn);
         }
 
         // Función de búsqueda
-        function filterData() {
+        function filterProperties() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const columnFilter = document.getElementById('columnFilter').value;
-
-            filteredData = allData.filter(row => {
-                if (columnFilter) {
-                    // Buscar solo en la columna seleccionada
-                    const value = (row[columnFilter] || '').toLowerCase();
-                    return value.includes(searchTerm);
-                } else {
-                    // Buscar en todas las columnas
-                    return columns.some(col => {
-                        const value = (row[col] || '').toLowerCase();
-                        return value.includes(searchTerm);
-                    });
-                }
+            
+            filteredProperties = allProperties.filter(prop => {
+                const searchableText = Object.values(prop.data).join(' ').toLowerCase();
+                return searchableText.includes(searchTerm);
             });
 
             currentPage = 1;
-            document.getElementById('totalCount').textContent = filteredData.length;
-            renderTable();
+            document.getElementById('totalCount').textContent = filteredProperties.length;
+            renderProperties();
         }
 
-        // Event listeners
-        document.getElementById('searchInput').addEventListener('input', filterData);
-        document.getElementById('columnFilter').addEventListener('change', filterData);
+        document.getElementById('searchInput').addEventListener('input', filterProperties);
 
         // Cargar datos al iniciar
         loadXML();
     </script>
 </body>
 </html>
-

@@ -78,11 +78,11 @@ jobs:
           echo "✅ Copiado listacontactos.html"
         fi
         
-        # Copiar archivos XML si existen
+        # Copiar archivos XML e imágenes si existen
         if [ -d "archivos en bruto" ]; then
           mkdir -p "deploy/archivos en bruto"
           cp -r "archivos en bruto"/* "deploy/archivos en bruto/" 2>/dev/null || true
-          echo "✅ Copiado archivos en bruto/"
+          echo "✅ Copiado archivos en bruto/ (incluyendo imágenes si existen)"
         fi
         
         # Backend
