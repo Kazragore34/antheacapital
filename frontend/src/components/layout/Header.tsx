@@ -77,27 +77,23 @@ const Header = () => {
           <Link to="/" className="flex items-center group">
             <motion.div
               className="flex-shrink-0"
-              initial={false}
-              animate={{ 
-                scale: isScrolled ? 0.85 : 1,
-                opacity: isVisible ? 1 : 0,
-                y: justAppeared ? 0 : 0,
-                rotate: justAppeared ? 0 : 0,
-              }}
               key={justAppeared ? 'appearing' : 'normal'}
-              variants={{
-                appearing: {
-                  opacity: [0, 1],
-                  scale: [0.7, isScrolled ? 0.85 : 1],
-                  y: [-15, 0],
-                  rotate: [-10, 0],
-                },
-                normal: {
-                  opacity: 1,
-                  scale: isScrolled ? 0.85 : 1,
-                  y: 0,
-                  rotate: 0,
-                }
+              initial={justAppeared ? {
+                opacity: 0,
+                scale: 0.7,
+                y: -15,
+                rotate: -10
+              } : {
+                opacity: 1,
+                scale: isScrolled ? 0.85 : 1,
+                y: 0,
+                rotate: 0
+              }}
+              animate={{ 
+                opacity: isVisible ? 1 : 0,
+                scale: isScrolled ? 0.85 : 1,
+                y: 0,
+                rotate: 0,
               }}
               transition={justAppeared ? {
                 duration: 0.5,
