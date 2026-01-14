@@ -437,7 +437,6 @@
                         fotoGroup.querySelectorAll('*').forEach(fotoNode => {
                             const url = fotoNode.textContent.trim();
                             if (url && url.startsWith('http')) {
-                                // Intentar usar imagen local primero
                                 const filename = url.split('/').pop();
                                 const localPath = `archivos en bruto/imagenes/${property.id}_${filename}`;
                                 property.images.push({
@@ -447,6 +446,13 @@
                                 });
                             }
                         });
+                    });
+                    
+                    // Ordenar imágenes por número (foto1, foto2, etc.)
+                    property.images.sort((a, b) => {
+                        const numA = parseInt(a.filename.match(/\d+/)?.[0] || '0');
+                        const numB = parseInt(b.filename.match(/\d+/)?.[0] || '0');
+                        return numA - numB;
                     });
 
                     // Extraer todos los datos
@@ -638,13 +644,30 @@
             }
 
             gallery.innerHTML = '';
+            if (!images || images.length === 0) {
+                gallery.innerHTML = '<p style="color: #9ca3af; padding: 20px; text-align: center;">No hay imágenes disponibles para esta propiedad</p>';
+                gallery.classList.add('show');
+                return;
+            }
+
             images.forEach((img, index) => {
                 const imgElement = document.createElement('img');
                 imgElement.className = 'gallery-image';
-                imgElement.src = img.local;
-                imgElement.onerror = function() {
-                    this.src = img.original;
-                };
+                imgElement.alt = `Imagen ${index + 1} de la propiedad ${propId}`;
+                imgElement.loading = 'lazy';
+                
+                // Intentar cargar imagen local primero, luego original
+                if (img.local) {
+                    imgElement.src = img.local;
+                    imgElement.onerror = function() {
+                        if (img.original) {
+                            this.src = img.original;
+                        }
+                    };
+                } else if (img.original) {
+                    imgElement.src = img.original;
+                }
+                
                 imgElement.onclick = () => openLightbox(images, index);
                 gallery.appendChild(imgElement);
             });
@@ -662,10 +685,17 @@
             if (currentLightboxImages.length === 0) return;
             const img = currentLightboxImages[currentLightboxIndex];
             const lightboxImg = document.getElementById('lightboxImage');
-            lightboxImg.src = img.local;
-            lightboxImg.onerror = function() {
-                this.src = img.original;
-            };
+            
+            if (img.local) {
+                lightboxImg.src = img.local;
+                lightboxImg.onerror = function() {
+                    if (img.original) {
+                        this.src = img.original;
+                    }
+                };
+            } else if (img.original) {
+                lightboxImg.src = img.original;
+            }
         }
 
         function closeLightbox() {
