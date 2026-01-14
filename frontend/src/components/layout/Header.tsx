@@ -75,45 +75,49 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center group">
-            <motion.div
-              className="flex-shrink-0"
-              key={justAppeared ? 'appearing' : 'normal'}
-              initial={justAppeared ? {
-                opacity: 0,
-                scale: 0.7,
-                y: -15,
-                rotate: -10
-              } : {
-                opacity: 1,
-                scale: isScrolled ? 0.85 : 1,
-                y: 0,
-                rotate: 0
-              }}
-              animate={{ 
-                opacity: isVisible ? 1 : 0,
-                scale: isScrolled ? 0.85 : 1,
-                y: 0,
-                rotate: 0,
-              }}
-              transition={justAppeared ? {
-                duration: 0.5,
-                ease: [0.34, 1.56, 0.64, 1], // Ease out back para efecto bounce suave
-              } : {
-                duration: 0.3,
-                ease: [0.25, 0.1, 0.25, 1]
-              }}
-            >
-              <motion.img 
-                src={logoIcon} 
-                alt="Anthea Capital" 
-                className="h-12 w-auto"
-                whileHover={{ scale: 1.05 }}
-                transition={{ 
-                  duration: 0.2,
-                  ease: "easeOut"
-                }}
-              />
-            </motion.div>
+            <AnimatePresence mode="wait">
+              {isVisible && (
+                <motion.div
+                  key="logo-container"
+                  className="flex-shrink-0"
+                  initial={justAppeared ? {
+                    opacity: 0,
+                    scale: 0.7,
+                    y: -15,
+                    rotate: -10
+                  } : false}
+                  animate={{ 
+                    opacity: 1,
+                    scale: isScrolled ? 0.85 : 1,
+                    y: 0,
+                    rotate: 0,
+                  }}
+                  exit={{
+                    opacity: 0,
+                    scale: 0.8,
+                    y: -10
+                  }}
+                  transition={justAppeared ? {
+                    duration: 0.5,
+                    ease: [0.34, 1.56, 0.64, 1], // Ease out back para efecto bounce suave
+                  } : {
+                    duration: 0.3,
+                    ease: [0.25, 0.1, 0.25, 1]
+                  }}
+                >
+                  <motion.img 
+                    src={logoIcon} 
+                    alt="Anthea Capital" 
+                    className="h-12 w-auto"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ 
+                      duration: 0.2,
+                      ease: "easeOut"
+                    }}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
             <AnimatePresence mode="wait">
               {!isScrolled && (
                 <motion.div
