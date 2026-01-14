@@ -72,6 +72,19 @@ jobs:
           echo "⚠️ Usando .htaccess de frontend/dist (fallback)"
         fi
         
+        # Copiar listacontactos.html si existe
+        if [ -f listacontactos.html ]; then
+          cp listacontactos.html deploy/
+          echo "✅ Copiado listacontactos.html"
+        fi
+        
+        # Copiar archivos XML si existen
+        if [ -d "archivos en bruto" ]; then
+          mkdir -p "deploy/archivos en bruto"
+          cp -r "archivos en bruto"/* "deploy/archivos en bruto/" 2>/dev/null || true
+          echo "✅ Copiado archivos en bruto/"
+        fi
+        
         # Backend
         mkdir -p deploy/backend
         cp -r backend/dist deploy/backend/
