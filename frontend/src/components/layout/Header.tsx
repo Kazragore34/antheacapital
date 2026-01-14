@@ -10,6 +10,7 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isVisible, setIsVisible] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
+  const [justAppeared, setJustAppeared] = useState(false)
   const location = useLocation()
 
   useEffect(() => {
@@ -22,8 +23,15 @@ const Header = () => {
       // Ocultar header al bajar, mostrar al subir
       if (currentScrollY > lastScrollY && currentScrollY > 100) {
         setIsVisible(false)
+        setJustAppeared(false)
       } else {
+        const wasHidden = !isVisible
         setIsVisible(true)
+        if (wasHidden) {
+          setJustAppeared(true)
+          // Resetear el flag después de la animación
+          setTimeout(() => setJustAppeared(false), 600)
+        }
       }
       
       setLastScrollY(currentScrollY)
@@ -69,10 +77,32 @@ const Header = () => {
           <Link to="/" className="flex items-center group">
             <motion.div
               className="flex-shrink-0"
+              initial={false}
               animate={{ 
                 scale: isScrolled ? 0.85 : 1,
+                opacity: isVisible ? 1 : 0,
+                y: justAppeared ? 0 : 0,
+                rotate: justAppeared ? 0 : 0,
               }}
-              transition={{ 
+              key={justAppeared ? 'appearing' : 'normal'}
+              variants={{
+                appearing: {
+                  opacity: [0, 1],
+                  scale: [0.7, isScrolled ? 0.85 : 1],
+                  y: [-15, 0],
+                  rotate: [-10, 0],
+                },
+                normal: {
+                  opacity: 1,
+                  scale: isScrolled ? 0.85 : 1,
+                  y: 0,
+                  rotate: 0,
+                }
+              }}
+              transition={justAppeared ? {
+                duration: 0.5,
+                ease: [0.34, 1.56, 0.64, 1], // Ease out back para efecto bounce suave
+              } : {
                 duration: 0.3,
                 ease: [0.25, 0.1, 0.25, 1]
               }}
