@@ -133,8 +133,8 @@ const About = () => {
                 <p className="text-gray-300 mb-4">Directora y Asesora Inmobiliaria</p>
                 <div className="space-y-2 text-sm text-gray-300">
                   <p>
-                    <a href="mailto:ana@antheacapital.es" className="text-gold hover:underline">
-                      ana@antheacapital.es
+                    <a href="mailto:contacto@antheacapital.com" className="text-gold hover:underline">
+                      contacto@antheacapital.com
                     </a>
                   </p>
                   <p>

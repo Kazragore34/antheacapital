@@ -332,6 +332,46 @@
             font-size: 18px;
         }
 
+        .description-toggle {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .description-full {
+            display: none;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #374151;
+        }
+
+        .description-full.show {
+            display: block;
+        }
+
+        .toggle-icon {
+            font-size: 0.8em;
+            transition: transform 0.3s;
+        }
+
+        .description-toggle.active .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .image-loading {
+            background: #1a1f2e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9ca3af;
+            font-size: 0.9em;
+        }
+
+        .owner-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #374151;
+        }
+
         @media (max-width: 768px) {
             .properties-grid {
                 grid-template-columns: 1fr;
@@ -339,6 +379,18 @@
             
             .info-grid {
                 grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .property-card {
+                padding: 15px;
+            }
+
+            .section-content {
+                font-size: 0.9em;
             }
         }
     </style>
@@ -387,6 +439,8 @@
         const itemsPerPage = 12;
         let currentLightboxImages = [];
         let currentLightboxIndex = 0;
+        let expandedCardId = null;
+        let searchTimeout = null;
 
         // Campos importantes a mostrar
         const importantFields = {
@@ -457,13 +511,32 @@
 
                     // Extraer todos los datos
                     prop.querySelectorAll('*').forEach(node => {
-                        if (node.tagName !== 'fotos' && node.parentElement?.tagName !== 'fotos') {
+                        if (node.tagName !== 'fotos' && node.parentElement?.tagName !== 'fotos' && node.tagName !== 'propietarios') {
                             const value = node.textContent.trim();
                             if (value) {
                                 property.data[node.tagName] = value;
                             }
                         }
                     });
+
+                    // Extraer datos de propietarios
+                    property.owners = [];
+                    const propietariosNode = prop.querySelector('propietarios');
+                    if (propietariosNode) {
+                        const propietarios = propietariosNode.querySelectorAll('propietario1, propietario2, propietario3');
+                        propietarios.forEach(propietario => {
+                            const owner = {};
+                            propietario.querySelectorAll('*').forEach(node => {
+                                const value = node.textContent.trim();
+                                if (value) {
+                                    owner[node.tagName] = value;
+                                }
+                            });
+                            if (Object.keys(owner).length > 0) {
+                                property.owners.push(owner);
+                            }
+                        });
+                    }
 
                     return property;
                 });
@@ -579,12 +652,21 @@
                     </div>
                 </div>
 
-                ${titulo ? `
+                ${titulo || descripcion ? `
                 <div class="property-section">
-                    <div class="section-title">📝 Descripción</div>
+                    <div class="section-title description-toggle" onclick="event.stopPropagation(); toggleDescription('${id}')">
+                        📝 Descripción <span class="toggle-icon">▼</span>
+                    </div>
                     <div class="section-content">
-                        <strong>${titulo}</strong>
-                        ${descripcion ? `<p style="margin-top: 8px;">${descripcion.substring(0, 200)}${descripcion.length > 200 ? '...' : ''}</p>` : ''}
+                        ${titulo ? `<strong>${titulo}</strong>` : ''}
+                        ${descripcion ? `
+                            <div class="description-short" id="desc-short-${id}">
+                                <p style="margin-top: 8px;">${descripcion.length > 150 ? descripcion.substring(0, 150) + '...' : descripcion}</p>
+                            </div>
+                            <div class="description-full" id="desc-full-${id}">
+                                <p style="margin-top: 8px; white-space: pre-wrap; word-wrap: break-word;">${descripcion}</p>
+                            </div>
+                        ` : ''}
                     </div>
                 </div>
                 ` : ''}
@@ -597,12 +679,55 @@
                 ` : ''}
 
                 <div class="property-details" style="display: none;">
+                    ${prop.owners && prop.owners.length > 0 ? `
+                    <div class="property-section owner-section">
+                        <div class="section-title">👤 Propietario${prop.owners.length > 1 ? 's' : ''}</div>
+                        <div class="section-content">
+                            ${prop.owners.map((owner, idx) => `
+                                <div style="margin-bottom: ${idx < prop.owners.length - 1 ? '15px' : '0'}; padding-bottom: ${idx < prop.owners.length - 1 ? '15px' : '0'}; border-bottom: ${idx < prop.owners.length - 1 ? '1px solid #374151' : 'none'};">
+                                    <div class="info-grid">
+                                        ${owner.nombre ? `
+                                        <div class="info-item">
+                                            <span class="info-label">Nombre</span>
+                                            <span class="info-value">${owner.nombre}</span>
+                                        </div>
+                                        ` : ''}
+                                        ${owner.apellidos ? `
+                                        <div class="info-item">
+                                            <span class="info-label">Apellidos</span>
+                                            <span class="info-value">${owner.apellidos}</span>
+                                        </div>
+                                        ` : ''}
+                                        ${owner.clientes_telefono1 || owner.clientes_telefono2 || owner.clientes_telefono3 ? `
+                                        <div class="info-item">
+                                            <span class="info-label">Teléfono</span>
+                                            <span class="info-value">${owner.clientes_telefono2 || owner.clientes_telefono1 || owner.clientes_telefono3 || 'N/A'}</span>
+                                        </div>
+                                        ` : ''}
+                                        ${owner.email ? `
+                                        <div class="info-item">
+                                            <span class="info-label">Email</span>
+                                            <span class="info-value">${owner.email}</span>
+                                        </div>
+                                        ` : ''}
+                                        ${owner.nif ? `
+                                        <div class="info-item">
+                                            <span class="info-label">NIF</span>
+                                            <span class="info-value">${owner.nif}</span>
+                                        </div>
+                                        ` : ''}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    ` : ''}
                     <div class="property-section">
-                        <div class="section-title">📞 Contacto</div>
+                        <div class="section-title">📞 Agente</div>
                         <div class="section-content">
                             <div class="info-grid">
                                 <div class="info-item">
-                                    <span class="info-label">Agente</span>
+                                    <span class="info-label">Nombre</span>
                                     <span class="info-value">${prop.data.users_captador_nombre || ''} ${prop.data.users_captador_apellidos || ''}</span>
                                 </div>
                                 <div class="info-item">
@@ -619,13 +744,50 @@
         }
 
         function toggleCard(card) {
+            const cardId = card.querySelector('.property-id')?.textContent.replace('ID: ', '') || null;
+            
+            // Cerrar tarjeta previamente expandida
+            if (expandedCardId && expandedCardId !== cardId) {
+                const prevCard = Array.from(document.querySelectorAll('.property-card')).find(c => {
+                    const prevId = c.querySelector('.property-id')?.textContent.replace('ID: ', '');
+                    return prevId === expandedCardId;
+                });
+                if (prevCard) {
+                    const prevDetails = prevCard.querySelector('.property-details');
+                    if (prevDetails) {
+                        prevDetails.style.display = 'none';
+                        prevCard.classList.remove('expanded');
+                    }
+                }
+            }
+
             const details = card.querySelector('.property-details');
             if (details.style.display === 'none') {
                 details.style.display = 'block';
                 card.classList.add('expanded');
+                expandedCardId = cardId;
             } else {
                 details.style.display = 'none';
                 card.classList.remove('expanded');
+                expandedCardId = null;
+            }
+        }
+
+        function toggleDescription(propId) {
+            const toggle = document.querySelector(`#desc-short-${propId}`)?.closest('.property-section')?.querySelector('.description-toggle');
+            const fullDesc = document.getElementById(`desc-full-${propId}`);
+            const shortDesc = document.getElementById(`desc-short-${propId}`);
+            
+            if (fullDesc && shortDesc) {
+                if (fullDesc.classList.contains('show')) {
+                    fullDesc.classList.remove('show');
+                    shortDesc.style.display = 'block';
+                    toggle?.classList.remove('active');
+                } else {
+                    fullDesc.classList.add('show');
+                    shortDesc.style.display = 'none';
+                    toggle?.classList.add('active');
+                }
             }
         }
 
@@ -651,10 +813,29 @@
             }
 
             images.forEach((img, index) => {
+                const imgContainer = document.createElement('div');
+                imgContainer.style.position = 'relative';
+                
                 const imgElement = document.createElement('img');
                 imgElement.className = 'gallery-image';
                 imgElement.alt = `Imagen ${index + 1} de la propiedad ${propId}`;
                 imgElement.loading = 'lazy';
+                
+                const loadingDiv = document.createElement('div');
+                loadingDiv.className = 'gallery-image image-loading';
+                loadingDiv.textContent = 'Cargando...';
+                imgContainer.appendChild(loadingDiv);
+                
+                imgElement.onload = function() {
+                    loadingDiv.style.display = 'none';
+                };
+                
+                imgElement.onerror = function() {
+                    loadingDiv.textContent = 'Error al cargar';
+                    if (img.original && this.src !== img.original) {
+                        this.src = img.original;
+                    }
+                };
                 
                 // Intentar cargar imagen local primero, luego original
                 if (img.local) {
@@ -669,7 +850,8 @@
                 }
                 
                 imgElement.onclick = () => openLightbox(images, index);
-                gallery.appendChild(imgElement);
+                imgContainer.appendChild(imgElement);
+                gallery.appendChild(imgContainer);
             });
             gallery.classList.add('show');
         }
@@ -780,13 +962,23 @@
             pagination.appendChild(nextBtn);
         }
 
-        // Función de búsqueda
+        // Función de búsqueda con debounce
         function filterProperties() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             
             filteredProperties = allProperties.filter(prop => {
+                // Buscar en datos de propiedad
                 const searchableText = Object.values(prop.data).join(' ').toLowerCase();
-                return searchableText.includes(searchTerm);
+                
+                // Buscar en datos de propietarios
+                let ownersText = '';
+                if (prop.owners && prop.owners.length > 0) {
+                    ownersText = prop.owners.map(owner => 
+                        Object.values(owner).join(' ')
+                    ).join(' ').toLowerCase();
+                }
+                
+                return searchableText.includes(searchTerm) || ownersText.includes(searchTerm);
             });
 
             currentPage = 1;
@@ -794,7 +986,10 @@
             renderProperties();
         }
 
-        document.getElementById('searchInput').addEventListener('input', filterProperties);
+        document.getElementById('searchInput').addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(filterProperties, 300);
+        });
 
         // Cargar datos al iniciar
         loadXML();

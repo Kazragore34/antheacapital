@@ -50,7 +50,7 @@ const AdminLogin = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="input-field"
-                placeholder="admin@antheacapital.es"
+                placeholder="contacto@antheacapital.com"
               />
             </div>
 

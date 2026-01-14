@@ -22,13 +22,13 @@ export class ContactService {
   async sendContactEmail(dto: ContactDto) {
     const mailOptions = {
       from: this.configService.get('EMAIL_FROM'),
-      to: 'ana@antheacapital.es',
+      to: 'contacto@antheacapital.com',
       subject: `Nuevo contacto desde la web${dto.propertyId ? ' - Propiedad' : ''}`,
       html: `
         <h2>Nuevo mensaje de contacto</h2>
-        <p><strong>Nombre:</strong> ${dto.name}</p>
+        <p><strong>Nombre:</strong> ${dto.name} ${dto.surname}</p>
         <p><strong>Email:</strong> ${dto.email}</p>
-        ${dto.phone ? `<p><strong>Teléfono:</strong> ${dto.phone}</p>` : ''}
+        <p><strong>Teléfono:</strong> ${dto.phone}</p>
         ${dto.propertyId ? `<p><strong>Propiedad ID:</strong> ${dto.propertyId}</p>` : ''}
         <p><strong>Mensaje:</strong></p>
         <p>${dto.message}</p>
@@ -41,7 +41,7 @@ export class ContactService {
   async sendValuationEmail(dto: ValuationDto) {
     const mailOptions = {
       from: this.configService.get('EMAIL_FROM'),
-      to: 'ana@antheacapital.es',
+      to: 'contacto@antheacapital.com',
       subject: 'Nueva solicitud de valoración',
       html: `
         <h2>Nueva solicitud de valoración</h2>

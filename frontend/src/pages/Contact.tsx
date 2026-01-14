@@ -1,7 +1,10 @@
 import { motion } from 'framer-motion'
 import ContactForm from '../components/ui/ContactForm'
+import { useTranslation } from '../hooks/useTranslation'
 
 const Contact = () => {
+  const { t } = useTranslation()
+
   return (
     <div className="min-h-screen bg-black-soft py-12">
       <div className="container mx-auto px-4">
@@ -12,10 +15,10 @@ const Contact = () => {
             className="text-center mb-12"
           >
             <h1 className="font-serif text-4xl md:text-5xl mb-4 text-white">
-              Contacto
+              {t('contact.title')}
             </h1>
             <p className="text-gray-300 text-lg">
-              Estamos aquí para ayudarle. Póngase en contacto con nosotros
+              {t('contact.subtitle')}
             </p>
           </motion.div>
 
@@ -28,7 +31,7 @@ const Contact = () => {
               className="bg-gray-800 rounded-lg shadow-lg border border-gray-700 p-8"
             >
               <h2 className="font-serif text-2xl mb-6 text-white">
-                Envíenos un Mensaje
+                {t('contact.form.title')}
               </h2>
               <ContactForm />
             </motion.div>
@@ -40,9 +43,9 @@ const Contact = () => {
               transition={{ delay: 0.4 }}
               className="space-y-6"
             >
-              <div className="bg-gray-900 rounded-lg shadow-lg border border-gray-800 p-8">
+              <div               className="bg-gray-900 rounded-lg shadow-lg border border-gray-800 p-8">
                 <h2 className="font-serif text-2xl mb-6 text-white">
-                  Información de Contacto
+                  {t('contact.info.title')}
                 </h2>
                 <div className="space-y-6">
                   <div>
@@ -53,8 +56,8 @@ const Contact = () => {
                       Directora y Asesora Inmobiliaria
                     </p>
                     <p className="text-gray-300">
-                      <a href="mailto:ana@antheacapital.es" className="hover:text-gold transition-colors">
-                        ana@antheacapital.es
+                      <a href="mailto:contacto@antheacapital.com" className="hover:text-gold transition-colors">
+                        contacto@antheacapital.com
                       </a>
                     </p>
                     <p className="text-gray-300">
@@ -79,32 +82,12 @@ const Contact = () => {
 
                   <div className="border-t border-gray-800 pt-6">
                     <h3 className="font-semibold text-lg mb-4 text-gold">
-                      Otros Contactos
-                    </h3>
-                    <div className="space-y-2 text-gray-300">
-                      <p>
-                        <strong>Información:</strong>{' '}
-                        <a href="mailto:info@antheacapital.es" className="hover:text-gold transition-colors">
-                          info@antheacapital.es
-                        </a>
-                      </p>
-                      <p>
-                        <strong>Soporte:</strong>{' '}
-                        <a href="mailto:soporte@antheacapital.es" className="hover:text-gold transition-colors">
-                          soporte@antheacapital.es
-                        </a>
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="border-t border-gray-800 pt-6">
-                    <h3 className="font-semibold text-lg mb-4 text-gold">
-                      Dirección
+                      {t('contact.info.address')}
                     </h3>
                     <p className="text-gray-300">
-                      Calle Magnolias 32°A<br />
-                      28300, Aranjuez<br />
-                      Madrid, España
+                      Calle Stuart 45<br />
+                      Aranjuez, Madrid 28300<br />
+                      España
                     </p>
                   </div>
                 </div>
@@ -112,12 +95,12 @@ const Contact = () => {
 
               <div className="bg-gradient-to-br from-gold-dark via-gold to-gold-light text-black-soft rounded-lg p-8 text-center shadow-lg">
                 <h3 className="font-serif text-2xl mb-4">
-                  Horario de Atención
+                  {t('contact.info.schedule')}
                 </h3>
                 <div className="space-y-2">
-                  <p>Lunes - Viernes: 9:00 - 20:00</p>
-                  <p>Sábados: 10:00 - 14:00</p>
-                  <p>Domingos: Cerrado</p>
+                  <p>{t('contact.info.weekdays')}</p>
+                  <p>{t('contact.info.saturday')}</p>
+                  <p>{t('contact.info.sunday')}</p>
                 </div>
               </div>
             </motion.div>

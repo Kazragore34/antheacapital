@@ -4,12 +4,14 @@ export class ContactDto {
   @IsString()
   name: string
 
+  @IsString()
+  surname: string
+
   @IsEmail()
   email: string
 
-  @IsOptional()
   @IsString()
-  phone?: string
+  phone: string
 
   @IsString()
   message: string

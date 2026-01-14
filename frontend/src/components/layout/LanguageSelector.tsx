@@ -1,19 +1,22 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useLanguage } from '../../context/LanguageContext'
+import { Language } from '../../i18n/translations'
 
 const languages = [
-  { code: 'es', name: 'Español', flag: '🇪🇸' },
-  { code: 'en', name: 'English', flag: '🇬🇧' },
-  { code: 'fr', name: 'Français', flag: '🇫🇷' },
-  { code: 'ca', name: 'Català', flag: '🏴' },
-  { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
-  { code: 'it', name: 'Italiano', flag: '🇮🇹' },
-  { code: 'pt', name: 'Português', flag: '🇵🇹' },
+  { code: 'es' as Language, name: 'Español', flag: '🇪🇸' },
+  { code: 'en' as Language, name: 'English', flag: '🇬🇧' },
+  { code: 'fr' as Language, name: 'Français', flag: '🇫🇷' },
+  { code: 'ca' as Language, name: 'Català', flag: '🏴' },
+  { code: 'de' as Language, name: 'Deutsch', flag: '🇩🇪' },
+  { code: 'it' as Language, name: 'Italiano', flag: '🇮🇹' },
+  { code: 'pt' as Language, name: 'Português', flag: '🇵🇹' },
 ]
 
 const LanguageSelector = () => {
+  const { language, setLanguage } = useLanguage()
   const [isOpen, setIsOpen] = useState(false)
-  const [currentLang, setCurrentLang] = useState(languages[0]) // Español por defecto
+  const currentLang = languages.find(lang => lang.code === language) || languages[0]
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -63,9 +66,8 @@ const LanguageSelector = () => {
                 <button
                   key={lang.code}
                   onClick={() => {
-                    setCurrentLang(lang)
+                    setLanguage(lang.code)
                     setIsOpen(false)
-                    // TODO: Implementar cambio de idioma
                   }}
                   className={`w-full flex items-center space-x-3 px-4 py-2 text-left hover:bg-gray-800 transition-colors ${
                     currentLang.code === lang.code ? 'bg-gray-800 text-gold' : 'text-white'
@@ -91,9 +93,8 @@ const LanguageSelector = () => {
                     <button
                       key={lang.code}
                       onClick={() => {
-                        setCurrentLang(lang)
+                        setLanguage(lang.code)
                         setIsOpen(false)
-                        // TODO: Implementar cambio de idioma
                       }}
                       className={`w-full flex items-center space-x-3 px-4 py-2 text-left hover:bg-gray-800 transition-colors ${
                         currentLang.code === lang.code ? 'bg-gray-800 text-gold' : 'text-white'

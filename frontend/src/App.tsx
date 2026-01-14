@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { CookieProvider } from './context/CookieContext'
+import { LanguageProvider } from './context/LanguageContext'
 import Header from './components/layout/Header'
 import Footer from './components/layout/Footer'
 import CookieBanner from './components/legal/CookieBanner'
@@ -25,9 +26,10 @@ import AdminDashboard from './pages/admin/AdminDashboard'
 
 function App() {
   return (
-    <AuthProvider>
-      <CookieProvider>
-        <Router>
+    <LanguageProvider>
+      <AuthProvider>
+        <CookieProvider>
+          <Router>
           <div className="min-h-screen flex flex-col bg-black-soft">
             <Header />
             <main className="flex-grow pt-20">
@@ -53,9 +55,10 @@ function App() {
             <CookieBanner />
             <FloatingAssistant />
           </div>
-        </Router>
-      </CookieProvider>
-    </AuthProvider>
+          </Router>
+        </CookieProvider>
+      </AuthProvider>
+    </LanguageProvider>
   )
 }
 

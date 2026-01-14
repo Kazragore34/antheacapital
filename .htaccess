@@ -2,6 +2,10 @@
   RewriteEngine On
   RewriteBase /
 
+  # Redirección permanente de .es a .com
+  RewriteCond %{HTTP_HOST} ^(www\.)?antheacapital\.es$ [NC]
+  RewriteRule ^(.*)$ https://antheacapital.com/$1 [R=301,L]
+
   # NO redirigir archivos estáticos (JS, CSS, imágenes, etc.)
   RewriteCond %{REQUEST_URI} \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|json|pdf)$ [NC]
   RewriteRule ^ - [L]

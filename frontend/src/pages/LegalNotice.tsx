@@ -17,8 +17,8 @@ const LegalNotice = () => {
             <div className="mt-4 bg-gray-50 p-4 rounded-lg">
               <p>
                 <strong>Denominación social:</strong> Anthea Capital Consulting<br />
-                <strong>Dirección:</strong> Calle Magnolias 32°A, 28300, Aranjuez, Madrid, España<br />
-                <strong>Email:</strong> admin@antheacapital.es<br />
+                <strong>Dirección:</strong> Calle Stuart 45, Aranjuez, Madrid 28300, España<br />
+                <strong>Email:</strong> contacto@antheacapital.com<br />
                 <strong>Teléfono:</strong> +34 656 61 74 65
               </p>
             </div>

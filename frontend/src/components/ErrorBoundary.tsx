@@ -80,7 +80,7 @@ class ErrorBoundary extends Component<Props, State> {
                   Si el problema persiste, contacta con el soporte técnico.
                 </p>
                 <p className="text-xs text-gray-400 mt-2">
-                  Email: soporte@antheacapital.es
+                  Email: contacto@antheacapital.com
                 </p>
               </div>
             </div>

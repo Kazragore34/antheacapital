@@ -12,8 +12,8 @@ const Footer = () => {
               Inmobiliaria premium en Aranjuez, Madrid
             </p>
             <p className="text-gray-400 text-xs">
-              Calle Magnolias 32°A<br />
-              28300, Aranjuez, Madrid
+              Calle Stuart 45<br />
+              Aranjuez, Madrid 28300
             </p>
           </div>
 
@@ -71,8 +71,8 @@ const Footer = () => {
             <h4 className="font-semibold mb-4 text-white">Contacto</h4>
             <ul className="space-y-2 text-sm text-gray-300">
               <li>
-                <a href="mailto:ana@antheacapital.es" className="hover:text-gold transition-colors">
-                  ana@antheacapital.es
+                <a href="mailto:contacto@antheacapital.com" className="hover:text-gold transition-colors">
+                  contacto@antheacapital.com
                 </a>
               </li>
               <li>

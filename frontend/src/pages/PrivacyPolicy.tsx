@@ -11,8 +11,8 @@ const PrivacyPolicy = () => {
             <h2 className="font-serif text-2xl mb-4 text-black-soft">1. Responsable del Tratamiento</h2>
             <p>
               <strong>Anthea Capital Consulting</strong><br />
-              Calle Magnolias 32°A<br />
-              28300, Aranjuez, Madrid<br />
+              Calle Stuart 45<br />
+              Aranjuez, Madrid 28300<br />
               España
             </p>
           </section>
@@ -53,8 +53,8 @@ const PrivacyPolicy = () => {
               Para ejercer sus derechos, puede contactar con nosotros en:
             </p>
             <ul className="list-disc pl-6 mt-2">
-              <li>Email: admin@antheacapital.es</li>
-              <li>Dirección: Calle Magnolias 32°A, 28300, Aranjuez, Madrid</li>
+              <li>Email: contacto@antheacapital.com</li>
+              <li>Dirección: Calle Stuart 45, Aranjuez, Madrid 28300</li>
             </ul>
           </section>
 
