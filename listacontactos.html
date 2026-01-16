@@ -196,15 +196,65 @@
 
         .images-gallery {
             display: none;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #374151;
         }
 
         .images-gallery.show {
+            display: block;
+        }
+
+        .images-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .images-modal.show {
+            display: block;
+        }
+
+        .images-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #C9A961;
+        }
+
+        .images-modal-title {
+            color: #C9A961;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .images-modal-close {
+            background: #C9A961;
+            color: #000000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .images-modal-close:hover {
+            background: #8B6914;
+        }
+
+        .images-grid {
             display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         .gallery-image {
@@ -342,10 +392,22 @@
             margin-top: 10px;
             padding-top: 10px;
             border-top: 1px solid #374151;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: none;
+            overflow: visible;
         }
 
         .description-full.show {
+            display: block !important;
+        }
+
+        .description-short {
             display: block;
+        }
+
+        .description-short.hidden {
+            display: none !important;
         }
 
         .toggle-icon {
@@ -441,6 +503,7 @@
         let currentLightboxIndex = 0;
         let expandedCardId = null;
         let searchTimeout = null;
+        let openGalleryId = null;
 
         // Campos importantes a mostrar
         const importantFields = {
@@ -675,7 +738,6 @@
                 <button class="images-button" onclick="event.stopPropagation(); showImages('${prop.id}', ${JSON.stringify(prop.images).replace(/"/g, '&quot;')})">
                     🖼️ Ver Imágenes (${prop.images.length})
                 </button>
-                <div class="images-gallery" id="gallery-${prop.id}"></div>
                 ` : ''}
 
                 <div class="property-details" style="display: none;">
@@ -774,18 +836,26 @@
         }
 
         function toggleDescription(propId) {
-            const toggle = document.querySelector(`#desc-short-${propId}`)?.closest('.property-section')?.querySelector('.description-toggle');
             const fullDesc = document.getElementById(`desc-full-${propId}`);
             const shortDesc = document.getElementById(`desc-short-${propId}`);
+            const toggle = document.querySelector(`#desc-short-${propId}`)?.closest('.property-section')?.querySelector('.description-toggle');
             
             if (fullDesc && shortDesc) {
-                if (fullDesc.classList.contains('show')) {
+                const isExpanded = fullDesc.classList.contains('show');
+                
+                if (isExpanded) {
+                    // Colapsar
                     fullDesc.classList.remove('show');
+                    fullDesc.style.display = 'none';
+                    shortDesc.classList.remove('hidden');
                     shortDesc.style.display = 'block';
                     toggle?.classList.remove('active');
                 } else {
-                    fullDesc.classList.add('show');
+                    // Expandir
+                    shortDesc.classList.add('hidden');
                     shortDesc.style.display = 'none';
+                    fullDesc.classList.add('show');
+                    fullDesc.style.display = 'block';
                     toggle?.classList.add('active');
                 }
             }
@@ -799,61 +869,111 @@
         }
 
         function showImages(propId, images) {
-            const gallery = document.getElementById(`gallery-${propId}`);
-            if (gallery.classList.contains('show')) {
-                gallery.classList.remove('show');
-                return;
+            // Cerrar galería anterior si hay una abierta
+            if (openGalleryId && openGalleryId !== propId) {
+                const prevModal = document.getElementById(`images-modal-${openGalleryId}`);
+                if (prevModal) {
+                    prevModal.classList.remove('show');
+                }
             }
 
-            gallery.innerHTML = '';
-            if (!images || images.length === 0) {
-                gallery.innerHTML = '<p style="color: #9ca3af; padding: 20px; text-align: center;">No hay imágenes disponibles para esta propiedad</p>';
-                gallery.classList.add('show');
-                return;
-            }
+            const modal = document.getElementById(`images-modal-${propId}`);
+            if (!modal) {
+                // Crear modal si no existe
+                const modalDiv = document.createElement('div');
+                modalDiv.id = `images-modal-${propId}`;
+                modalDiv.className = 'images-modal';
+                document.body.appendChild(modalDiv);
+                
+                if (!images || images.length === 0) {
+                    modalDiv.innerHTML = `
+                        <div class="images-modal-header">
+                            <div class="images-modal-title">Imágenes de la Propiedad ${propId}</div>
+                            <button class="images-modal-close" onclick="closeImagesModal('${propId}')">✕ Cerrar</button>
+                        </div>
+                        <div style="text-align: center; color: #9ca3af; padding: 50px;">
+                            No hay imágenes disponibles para esta propiedad
+                        </div>
+                    `;
+                    modalDiv.classList.add('show');
+                    openGalleryId = propId;
+                    return;
+                }
 
-            images.forEach((img, index) => {
-                const imgContainer = document.createElement('div');
-                imgContainer.style.position = 'relative';
-                
-                const imgElement = document.createElement('img');
-                imgElement.className = 'gallery-image';
-                imgElement.alt = `Imagen ${index + 1} de la propiedad ${propId}`;
-                imgElement.loading = 'lazy';
-                
-                const loadingDiv = document.createElement('div');
-                loadingDiv.className = 'gallery-image image-loading';
-                loadingDiv.textContent = 'Cargando...';
-                imgContainer.appendChild(loadingDiv);
-                
-                imgElement.onload = function() {
-                    loadingDiv.style.display = 'none';
-                };
-                
-                imgElement.onerror = function() {
-                    loadingDiv.textContent = 'Error al cargar';
-                    if (img.original && this.src !== img.original) {
-                        this.src = img.original;
-                    }
-                };
-                
-                // Intentar cargar imagen local primero, luego original
-                if (img.local) {
-                    imgElement.src = img.local;
+                modalDiv.innerHTML = `
+                    <div class="images-modal-header">
+                        <div class="images-modal-title">🖼️ Imágenes de la Propiedad ${propId} (${images.length})</div>
+                        <button class="images-modal-close" onclick="closeImagesModal('${propId}')">✕ Cerrar</button>
+                    </div>
+                    <div class="images-grid" id="images-grid-${propId}"></div>
+                `;
+
+                const grid = document.getElementById(`images-grid-${propId}`);
+                images.forEach((img, index) => {
+                    const imgContainer = document.createElement('div');
+                    imgContainer.style.position = 'relative';
+                    imgContainer.style.cursor = 'pointer';
+                    
+                    const imgElement = document.createElement('img');
+                    imgElement.className = 'gallery-image';
+                    imgElement.alt = `Imagen ${index + 1} de la propiedad ${propId}`;
+                    imgElement.loading = 'lazy';
+                    imgElement.style.width = '100%';
+                    imgElement.style.height = '250px';
+                    imgElement.style.objectFit = 'cover';
+                    
+                    const loadingDiv = document.createElement('div');
+                    loadingDiv.className = 'gallery-image image-loading';
+                    loadingDiv.textContent = 'Cargando...';
+                    loadingDiv.style.height = '250px';
+                    imgContainer.appendChild(loadingDiv);
+                    
+                    imgElement.onload = function() {
+                        loadingDiv.style.display = 'none';
+                    };
+                    
                     imgElement.onerror = function() {
-                        if (img.original) {
+                        loadingDiv.textContent = 'Error al cargar';
+                        if (img.original && this.src !== img.original) {
                             this.src = img.original;
                         }
                     };
-                } else if (img.original) {
-                    imgElement.src = img.original;
+                    
+                    // Intentar cargar imagen local primero, luego original
+                    if (img.local) {
+                        imgElement.src = img.local;
+                        imgElement.onerror = function() {
+                            if (img.original) {
+                                this.src = img.original;
+                            }
+                        };
+                    } else if (img.original) {
+                        imgElement.src = img.original;
+                    }
+                    
+                    imgElement.onclick = () => openLightbox(images, index);
+                    imgContainer.appendChild(imgElement);
+                    grid.appendChild(imgContainer);
+                });
+            }
+
+            if (modal.classList.contains('show')) {
+                modal.classList.remove('show');
+                openGalleryId = null;
+            } else {
+                modal.classList.add('show');
+                openGalleryId = propId;
+            }
+        }
+
+        function closeImagesModal(propId) {
+            const modal = document.getElementById(`images-modal-${propId}`);
+            if (modal) {
+                modal.classList.remove('show');
+                if (openGalleryId === propId) {
+                    openGalleryId = null;
                 }
-                
-                imgElement.onclick = () => openLightbox(images, index);
-                imgContainer.appendChild(imgElement);
-                gallery.appendChild(imgContainer);
-            });
-            gallery.classList.add('show');
+            }
         }
 
         function openLightbox(images, index) {

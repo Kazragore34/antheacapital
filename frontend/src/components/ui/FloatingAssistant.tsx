@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import luciaImage from '../../assets/lucia.png'
 
 const FloatingAssistant = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -56,8 +57,12 @@ const FloatingAssistant = () => {
               {/* Header */}
               <div className="bg-gradient-to-r from-gold-dark via-gold to-gold-light text-black-soft p-4 flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-black-soft/20 rounded-full flex items-center justify-center font-bold text-lg">
-                    L
+                  <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center bg-black-soft/20">
+                    <img 
+                      src={luciaImage} 
+                      alt="Lucia" 
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                   <div>
                     <h3 className="font-semibold text-lg">Lucia</h3>
@@ -85,7 +90,13 @@ const FloatingAssistant = () => {
                   </div>
                   
                   <div className="text-center py-8">
-                    <div className="text-4xl mb-4">🤖</div>
+                    <div className="mb-4 flex justify-center">
+                      <img 
+                        src={luciaImage} 
+                        alt="Lucia" 
+                        className="w-24 h-24 rounded-full object-cover border-2 border-gold"
+                      />
+                    </div>
                     <p className="text-gray-400 text-sm">
                       El asistente virtual estará disponible próximamente
                     </p>
