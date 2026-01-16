@@ -388,7 +388,7 @@
         }
 
         .description-full {
-            display: none;
+            display: none !important;
             margin-top: 10px;
             padding-top: 10px;
             border-top: 1px solid #374151;
@@ -396,18 +396,22 @@
             word-wrap: break-word;
             max-height: none;
             overflow: visible;
+            visibility: hidden;
         }
 
         .description-full.show {
             display: block !important;
+            visibility: visible !important;
         }
 
         .description-short {
             display: block;
+            visibility: visible;
         }
 
         .description-short.hidden {
             display: none !important;
+            visibility: hidden !important;
         }
 
         .description-toggle-button {
@@ -928,9 +932,9 @@
                                     </button>
                                 ` : ''}
                             </div>
-                            <div class="description-full" id="desc-full-${id}">
+                            <div class="description-full" id="desc-full-${id}" style="display: none;">
                                 <p style="margin-top: 8px; line-height: 1.8; white-space: pre-wrap; word-wrap: break-word; text-align: justify;">${descripcion}</p>
-                                <button class="description-toggle-button" onclick="event.stopPropagation(); toggleDescription('${id}')" id="toggle-btn-full-${id}" style="display: none;">
+                                <button class="description-toggle-button" onclick="event.stopPropagation(); toggleDescription('${id}')" id="toggle-btn-full-${id}" style="display: none; margin-top: 10px;">
                                     📕 Ver Menos
                                 </button>
                             </div>
@@ -1046,31 +1050,53 @@
             const toggleBtn = document.getElementById(`toggle-btn-${propId}`);
             const toggleBtnFull = document.getElementById(`toggle-btn-full-${propId}`);
             
-            if (fullDesc && shortDesc) {
-                const isExpanded = fullDesc.classList.contains('show');
+            if (!fullDesc || !shortDesc) return;
+            
+            // Verificar estado actual basado en display, no solo en clase
+            const isCurrentlyExpanded = fullDesc.style.display === 'block' || fullDesc.classList.contains('show');
+            
+            if (isCurrentlyExpanded) {
+                // Colapsar
+                fullDesc.classList.remove('show');
+                fullDesc.style.display = 'none';
+                fullDesc.style.visibility = 'hidden';
                 
-                if (isExpanded) {
-                    // Colapsar
-                    fullDesc.classList.remove('show');
-                    fullDesc.style.display = 'none';
-                    shortDesc.classList.remove('hidden');
-                    shortDesc.style.display = 'block';
-                    if (toggleBtn) toggleBtn.style.display = 'inline-block';
-                    if (toggleBtnFull) toggleBtnFull.style.display = 'none';
-                } else {
-                    // Expandir
-                    shortDesc.classList.add('hidden');
-                    shortDesc.style.display = 'none';
-                    if (toggleBtn) toggleBtn.style.display = 'none';
-                    fullDesc.classList.add('show');
-                    fullDesc.style.display = 'block';
-                    if (toggleBtnFull) toggleBtnFull.style.display = 'inline-block';
-                    
-                    // Scroll suave a la descripción expandida
-                    setTimeout(() => {
-                        fullDesc.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                    }, 100);
+                shortDesc.classList.remove('hidden');
+                shortDesc.style.display = 'block';
+                shortDesc.style.visibility = 'visible';
+                
+                if (toggleBtn) {
+                    toggleBtn.style.display = 'inline-block';
+                    toggleBtn.style.visibility = 'visible';
                 }
+                if (toggleBtnFull) {
+                    toggleBtnFull.style.display = 'none';
+                    toggleBtnFull.style.visibility = 'hidden';
+                }
+            } else {
+                // Expandir
+                shortDesc.classList.add('hidden');
+                shortDesc.style.display = 'none';
+                shortDesc.style.visibility = 'hidden';
+                
+                if (toggleBtn) {
+                    toggleBtn.style.display = 'none';
+                    toggleBtn.style.visibility = 'hidden';
+                }
+                
+                fullDesc.classList.add('show');
+                fullDesc.style.display = 'block';
+                fullDesc.style.visibility = 'visible';
+                
+                if (toggleBtnFull) {
+                    toggleBtnFull.style.display = 'inline-block';
+                    toggleBtnFull.style.visibility = 'visible';
+                }
+                
+                // Scroll suave a la descripción expandida
+                setTimeout(() => {
+                    fullDesc.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
             }
         }
 
