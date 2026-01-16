@@ -61,7 +61,8 @@ const FloatingAssistant = () => {
                     <img 
                       src={luciaImage} 
                       alt="Lucia" 
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover object-center"
+                      style={{ objectPosition: 'center top' }}
                     />
                   </div>
                   <div>
@@ -91,11 +92,14 @@ const FloatingAssistant = () => {
                   
                   <div className="text-center py-8">
                     <div className="mb-4 flex justify-center">
-                      <img 
-                        src={luciaImage} 
-                        alt="Lucia" 
-                        className="w-24 h-24 rounded-full object-cover border-2 border-gold"
-                      />
+                      <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gold flex items-center justify-center">
+                        <img 
+                          src={luciaImage} 
+                          alt="Lucia" 
+                          className="w-full h-full object-cover"
+                          style={{ objectPosition: 'center 20%' }}
+                        />
+                      </div>
                     </div>
                     <p className="text-gray-400 text-sm">
                       El asistente virtual estará disponible próximamente
