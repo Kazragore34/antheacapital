@@ -468,6 +468,18 @@
                 class="search-box" 
                 placeholder="🔍 Buscar propiedades..."
             />
+            <select id="filterType" class="filter-select">
+                <option value="">Todos los Tipos</option>
+            </select>
+            <select id="filterCity" class="filter-select">
+                <option value="">Todas las Ciudades</option>
+            </select>
+            <select id="filterProvince" class="filter-select">
+                <option value="">Todas las Provincias</option>
+            </select>
+            <button class="filter-select" onclick="clearFilters()" style="background: #ef4444; border-color: #ef4444;">
+                🗑️ Limpiar Filtros
+            </button>
         </div>
 
         <div class="stats">
@@ -607,6 +619,7 @@
                 filteredProperties = [...allProperties];
                 document.getElementById('totalCount').textContent = allProperties.length;
                 
+                populateFilters();
                 renderProperties();
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('propertiesGrid').style.display = 'grid';
@@ -718,16 +731,16 @@
                 ${titulo || descripcion ? `
                 <div class="property-section">
                     <div class="section-title description-toggle" onclick="event.stopPropagation(); toggleDescription('${id}')">
-                        📝 Descripción <span class="toggle-icon">▼</span>
+                        📝 Descripción <span class="toggle-icon" id="toggle-icon-${id}">▼</span>
                     </div>
                     <div class="section-content">
-                        ${titulo ? `<strong>${titulo}</strong>` : ''}
+                        ${titulo ? `<div style="font-weight: bold; font-size: 1.1em; margin-bottom: 10px; color: #C9A961;">${titulo}</div>` : ''}
                         ${descripcion ? `
                             <div class="description-short" id="desc-short-${id}">
-                                <p style="margin-top: 8px;">${descripcion.length > 150 ? descripcion.substring(0, 150) + '...' : descripcion}</p>
+                                <p style="margin-top: 8px; line-height: 1.6; white-space: pre-wrap; word-wrap: break-word;">${descripcion.length > 200 ? descripcion.substring(0, 200) + '...' : descripcion}</p>
                             </div>
                             <div class="description-full" id="desc-full-${id}">
-                                <p style="margin-top: 8px; white-space: pre-wrap; word-wrap: break-word;">${descripcion}</p>
+                                <p style="margin-top: 8px; line-height: 1.8; white-space: pre-wrap; word-wrap: break-word; text-align: justify;">${descripcion}</p>
                             </div>
                         ` : ''}
                     </div>
@@ -839,6 +852,7 @@
             const fullDesc = document.getElementById(`desc-full-${propId}`);
             const shortDesc = document.getElementById(`desc-short-${propId}`);
             const toggle = document.querySelector(`#desc-short-${propId}`)?.closest('.property-section')?.querySelector('.description-toggle');
+            const toggleIcon = document.getElementById(`toggle-icon-${propId}`);
             
             if (fullDesc && shortDesc) {
                 const isExpanded = fullDesc.classList.contains('show');
@@ -850,6 +864,7 @@
                     shortDesc.classList.remove('hidden');
                     shortDesc.style.display = 'block';
                     toggle?.classList.remove('active');
+                    if (toggleIcon) toggleIcon.textContent = '▼';
                 } else {
                     // Expandir
                     shortDesc.classList.add('hidden');
@@ -857,6 +872,7 @@
                     fullDesc.classList.add('show');
                     fullDesc.style.display = 'block';
                     toggle?.classList.add('active');
+                    if (toggleIcon) toggleIcon.textContent = '▲';
                 }
             }
         }
@@ -1082,23 +1098,37 @@
             pagination.appendChild(nextBtn);
         }
 
-        // Función de búsqueda con debounce
+        // Función de búsqueda y filtrado
         function filterProperties() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filterType = document.getElementById('filterType').value;
+            const filterCity = document.getElementById('filterCity').value;
+            const filterProvince = document.getElementById('filterProvince').value;
             
             filteredProperties = allProperties.filter(prop => {
-                // Buscar en datos de propiedad
+                // Filtro de búsqueda de texto
                 const searchableText = Object.values(prop.data).join(' ').toLowerCase();
-                
-                // Buscar en datos de propietarios
                 let ownersText = '';
                 if (prop.owners && prop.owners.length > 0) {
                     ownersText = prop.owners.map(owner => 
                         Object.values(owner).join(' ')
                     ).join(' ').toLowerCase();
                 }
+                const matchesSearch = searchTerm === '' || searchableText.includes(searchTerm) || ownersText.includes(searchTerm);
                 
-                return searchableText.includes(searchTerm) || ownersText.includes(searchTerm);
+                // Filtro de tipo
+                const propType = prop.data.tipo_tipo_ofer || '';
+                const matchesType = filterType === '' || propType === filterType;
+                
+                // Filtro de ciudad
+                const propCity = prop.data.ciudad_ciudad || '';
+                const matchesCity = filterCity === '' || propCity === filterCity;
+                
+                // Filtro de provincia
+                const propProvince = prop.data.provincias_provincia || '';
+                const matchesProvince = filterProvince === '' || propProvince === filterProvince;
+                
+                return matchesSearch && matchesType && matchesCity && matchesProvince;
             });
 
             currentPage = 1;
@@ -1106,10 +1136,63 @@
             renderProperties();
         }
 
+        // Llenar filtros con opciones únicas
+        function populateFilters() {
+            const types = new Set();
+            const cities = new Set();
+            const provinces = new Set();
+            
+            allProperties.forEach(prop => {
+                if (prop.data.tipo_tipo_ofer) types.add(prop.data.tipo_tipo_ofer);
+                if (prop.data.ciudad_ciudad) cities.add(prop.data.ciudad_ciudad);
+                if (prop.data.provincias_provincia) provinces.add(prop.data.provincias_provincia);
+            });
+            
+            // Llenar tipo
+            const typeSelect = document.getElementById('filterType');
+            Array.from(types).sort().forEach(type => {
+                const option = document.createElement('option');
+                option.value = type;
+                option.textContent = type;
+                typeSelect.appendChild(option);
+            });
+            
+            // Llenar ciudad
+            const citySelect = document.getElementById('filterCity');
+            Array.from(cities).sort().forEach(city => {
+                const option = document.createElement('option');
+                option.value = city;
+                option.textContent = city;
+                citySelect.appendChild(option);
+            });
+            
+            // Llenar provincia
+            const provinceSelect = document.getElementById('filterProvince');
+            Array.from(provinces).sort().forEach(province => {
+                const option = document.createElement('option');
+                option.value = province;
+                option.textContent = province;
+                provinceSelect.appendChild(option);
+            });
+        }
+
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('filterType').value = '';
+            document.getElementById('filterCity').value = '';
+            document.getElementById('filterProvince').value = '';
+            filterProperties();
+        }
+
+        // Event listeners
         document.getElementById('searchInput').addEventListener('input', function() {
             clearTimeout(searchTimeout);
             searchTimeout = setTimeout(filterProperties, 300);
         });
+
+        document.getElementById('filterType').addEventListener('change', filterProperties);
+        document.getElementById('filterCity').addEventListener('change', filterProperties);
+        document.getElementById('filterProvince').addEventListener('change', filterProperties);
 
         // Cargar datos al iniciar
         loadXML();
