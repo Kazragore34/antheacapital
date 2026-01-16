@@ -4,8 +4,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 import logoIcon from '../../assets/logo-icon.svg'
 import logoText from '../../assets/logo-text.svg'
 import LanguageSelector from './LanguageSelector'
+import { useTranslation } from '../../hooks/useTranslation'
 
 const Header = () => {
+  const { t } = useTranslation()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [isVisible, setIsVisible] = useState(true)
@@ -45,11 +47,11 @@ const Header = () => {
   }, [lastScrollY])
 
   const navLinks = [
-    { path: '/', label: 'Inicio' },
-    { path: '/propiedades', label: 'Propiedades' },
-    { path: '/servicios', label: 'Servicios' },
-    { path: '/empresa', label: 'Empresa' },
-    { path: '/contacto', label: 'Contacto' },
+    { path: '/', label: t('nav.home') },
+    { path: '/propiedades', label: t('nav.properties') },
+    { path: '/servicios', label: t('nav.services') },
+    { path: '/empresa', label: t('nav.about') },
+    { path: '/contacto', label: t('nav.contact') },
   ]
 
   const isActive = (path: string) => location.pathname === path
@@ -209,7 +211,7 @@ const Header = () => {
                   whileTap={{ scale: 0.95 }}
                   transition={{ duration: 0.2 }}
                 >
-                  Valorar Propiedad
+                  {t('nav.valuation')}
                 </motion.span>
               </Link>
             </motion.div>
@@ -307,7 +309,7 @@ const Header = () => {
                   onClick={() => setIsMenuOpen(false)}
                   className="btn-primary text-sm inline-block"
                 >
-                  Valorar Propiedad
+                  {t('nav.valuation')}
                 </Link>
               </motion.div>
             </motion.div>

@@ -3,12 +3,14 @@ import { useForm } from 'react-hook-form'
 import { ContactForm as ContactFormType } from '../../types'
 import { contactService } from '../../services/contact.service'
 import PrivacyInfoDropdown from './PrivacyInfoDropdown'
+import { useTranslation } from '../../hooks/useTranslation'
 
 interface ContactFormProps {
   propertyId?: string
 }
 
 const ContactForm = ({ propertyId }: ContactFormProps) => {
+  const { t } = useTranslation()
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
   const {
@@ -29,15 +31,15 @@ const ContactForm = ({ propertyId }: ContactFormProps) => {
       reset()
       setTimeout(() => setSubmitted(false), 5000)
     } catch (err) {
-      setError('Error al enviar el mensaje. Por favor, inténtalo de nuevo.')
+      setError(t('contact.form.error'))
     }
   }
 
   if (submitted) {
     return (
       <div className="bg-green-900/20 border border-green-700 rounded-lg p-4 text-center">
-        <p className="text-green-300 font-semibold">¡Mensaje enviado correctamente!</p>
-        <p className="text-green-400 text-sm mt-2">Te contactaremos pronto.</p>
+        <p className="text-green-300 font-semibold">{t('contact.form.success')}</p>
+        <p className="text-green-400 text-sm mt-2">{t('contact.form.successSubtext')}</p>
       </div>
     )
   }
@@ -53,11 +55,11 @@ const ContactForm = ({ propertyId }: ContactFormProps) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-300 mb-1">
-            Nombre *
+            {t('contact.form.name')} *
           </label>
           <input
             type="text"
-            {...register('name', { required: 'El nombre es obligatorio' })}
+            {...register('name', { required: t('contact.form.nameRequired') })}
             className="input-field"
           />
           {errors.name && (
@@ -67,11 +69,11 @@ const ContactForm = ({ propertyId }: ContactFormProps) => {
 
         <div>
           <label className="block text-sm font-medium text-gray-300 mb-1">
-            Apellidos *
+            {t('contact.form.surname')} *
           </label>
           <input
             type="text"
-            {...register('surname', { required: 'Los apellidos son obligatorios' })}
+            {...register('surname', { required: t('contact.form.surnameRequired') })}
             className="input-field"
           />
           {errors.surname && (
@@ -82,15 +84,15 @@ const ContactForm = ({ propertyId }: ContactFormProps) => {
 
       <div>
         <label className="block text-sm font-medium text-gray-300 mb-1">
-          Email *
+          {t('contact.form.email')} *
         </label>
         <input
           type="email"
           {...register('email', {
-            required: 'El email es obligatorio',
+            required: t('contact.form.emailRequired'),
             pattern: {
               value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-              message: 'Email inválido',
+              message: t('contact.form.emailInvalid'),
             },
           })}
           className="input-field"
@@ -102,11 +104,11 @@ const ContactForm = ({ propertyId }: ContactFormProps) => {
 
       <div>
         <label className="block text-sm font-medium text-gray-300 mb-1">
-          Teléfono *
+          {t('contact.form.phone')} *
         </label>
         <input
           type="tel"
-          {...register('phone', { required: 'El teléfono es obligatorio' })}
+          {...register('phone', { required: t('contact.form.phoneRequired') })}
           className="input-field"
         />
         {errors.phone && (
@@ -116,10 +118,10 @@ const ContactForm = ({ propertyId }: ContactFormProps) => {
 
       <div>
         <label className="block text-sm font-medium text-gray-300 mb-1">
-          Mensaje *
+          {t('contact.form.message')} *
         </label>
         <textarea
-          {...register('message', { required: 'El mensaje es obligatorio' })}
+          {...register('message', { required: t('contact.form.messageRequired') })}
           rows={4}
           className="input-field"
         />
@@ -136,18 +138,18 @@ const ContactForm = ({ propertyId }: ContactFormProps) => {
           <input
             type="checkbox"
             {...register('consent', {
-              required: 'Debe aceptar el consentimiento para continuar',
+              required: t('contact.form.consentRequired'),
             })}
             className="mt-1"
           />
           <span className="text-sm text-gray-300">
-            Consiento que se lleve a cabo el tratamiento de mis datos tal y como se detalla en la{' '}
+            {t('contact.form.consentText')}{' '}
             <a href="/politica-privacidad" className="text-gold hover:underline">
-              Política de privacidad
+              {t('contact.form.privacyPolicy')}
             </a>{' '}
-            y el{' '}
+            {t('contact.form.consentText2')}{' '}
             <a href="/aviso-legal" className="text-gold hover:underline">
-              Aviso legal
+              {t('contact.form.legalNotice')}
             </a>
             . *
           </span>
@@ -163,13 +165,13 @@ const ContactForm = ({ propertyId }: ContactFormProps) => {
             className="mt-1"
           />
           <span className="text-sm text-gray-300">
-            Consiento que se lleve a cabo el tratamiento de mis datos personales para recibir publicidad de su Organización.
+            {t('contact.form.consentMarketing')}
           </span>
         </label>
       </div>
 
       <button type="submit" className="btn-primary w-full">
-        Enviar Mensaje
+        {t('contact.form.send')}
       </button>
     </form>
   )

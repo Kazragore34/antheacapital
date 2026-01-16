@@ -5,6 +5,7 @@ import { propertiesService } from '../services/properties.service'
 import { Property } from '../types'
 import PropertyCard from '../components/properties/PropertyCard'
 import inicioImage from '../assets/inicio.jpg'
+import { useTranslation } from '../hooks/useTranslation'
 
 // Propiedades de ejemplo para mostrar cuando no hay datos
 const exampleProperties: Property[] = [
@@ -154,6 +155,7 @@ const exampleProperties: Property[] = [
 ]
 
 const Home = () => {
+  const { t } = useTranslation()
   // Inicializar con propiedades de ejemplo para que siempre se muestren
   const [featuredProperties, setFeaturedProperties] = useState<Property[]>(exampleProperties)
 
@@ -206,7 +208,7 @@ const Home = () => {
                 textShadow: '0 4px 12px rgba(0, 0, 0, 0.8), 0 2px 4px rgba(0, 0, 0, 0.6)' 
               }}
             >
-              Encuentra tu hogar perfecto
+              {t('home.hero.title')}
             </h1>
             <p 
               className="text-xl md:text-2xl mb-8 text-gray-200"
@@ -214,14 +216,14 @@ const Home = () => {
                 textShadow: '0 2px 8px rgba(0, 0, 0, 0.8)' 
               }}
             >
-              Propiedades premium en Aranjuez y Madrid
+              {t('home.hero.subtitle')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/propiedades" className="btn-primary text-lg px-8 py-4">
-                Ver Propiedades
+                {t('home.hero.cta')}
               </Link>
               <Link to="/valoracion" className="btn-secondary text-lg px-8 py-4">
-                Valorar Propiedad
+                {t('home.hero.ctaValuation')}
               </Link>
             </div>
           </div>
@@ -239,10 +241,10 @@ const Home = () => {
             className="text-center mb-12"
           >
             <h2 className="font-serif text-4xl md:text-5xl mb-4 text-white">
-              Propiedades Destacadas
+              {t('home.featured.title')}
             </h2>
             <p className="text-gray-300 text-lg">
-              Selección de las mejores propiedades disponibles
+              {t('home.featured.subtitle')}
             </p>
           </motion.div>
 
@@ -254,13 +256,13 @@ const Home = () => {
             </div>
           ) : (
             <div className="text-center py-12">
-              <p className="text-gray-400">No hay propiedades disponibles en este momento.</p>
+              <p className="text-gray-400">{t('home.featured.noProperties')}</p>
             </div>
           )}
 
           <div className="text-center mt-12">
             <Link to="/propiedades" className="btn-secondary">
-              Ver Todas las Propiedades
+              {t('home.featured.viewAll')}
             </Link>
           </div>
         </div>
@@ -277,19 +279,19 @@ const Home = () => {
             className="text-center mb-12"
           >
             <h2 className="font-serif text-4xl md:text-5xl mb-4 text-white">
-              Nuestros Servicios
+              {t('home.services.title')}
             </h2>
             <p className="text-gray-300 text-lg">
-              Soluciones integrales para todas tus necesidades inmobiliarias
+              {t('home.services.subtitle')}
             </p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { title: 'Gestoría y Financiación', icon: '📋' },
-              { title: 'Asesoramiento Integral', icon: '💼' },
-              { title: 'Financiamiento y Seguros', icon: '🏦' },
-              { title: 'Alquiler Garantizado', icon: '🔑' },
+              { title: t('home.services.items.gestoria'), icon: '📋' },
+              { title: t('home.services.items.asesoramiento'), icon: '💼' },
+              { title: t('home.services.items.financiamiento'), icon: '🏦' },
+              { title: t('home.services.items.alquiler'), icon: '🔑' },
             ].map((service, index) => (
               <motion.div
                 key={index}
@@ -307,7 +309,7 @@ const Home = () => {
 
           <div className="text-center mt-12">
             <Link to="/servicios" className="btn-primary">
-              Conocer Más Servicios
+              {t('home.services.knowMore')}
             </Link>
           </div>
         </div>
@@ -324,19 +326,19 @@ const Home = () => {
             className="text-center mb-12"
           >
             <h2 className="font-serif text-4xl md:text-5xl mb-4 text-white">
-              Nuestros Mejores Seguros
+              {t('home.insurance.title')}
             </h2>
             <p className="text-gray-300 text-lg">
-              Protección integral para profesionales, pymes y empresas
+              {t('home.insurance.subtitle')}
             </p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             {[
-              { id: 'vida', title: 'Vida', icon: '💼', description: 'Protege tu negocio ante pérdidas financieras' },
-              { id: 'oficina-comercio', title: 'Oficina Comercio', icon: '🏢', description: 'Cobertura para instalaciones de la empresa' },
-              { id: 'baja-laboral', title: 'Baja Laboral', icon: '🏥', description: 'Protección para autónomos' },
-              { id: 'rc-profesional', title: 'RC Profesional', icon: '⚖️', description: 'Cobertura de responsabilidad profesional' },
+              { id: 'vida', title: t('home.insurance.items.vida.title'), icon: '💼', description: t('home.insurance.items.vida.description') },
+              { id: 'oficina-comercio', title: t('home.insurance.items.oficina.title'), icon: '🏢', description: t('home.insurance.items.oficina.description') },
+              { id: 'baja-laboral', title: t('home.insurance.items.baja.title'), icon: '🏥', description: t('home.insurance.items.baja.description') },
+              { id: 'rc-profesional', title: t('home.insurance.items.rc.title'), icon: '⚖️', description: t('home.insurance.items.rc.description') },
             ].map((insurance, index) => (
               <motion.div
                 key={insurance.id}
@@ -355,7 +357,7 @@ const Home = () => {
                   to={`/seguros/${insurance.id}`}
                   className="btn-primary text-sm inline-block"
                 >
-                  Calcular Precio
+                  {t('home.insurance.calculate')}
                 </Link>
               </motion.div>
             ))}
@@ -363,7 +365,7 @@ const Home = () => {
 
           <div className="text-center">
             <Link to="/seguros" className="btn-secondary">
-              Ver Todos los Seguros
+              {t('home.insurance.viewAll')}
             </Link>
           </div>
         </div>
@@ -378,7 +380,7 @@ const Home = () => {
             viewport={{ once: true }}
             className="font-serif text-4xl md:text-5xl mb-6"
           >
-            ¿Listo para encontrar tu hogar ideal?
+            {t('home.cta.title')}
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -387,10 +389,10 @@ const Home = () => {
             transition={{ delay: 0.2 }}
             className="text-xl mb-8"
           >
-            Contacta con nosotros y te ayudaremos a encontrar la propiedad perfecta
+            {t('home.cta.subtitle')}
           </motion.p>
           <Link to="/contacto" className="btn-secondary bg-black-soft text-gold hover:bg-gray-800 border-black-soft">
-            Contactar Ahora
+            {t('home.cta.button')}
           </Link>
         </div>
       </section>
