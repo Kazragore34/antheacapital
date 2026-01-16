@@ -434,6 +434,112 @@
             border-top: 1px solid #374151;
         }
 
+        .filters-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: #0f1419;
+            border-left: 2px solid #C9A961;
+            z-index: 1500;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+            padding: 20px;
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .filters-panel.open {
+            right: 0;
+        }
+
+        .filters-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #C9A961;
+        }
+
+        .filters-panel-title {
+            color: #C9A961;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .filters-panel-close {
+            background: #ef4444;
+            color: #ffffff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .filters-panel-close:hover {
+            background: #dc2626;
+        }
+
+        .filter-group {
+            margin-bottom: 25px;
+        }
+
+        .filter-group-label {
+            color: #C9A961;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .filter-group select {
+            width: 100%;
+            padding: 12px;
+            background: #1a1f2e;
+            border: 2px solid #374151;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .filter-group select:focus {
+            outline: none;
+            border-color: #C9A961;
+        }
+
+        .filters-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1400;
+        }
+
+        .filters-overlay.show {
+            display: block;
+        }
+
+        .filter-button {
+            background: linear-gradient(135deg, #C9A961 0%, #8B6914 100%);
+            color: #000000;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .filter-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(201, 169, 97, 0.4);
+        }
+
         @media (max-width: 768px) {
             .properties-grid {
                 grid-template-columns: 1fr;
@@ -468,17 +574,76 @@
                 class="search-box" 
                 placeholder="🔍 Buscar propiedades..."
             />
-            <select id="filterType" class="filter-select">
-                <option value="">Todos los Tipos</option>
-            </select>
-            <select id="filterCity" class="filter-select">
-                <option value="">Todas las Ciudades</option>
-            </select>
-            <select id="filterProvince" class="filter-select">
-                <option value="">Todas las Provincias</option>
-            </select>
-            <button class="filter-select" onclick="clearFilters()" style="background: #ef4444; border-color: #ef4444;">
-                🗑️ Limpiar Filtros
+            <button class="filter-button" onclick="toggleFiltersPanel()">
+                🔍 Filtros Avanzados
+            </button>
+        </div>
+
+        <!-- Panel de Filtros Lateral -->
+        <div class="filters-overlay" id="filtersOverlay" onclick="toggleFiltersPanel()"></div>
+        <div class="filters-panel" id="filtersPanel">
+            <div class="filters-panel-header">
+                <div class="filters-panel-title">🔍 Filtros</div>
+                <button class="filters-panel-close" onclick="toggleFiltersPanel()">✕ Cerrar</button>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-group-label">Tipo de Propiedad</label>
+                <select id="filterType">
+                    <option value="">Todos los Tipos</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-group-label">Ciudad</label>
+                <select id="filterCity">
+                    <option value="">Todas las Ciudades</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-group-label">Provincia</label>
+                <select id="filterProvince">
+                    <option value="">Todas las Provincias</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-group-label">Precio Mínimo</label>
+                <input 
+                    type="number" 
+                    id="filterMinPrice" 
+                    class="filter-select"
+                    placeholder="Precio mínimo"
+                    style="width: 100%;"
+                />
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-group-label">Precio Máximo</label>
+                <input 
+                    type="number" 
+                    id="filterMaxPrice" 
+                    class="filter-select"
+                    placeholder="Precio máximo"
+                    style="width: 100%;"
+                />
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-group-label">Habitaciones Mínimas</label>
+                <select id="filterBedrooms">
+                    <option value="">Cualquier cantidad</option>
+                    <option value="1">1+</option>
+                    <option value="2">2+</option>
+                    <option value="3">3+</option>
+                    <option value="4">4+</option>
+                    <option value="5">5+</option>
+                </select>
+            </div>
+
+            <button class="filter-button" onclick="clearFilters()" style="width: 100%; margin-top: 20px; background: #ef4444;">
+                🗑️ Limpiar Todos los Filtros
             </button>
         </div>
 
@@ -1098,12 +1263,29 @@
             pagination.appendChild(nextBtn);
         }
 
+        function toggleFiltersPanel() {
+            const panel = document.getElementById('filtersPanel');
+            const overlay = document.getElementById('filtersOverlay');
+            const isOpen = panel.classList.contains('open');
+            
+            if (isOpen) {
+                panel.classList.remove('open');
+                overlay.classList.remove('show');
+            } else {
+                panel.classList.add('open');
+                overlay.classList.add('show');
+            }
+        }
+
         // Función de búsqueda y filtrado
         function filterProperties() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const filterType = document.getElementById('filterType').value;
             const filterCity = document.getElementById('filterCity').value;
             const filterProvince = document.getElementById('filterProvince').value;
+            const filterMinPrice = parseFloat(document.getElementById('filterMinPrice').value) || 0;
+            const filterMaxPrice = parseFloat(document.getElementById('filterMaxPrice').value) || Infinity;
+            const filterBedrooms = document.getElementById('filterBedrooms').value;
             
             filteredProperties = allProperties.filter(prop => {
                 // Filtro de búsqueda de texto
@@ -1128,7 +1310,15 @@
                 const propProvince = prop.data.provincias_provincia || '';
                 const matchesProvince = filterProvince === '' || propProvince === filterProvince;
                 
-                return matchesSearch && matchesType && matchesCity && matchesProvince;
+                // Filtro de precio
+                const propPrice = parseFloat(prop.data.ofertas_precio || prop.data.ofertas_precioinmo || prop.data.ofertas_precioalq || 0);
+                const matchesPrice = propPrice >= filterMinPrice && propPrice <= filterMaxPrice;
+                
+                // Filtro de habitaciones
+                const propBedrooms = parseInt(prop.data.totalhab || prop.data.ofertas_habitaciones || 0);
+                const matchesBedrooms = filterBedrooms === '' || propBedrooms >= parseInt(filterBedrooms);
+                
+                return matchesSearch && matchesType && matchesCity && matchesProvince && matchesPrice && matchesBedrooms;
             });
 
             currentPage = 1;
@@ -1181,6 +1371,9 @@
             document.getElementById('filterType').value = '';
             document.getElementById('filterCity').value = '';
             document.getElementById('filterProvince').value = '';
+            document.getElementById('filterMinPrice').value = '';
+            document.getElementById('filterMaxPrice').value = '';
+            document.getElementById('filterBedrooms').value = '';
             filterProperties();
         }
 
@@ -1193,6 +1386,15 @@
         document.getElementById('filterType').addEventListener('change', filterProperties);
         document.getElementById('filterCity').addEventListener('change', filterProperties);
         document.getElementById('filterProvince').addEventListener('change', filterProperties);
+        document.getElementById('filterMinPrice').addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(filterProperties, 300);
+        });
+        document.getElementById('filterMaxPrice').addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(filterProperties, 300);
+        });
+        document.getElementById('filterBedrooms').addEventListener('change', filterProperties);
 
         // Cargar datos al iniciar
         loadXML();
