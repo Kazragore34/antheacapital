@@ -1,10 +1,11 @@
+import { useMemo, useCallback } from 'react'
 import { useLanguage } from '../context/LanguageContext'
 import translations from '../i18n/translations'
 
 export const useTranslation = () => {
   const { language } = useLanguage()
 
-  const t = (key: string): string | string[] => {
+  const t = useCallback((key: string): string | string[] => {
     const keys = key.split('.')
     let value: any = translations[language]
 
@@ -26,18 +27,18 @@ export const useTranslation = () => {
     }
 
     return typeof value === 'string' || Array.isArray(value) ? value : key
-  }
+  }, [language])
 
   // Función helper que siempre retorna string (para casos donde se necesita garantizar string)
-  const tString = (key: string): string => {
+  const tString = useCallback((key: string): string => {
     const result = t(key)
     if (Array.isArray(result)) {
       // Si es un array, retornar el primer elemento o la clave
       return result[0] || key
     }
     return result
-  }
+  }, [t])
 
-  return { t, tString, language }
+  return useMemo(() => ({ t, tString, language }), [t, tString, language])
 }
 

@@ -303,25 +303,12 @@ class InmovillaAPIService {
       const numero = apiProp.ofertas_numero || apiProp.numero || ''
       const direccion = [calle, numero].filter(Boolean).join(' ') || zona || ciudad
 
-      // Título y descripción - buscar campos multiidioma según el idioma actual
+      // Título y descripción - siempre usar español desde la API
+      // La traducción se hará en el frontend usando el servicio de traducción automática
       const ref = apiProp.ref || codOfer
-      const currentLang = typeof window !== 'undefined' ? (localStorage.getItem('language') || 'es') : 'es'
       
-      // Mapeo de idiomas a sufijos de campos de la API
-      const langSuffixes: { [key: string]: string } = {
-        'es': 'es',
-        'en': 'en',
-        'fr': 'fr',
-        'ca': 'ca',
-        'de': 'de',
-        'it': 'it',
-        'pt': 'pt',
-      }
-      const langSuffix = langSuffixes[currentLang] || 'es'
-      
-      // Buscar título en el idioma actual, luego español como fallback
-      const titulo = apiProp[`titulo${langSuffix}`] 
-        || apiProp.tituloes  // Campo de API REST (español)
+      // Buscar título en español (la API siempre devuelve en español)
+      const titulo = apiProp.tituloes  // Campo de API REST (español)
         || apiProp.ofertas_titulo1 
         || apiProp.titulo1 
         || apiProp.ofertas_titulo2 
@@ -330,11 +317,10 @@ class InmovillaAPIService {
         || apiProp.nombre
         || `Propiedad ${ref}`
       
-      console.log(`[InmovillaAPI] Título encontrado (idioma: ${currentLang}):`, titulo)
+      console.log(`[InmovillaAPI] Título encontrado:`, titulo)
       
-      // Buscar descripción en el idioma actual, luego español como fallback
-      const descripcion = apiProp[`descripcion${langSuffix}`]
-        || apiProp.descripciones  // Campo de API REST (español)
+      // Buscar descripción en español (la API siempre devuelve en español)
+      const descripcion = apiProp.descripciones  // Campo de API REST (español)
         || apiProp.ofertas_descrip1 
         || apiProp.descrip1 
         || apiProp.ofertas_descrip2 

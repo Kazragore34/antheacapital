@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import luciaImage from '../../assets/lucia.png'
+import { useTranslation } from '../../hooks/useTranslation'
 
 const FloatingAssistant = () => {
+  const { tString } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -15,7 +17,7 @@ const FloatingAssistant = () => {
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(!isOpen)}
         className="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-gold-dark via-gold to-gold-light text-black-soft rounded-full w-16 h-16 shadow-2xl flex items-center justify-center hover:shadow-gold/50 transition-all duration-300"
-        aria-label="Abrir asistente virtual Lucia"
+        aria-label={tString('assistant.openLabel')}
       >
         <motion.div
           animate={{ rotate: isOpen ? 180 : 0 }}
@@ -66,14 +68,14 @@ const FloatingAssistant = () => {
                     />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg">Lucia</h3>
-                    <p className="text-xs opacity-80">Asistente Virtual</p>
+                    <h3 className="font-semibold text-lg">{tString('assistant.title')}</h3>
+                    <p className="text-xs opacity-80">{tString('assistant.role')}</p>
                   </div>
                 </div>
                 <button
                   onClick={() => setIsOpen(false)}
                   className="text-black-soft hover:opacity-70 transition-opacity"
-                  aria-label="Cerrar"
+                  aria-label={tString('assistant.closeLabel')}
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -86,7 +88,7 @@ const FloatingAssistant = () => {
                 <div className="space-y-4">
                   <div className="bg-gray-800 rounded-lg p-4">
                     <p className="text-gray-300 text-sm">
-                      ¡Hola! Soy Lucia, tu asistente virtual. Estoy aquí para ayudarte con cualquier pregunta sobre nuestras propiedades y servicios.
+                      {tString('assistant.greeting')}
                     </p>
                   </div>
                   
@@ -95,14 +97,14 @@ const FloatingAssistant = () => {
                       <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gold flex items-center justify-center">
                         <img 
                           src={luciaImage} 
-                          alt="Lucia" 
+                          alt={tString('assistant.title')} 
                           className="w-full h-full object-cover"
                           style={{ objectPosition: 'center 20%' }}
                         />
                       </div>
                     </div>
                     <p className="text-gray-400 text-sm">
-                      El asistente virtual estará disponible próximamente
+                      {tString('assistant.comingSoon')}
                     </p>
                   </div>
                 </div>
@@ -113,14 +115,14 @@ const FloatingAssistant = () => {
                 <div className="flex items-center space-x-2">
                   <input
                     type="text"
-                    placeholder="Escribe tu pregunta..."
+                    placeholder={tString('assistant.placeholder')}
                     disabled
                     className="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                   <button
                     disabled
                     className="bg-gold text-black-soft px-4 py-2 rounded-lg hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    aria-label="Enviar mensaje"
+                    aria-label={tString('assistant.sendLabel')}
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />

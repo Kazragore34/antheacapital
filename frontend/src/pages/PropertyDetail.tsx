@@ -31,35 +31,41 @@ const PropertyDetail = () => {
 
   // Traducir propiedad cuando cambia el idioma o la propiedad
   useEffect(() => {
-    if (property && language !== 'es') {
-      translateProperty()
-    } else {
-      setTranslatedProperty(property)
+    if (!property) {
+      setTranslatedProperty(null)
+      return
     }
+
+    if (language === 'es') {
+      // Si es español, usar la propiedad original directamente
+      setTranslatedProperty(property)
+      return
+    }
+
+    // Traducir para otros idiomas
+    const translateProperty = async () => {
+      setTranslating(true)
+      try {
+        const [translatedTitle, translatedDescription] = await Promise.all([
+          translateText(property.title, language, 'es'),
+          translateText(property.description || '', language, 'es'),
+        ])
+
+        setTranslatedProperty({
+          ...property,
+          title: translatedTitle,
+          description: translatedDescription,
+        })
+      } catch (error) {
+        console.error('Error translating property:', error)
+        setTranslatedProperty(property)
+      } finally {
+        setTranslating(false)
+      }
+    }
+
+    translateProperty()
   }, [property, language])
-
-  const translateProperty = async () => {
-    if (!property) return
-    
-    setTranslating(true)
-    try {
-      const [translatedTitle, translatedDescription] = await Promise.all([
-        translateText(property.title, language, 'es'),
-        translateText(property.description || '', language, 'es'),
-      ])
-
-      setTranslatedProperty({
-        ...property,
-        title: translatedTitle,
-        description: translatedDescription,
-      })
-    } catch (error) {
-      console.error('Error translating property:', error)
-      setTranslatedProperty(property)
-    } finally {
-      setTranslating(false)
-    }
-  }
 
   const loadProperty = async () => {
     try {

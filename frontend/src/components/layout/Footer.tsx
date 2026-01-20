@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from '../../hooks/useTranslation'
 
 const Footer = () => {
-  const { t } = useTranslation()
+  const { tString } = useTranslation()
   
   return (
     <footer className="bg-black-soft border-t border-gray-800 text-white mt-auto">
@@ -12,7 +12,7 @@ const Footer = () => {
           <div>
             <h3 className="font-serif text-xl mb-4 text-gold">Anthea Capital</h3>
             <p className="text-gray-300 text-sm mb-4">
-              {t('footer.companyDescription')}
+              {tString('footer.companyDescription')}
             </p>
             <p className="text-gray-400 text-xs">
               Calle Stuart 45<br />
@@ -22,26 +22,26 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-semibold mb-4 text-white">{t('footer.quickLinks')}</h4>
+            <h4 className="font-semibold mb-4 text-white">{tString('footer.quickLinks')}</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link to="/propiedades" className="text-gray-300 hover:text-gold transition-colors">
-                  {t('nav.properties')}
+                  {tString('nav.properties')}
                 </Link>
               </li>
               <li>
                 <Link to="/servicios" className="text-gray-300 hover:text-gold transition-colors">
-                  {t('nav.services')}
+                  {tString('nav.services')}
                 </Link>
               </li>
               <li>
                 <Link to="/empresa" className="text-gray-300 hover:text-gold transition-colors">
-                  {t('nav.about')}
+                  {tString('nav.about')}
                 </Link>
               </li>
               <li>
                 <Link to="/contacto" className="text-gray-300 hover:text-gold transition-colors">
-                  {t('nav.contact')}
+                  {tString('nav.contact')}
                 </Link>
               </li>
             </ul>
@@ -49,21 +49,21 @@ const Footer = () => {
 
           {/* Legal */}
           <div>
-            <h4 className="font-semibold mb-4 text-white">{t('footer.legal')}</h4>
+            <h4 className="font-semibold mb-4 text-white">{tString('footer.legal')}</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link to="/politica-privacidad" className="text-gray-300 hover:text-gold transition-colors">
-                  {t('legal.privacy.title')}
+                  {tString('legal.privacy.title')}
                 </Link>
               </li>
               <li>
                 <Link to="/politica-cookies" className="text-gray-300 hover:text-gold transition-colors">
-                  {t('legal.cookies.title')}
+                  {tString('legal.cookies.title')}
                 </Link>
               </li>
               <li>
                 <Link to="/aviso-legal" className="text-gray-300 hover:text-gold transition-colors">
-                  {t('legal.legalNotice.title')}
+                  {tString('legal.legalNotice.title')}
                 </Link>
               </li>
             </ul>
@@ -71,7 +71,7 @@ const Footer = () => {
 
           {/* Contact */}
           <div>
-            <h4 className="font-semibold mb-4 text-white">{t('footer.contact')}</h4>
+            <h4 className="font-semibold mb-4 text-white">{tString('footer.contact')}</h4>
             <ul className="space-y-2 text-sm text-gray-300">
               <li>
                 <a href="mailto:contacto@antheacapital.com" className="hover:text-gold transition-colors">
@@ -98,7 +98,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
-          <p>&copy; {new Date().getFullYear()} Anthea Capital Consulting. {t('footer.rightsReserved')}.</p>
+          <p>&copy; {new Date().getFullYear()} Anthea Capital Consulting. {tString('footer.rightsReserved')}.</p>
         </div>
       </div>
     </footer>

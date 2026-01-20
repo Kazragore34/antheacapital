@@ -327,6 +327,17 @@ const translations: Record<Language, Translations> = {
       contact: 'Contacto',
       rightsReserved: 'Todos los derechos reservados',
     },
+    // Floating Assistant
+    assistant: {
+      title: 'Lucia',
+      role: 'Asistente Virtual',
+      greeting: '¡Hola! Soy Lucia, tu asistente virtual. Estoy aquí para ayudarte con cualquier pregunta sobre nuestras propiedades y servicios.',
+      comingSoon: 'El asistente virtual estará disponible próximamente',
+      placeholder: 'Escribe tu pregunta...',
+      openLabel: 'Abrir asistente virtual Lucia',
+      closeLabel: 'Cerrar',
+      sendLabel: 'Enviar mensaje',
+    },
     // Common
     common: {
       required: 'obligatorio',
@@ -567,6 +578,17 @@ const translations: Record<Language, Translations> = {
       legal: 'Legal',
       contact: 'Contact',
       rightsReserved: 'All rights reserved',
+    },
+    // Floating Assistant
+    assistant: {
+      title: 'Lucia',
+      role: 'Virtual Assistant',
+      greeting: 'Hello! I\'m Lucia, your virtual assistant. I\'m here to help you with any questions about our properties and services.',
+      comingSoon: 'The virtual assistant will be available soon',
+      placeholder: 'Write your question...',
+      openLabel: 'Open virtual assistant Lucia',
+      closeLabel: 'Close',
+      sendLabel: 'Send message',
     },
     contact: {
       title: 'Contact',
@@ -901,6 +923,17 @@ const translations: Record<Language, Translations> = {
       contact: 'Contact',
       rightsReserved: 'Tous droits réservés',
     },
+    // Floating Assistant
+    assistant: {
+      title: 'Lucia',
+      role: 'Assistante Virtuelle',
+      greeting: 'Bonjour! Je suis Lucia, votre assistante virtuelle. Je suis là pour vous aider avec toutes vos questions sur nos propriétés et services.',
+      comingSoon: 'L\'assistante virtuelle sera bientôt disponible',
+      placeholder: 'Écrivez votre question...',
+      openLabel: 'Ouvrir l\'assistante virtuelle Lucia',
+      closeLabel: 'Fermer',
+      sendLabel: 'Envoyer le message',
+    },
     contact: {
       title: 'Contact',
       subtitle: 'Nous sommes là pour vous aider. Contactez-nous',
@@ -1233,6 +1266,17 @@ const translations: Record<Language, Translations> = {
       legal: 'Legal',
       contact: 'Contacte',
       rightsReserved: 'Tots els drets reservats',
+    },
+    // Floating Assistant
+    assistant: {
+      title: 'Lucia',
+      role: 'Assistenta Virtual',
+      greeting: 'Hola! Sóc Lucia, la teva assistenta virtual. Estic aquí per ajudar-te amb qualsevol pregunta sobre les nostres propietats i serveis.',
+      comingSoon: 'L\'assistenta virtual estarà disponible aviat',
+      placeholder: 'Escriu la teva pregunta...',
+      openLabel: 'Obrir assistenta virtual Lucia',
+      closeLabel: 'Tancar',
+      sendLabel: 'Enviar missatge',
     },
     contact: {
       title: 'Contacte',
@@ -1623,6 +1667,17 @@ const translations: Record<Language, Translations> = {
       legal: 'Rechtliches',
       contact: 'Kontakt',
       rightsReserved: 'Alle Rechte vorbehalten',
+    },
+    // Floating Assistant
+    assistant: {
+      title: 'Lucia',
+      role: 'Virtuelle Assistentin',
+      greeting: 'Hallo! Ich bin Lucia, Ihre virtuelle Assistentin. Ich bin hier, um Ihnen bei Fragen zu unseren Immobilien und Dienstleistungen zu helfen.',
+      comingSoon: 'Die virtuelle Assistentin wird bald verfügbar sein',
+      placeholder: 'Schreiben Sie Ihre Frage...',
+      openLabel: 'Virtuelle Assistentin Lucia öffnen',
+      closeLabel: 'Schließen',
+      sendLabel: 'Nachricht senden',
     },
     valuation: {
       title: 'Kostenlose Bewertung',
@@ -2192,6 +2247,17 @@ const translations: Record<Language, Translations> = {
       legal: 'Legal',
       contact: 'Contato',
       rightsReserved: 'Todos os direitos reservados',
+    },
+    // Floating Assistant
+    assistant: {
+      title: 'Lucia',
+      role: 'Assistente Virtual',
+      greeting: 'Olá! Sou Lucia, sua assistente virtual. Estou aqui para ajudá-lo com qualquer pergunta sobre nossas propriedades e serviços.',
+      comingSoon: 'A assistente virtual estará disponível em breve',
+      placeholder: 'Escreva sua pergunta...',
+      openLabel: 'Abrir assistente virtual Lucia',
+      closeLabel: 'Fechar',
+      sendLabel: 'Enviar mensagem',
     },
     contact: {
       title: 'Contato',
