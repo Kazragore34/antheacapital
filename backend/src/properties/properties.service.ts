@@ -14,7 +14,7 @@ import * as path from 'path'
 export class PropertiesService {
   private xmlCache: Property[] | null = null
   private xmlCacheTime: number = 0
-  private readonly CACHE_DURATION = 3600000 // 1 hora en milisegundos
+  private readonly CACHE_DURATION = 300000 // 5 minutos en milisegundos (reducido para testing)
   private readonly XML_URL = process.env.INMOVILLA_XML_URL || 'https://procesos.inmovilla.com/xml/xml2demo/2-web.xml'
   private readonly XML_LOCAL_PATH = process.env.INMOVILLA_XML_PATH || path.join(process.cwd(), 'archivos en bruto', 'listado.xml')
   private readonly INMOVILLA_NUMAGENCIA = process.env.INMOVILLA_NUMAGENCIA || '2'
