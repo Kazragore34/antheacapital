@@ -127,27 +127,9 @@ try {
                 try {
                     // Usar el mismo mecanismo que el caso 'ficha' que sabemos que funciona
                     // Llamar directamente al endpoint que devuelve los datos completos
-                    // El endpoint /propiedades/{codOfer} puede dar 404, así que usamos el mismo método que ficha
+                    // El endpoint /propiedades/{codOfer} devuelve la estructura {success: true, data: {ficha: [{...}]}}
+                    // Igual que cuando se llama con action=ficha
                     $responseDetalle = callInmovillaAPI('/propiedades/' . $codOfer, []);
-                    
-                    // Si da 404, intentar con el formato que sabemos que funciona
-                    $testDecoded = json_decode($responseDetalle, true);
-                    if (isset($testDecoded['error']) || strpos($responseDetalle, '404') !== false) {
-                        // El endpoint directo no funciona, usar el método interno del proxy
-                        // Simular una llamada interna al caso 'ficha'
-                        error_log("[API REST Proxy] Endpoint directo falló, usando método interno");
-                        
-                        // Hacer una llamada interna simulando action=ficha
-                        $fichaResponse = callInmovillaAPI('/propiedades/' . $codOfer, []);
-                        $fichaDecoded = json_decode($fichaResponse, true);
-                        
-                        // Extraer los datos de la estructura data.ficha[0]
-                        if (isset($fichaDecoded['data']['ficha'][0])) {
-                            $responseDetalle = json_encode($fichaDecoded['data']['ficha'][0]);
-                        } else {
-                            throw new Exception("No se pudieron obtener los detalles de la propiedad {$codOfer}");
-                        }
-                    }
                     
                     error_log("[API REST Proxy] Respuesta raw para {$codOfer}: " . substr($responseDetalle, 0, 500));
                     
@@ -175,12 +157,22 @@ try {
                             $propiedadCompleta = $detalleDecoded;
                             error_log("[API REST Proxy] Propiedad {$codOfer} - Encontrada como objeto directo");
                         }
-                        // Caso 3: Dentro de 'data'
-                        elseif (isset($detalleDecoded['data']) && is_array($detalleDecoded['data'])) {
+                        // Caso 3: Dentro de 'data.ficha' (estructura que devuelve el endpoint cuando funciona)
+                        elseif (isset($detalleDecoded['data']['ficha'])) {
+                            if (is_array($detalleDecoded['data']['ficha']) && isset($detalleDecoded['data']['ficha'][0])) {
+                                $propiedadCompleta = $detalleDecoded['data']['ficha'][0];
+                                error_log("[API REST Proxy] Propiedad {$codOfer} - Encontrada en data.ficha[0]");
+                            } elseif (is_array($detalleDecoded['data']['ficha'])) {
+                                $propiedadCompleta = $detalleDecoded['data']['ficha'];
+                                error_log("[API REST Proxy] Propiedad {$codOfer} - Encontrada en data.ficha");
+                            }
+                        }
+                        // Caso 4: Dentro de 'data' directamente (sin ficha)
+                        elseif (isset($detalleDecoded['data']) && is_array($detalleDecoded['data']) && !isset($detalleDecoded['data']['ficha'])) {
                             $propiedadCompleta = $detalleDecoded['data'];
                             error_log("[API REST Proxy] Propiedad {$codOfer} - Encontrada en data");
                         }
-                        // Caso 4: Dentro de 'ficha'
+                        // Caso 5: Dentro de 'ficha' directamente
                         elseif (isset($detalleDecoded['ficha'])) {
                             if (is_array($detalleDecoded['ficha']) && isset($detalleDecoded['ficha'][0])) {
                                 $propiedadCompleta = $detalleDecoded['ficha'][0];
