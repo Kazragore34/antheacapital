@@ -291,9 +291,9 @@ jobs:
     
     - name: Deploy to Hostinger (SFTP via rsync)
       run: |
-        apt-get update && apt-get install -y sshpass rsync
+        sudo apt-get update && sudo apt-get install -y sshpass rsync
         sshpass -p "${{ secrets.FTP_PASSWORD }}" rsync -avz --delete \
-          -e "ssh -p 65002 -o StrictHostKeyChecking=no" \
+          -e "ssh -p 65002 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" \
           ./deploy/ \
-          ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:/public_html/
+          ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:/home/u571508109/domains/antheacapital.com/public_html/
 
