@@ -98,17 +98,17 @@ const PropertyDetail = () => {
 
   return (
     <div className="min-h-screen bg-black-soft">
-      {/* Modern Image Gallery */}
+      {/* Minimalist Image Gallery */}
       {property.images && Array.isArray(property.images) && property.images.length > 0 && (
-        <section className="relative bg-gray-900">
-          <div className="container mx-auto px-4 py-8">
-            {/* Main Image Display */}
-            <div className="relative mb-4 rounded-lg overflow-hidden shadow-2xl">
-              <div className="relative aspect-video bg-gray-800">
+        <section className="relative bg-black-soft">
+          <div className="container mx-auto px-4 py-6">
+            {/* Main Image Display - Clean and Minimal */}
+            <div className="relative mb-3 overflow-hidden">
+              <div className="relative aspect-[16/10] bg-gray-900">
                 <img
                   src={property.images[selectedImageIndex]}
                   alt={`${property.title} - Imagen ${selectedImageIndex + 1}`}
-                  className="w-full h-full object-cover cursor-pointer transition-transform duration-300 hover:scale-105"
+                  className="w-full h-full object-cover cursor-pointer transition-opacity duration-200"
                   onClick={() => {
                     setLightboxIndex(selectedImageIndex)
                     setLightboxOpen(true)
@@ -117,101 +117,50 @@ const PropertyDetail = () => {
                     e.currentTarget.src = 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1200'
                   }}
                 />
-                {/* Overlay con información */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
-                  <button
-                    onClick={() => {
-                      setLightboxIndex(selectedImageIndex)
-                      setLightboxOpen(true)
-                    }}
-                    className="bg-gold text-black-soft px-6 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-all transform hover:scale-105"
-                  >
-                    Ver en pantalla completa
-                  </button>
-                </div>
-                {/* Contador de imágenes */}
-                <div className="absolute top-4 right-4 bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-semibold">
-                  {selectedImageIndex + 1} / {property.images.length}
+                {/* Minimalist counter - only show if more than 1 image */}
+                {property.images.length > 1 && (
+                  <div className="absolute bottom-3 right-3 bg-black/40 backdrop-blur-sm text-white px-3 py-1.5 rounded-md text-xs font-medium">
+                    {selectedImageIndex + 1} / {property.images.length}
+                  </div>
+                )}
+                {/* Subtle click indicator */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                  <div className="bg-black/30 backdrop-blur-sm rounded-full p-3">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
+                    </svg>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Thumbnail Gallery */}
+            {/* Minimalist Thumbnail Gallery */}
             {property.images.length > 1 && (
-              <div className="relative">
-                <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-                  {property.images.map((img, index) => (
-                    <div
-                      key={index}
-                      className={`relative flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden cursor-pointer transition-all duration-300 ${
-                        selectedImageIndex === index
-                          ? 'ring-2 ring-gold scale-105'
-                          : 'opacity-70 hover:opacity-100 hover:scale-105'
-                      }`}
-                      onClick={() => setSelectedImageIndex(index)}
-                    >
-                      <img
-                        src={img}
-                        alt={`${property.title} - Miniatura ${index + 1}`}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.currentTarget.src = 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=200'
-                        }}
-                      />
-                      {selectedImageIndex === index && (
-                        <div className="absolute inset-0 bg-gold/20 flex items-center justify-center">
-                          <div className="w-3 h-3 bg-gold rounded-full"></div>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-                
-                {/* Navigation Arrows */}
-                {property.images.length > 5 && (
-                  <>
-                    {selectedImageIndex > 0 && (
-                      <button
-                        onClick={() => setSelectedImageIndex(selectedImageIndex - 1)}
-                        className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/70 backdrop-blur-sm text-white p-2 rounded-full hover:bg-black/90 transition-all z-10"
-                        aria-label="Imagen anterior"
-                      >
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                        </svg>
-                      </button>
+              <div className="flex gap-2 justify-center">
+                {property.images.map((img, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedImageIndex(index)}
+                    className={`relative flex-shrink-0 w-16 h-16 rounded overflow-hidden transition-all duration-200 ${
+                      selectedImageIndex === index
+                        ? 'ring-1 ring-white/50 opacity-100'
+                        : 'opacity-50 hover:opacity-75'
+                    }`}
+                    aria-label={`Ver imagen ${index + 1}`}
+                  >
+                    <img
+                      src={img}
+                      alt={`${property.title} - Miniatura ${index + 1}`}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=200'
+                      }}
+                    />
+                    {selectedImageIndex === index && (
+                      <div className="absolute inset-0 border border-white/30"></div>
                     )}
-                    {selectedImageIndex < property.images.length - 1 && (
-                      <button
-                        onClick={() => setSelectedImageIndex(selectedImageIndex + 1)}
-                        className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/70 backdrop-blur-sm text-white p-2 rounded-full hover:bg-black/90 transition-all z-10"
-                        aria-label="Siguiente imagen"
-                      >
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </button>
-                    )}
-                  </>
-                )}
-              </div>
-            )}
-
-            {/* Ver todas las imágenes button */}
-            {property.images.length > 0 && (
-              <div className="mt-4 text-center">
-                <button
-                  onClick={() => {
-                    setLightboxIndex(selectedImageIndex)
-                    setLightboxOpen(true)
-                  }}
-                  className="inline-flex items-center gap-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white px-6 py-3 rounded-lg font-semibold transition-all hover:border-gold"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  Ver todas las imágenes ({property.images.length})
-                </button>
+                  </button>
+                ))}
               </div>
             )}
           </div>
