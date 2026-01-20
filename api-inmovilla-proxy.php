@@ -22,12 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // Configuración de Inmovilla
-// IMPORTANTE: 
-// - INMOVILLA_NUMAGENCIA: Tu número de agencia en Inmovilla (lo encuentras en tu panel)
-// - INMOVILLA_PASSWORD: Generalmente es la MISMA contraseña con la que inicias sesión en el panel web de Inmovilla
-//   Si no funciona, puede que necesites una contraseña específica de API (consulta con Inmovilla)
-define('INMOVILLA_NUMAGENCIA', '2'); // ← Cambiar por tu número de agencia
-define('INMOVILLA_PASSWORD', '82ku9xz2aw3'); // ← Cambiar por tu contraseña de Inmovilla (generalmente la misma del login)
+// Credenciales de producción configuradas
+define('INMOVILLA_NUMAGENCIA', '13740'); // Número de agencia de Anthea Capital
+define('INMOVILLA_PASSWORD', 'Ast19722026'); // Contraseña de acceso a la API
 define('INMOVILLA_IDIOMA', '1'); // 1 = Español
 
 // Incluir la librería de Inmovilla
