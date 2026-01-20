@@ -1,7 +1,7 @@
 export type Language = 'es' | 'en' | 'fr' | 'ca' | 'de' | 'it' | 'pt'
 
 export interface Translations {
-  [key: string]: string | Translations
+  [key: string]: string | string[] | Translations
 }
 
 const translations: Record<Language, Translations> = {

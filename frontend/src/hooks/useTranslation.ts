@@ -4,7 +4,7 @@ import translations from '../i18n/translations'
 export const useTranslation = () => {
   const { language } = useLanguage()
 
-  const t = (key: string): string => {
+  const t = (key: string): string | string[] => {
     const keys = key.split('.')
     let value: any = translations[language]
 
@@ -21,11 +21,11 @@ export const useTranslation = () => {
             return key // Devolver la clave si no se encuentra
           }
         }
-        return typeof fallbackValue === 'string' ? fallbackValue : key
+        return typeof fallbackValue === 'string' || Array.isArray(fallbackValue) ? fallbackValue : key
       }
     }
 
-    return typeof value === 'string' ? value : key
+    return typeof value === 'string' || Array.isArray(value) ? value : key
   }
 
   return { t, language }

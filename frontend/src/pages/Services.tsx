@@ -5,30 +5,35 @@ import { useTranslation } from '../hooks/useTranslation'
 const Services = () => {
   const { t } = useTranslation()
   
+  const getFeatures = (key: string): string[] => {
+    const features = t(key)
+    return Array.isArray(features) ? features : []
+  }
+
   const services = [
     {
-      title: t('servicesPage.items.asesoramiento.title'),
-      description: t('servicesPage.items.asesoramiento.description'),
+      title: t('servicesPage.items.asesoramiento.title') as string,
+      description: t('servicesPage.items.asesoramiento.description') as string,
       icon: '💼',
-      features: t('servicesPage.items.asesoramiento.features') as string[],
+      features: getFeatures('servicesPage.items.asesoramiento.features'),
     },
     {
-      title: t('servicesPage.items.financiacion.title'),
-      description: t('servicesPage.items.financiacion.description'),
+      title: t('servicesPage.items.financiacion.title') as string,
+      description: t('servicesPage.items.financiacion.description') as string,
       icon: '🏦',
-      features: t('servicesPage.items.financiacion.features') as string[],
+      features: getFeatures('servicesPage.items.financiacion.features'),
     },
     {
-      title: t('servicesPage.items.seguros.title'),
-      description: t('servicesPage.items.seguros.description'),
+      title: t('servicesPage.items.seguros.title') as string,
+      description: t('servicesPage.items.seguros.description') as string,
       icon: '🛡️',
-      features: t('servicesPage.items.seguros.features') as string[],
+      features: getFeatures('servicesPage.items.seguros.features'),
     },
     {
-      title: t('servicesPage.items.alquiler.title'),
-      description: t('servicesPage.items.alquiler.description'),
+      title: t('servicesPage.items.alquiler.title') as string,
+      description: t('servicesPage.items.alquiler.description') as string,
       icon: '🔑',
-      features: t('servicesPage.items.alquiler.features') as string[],
+      features: getFeatures('servicesPage.items.alquiler.features'),
     },
   ]
 
