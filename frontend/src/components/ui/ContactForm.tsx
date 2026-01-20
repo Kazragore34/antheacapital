@@ -7,9 +7,13 @@ import { useTranslation } from '../../hooks/useTranslation'
 
 interface ContactFormProps {
   propertyId?: string
+  propertyTitle?: string
+  propertyUrl?: string
+  propertyPrice?: string
+  propertyType?: string
 }
 
-const ContactForm = ({ propertyId }: ContactFormProps) => {
+const ContactForm = ({ propertyId, propertyTitle, propertyUrl, propertyPrice, propertyType }: ContactFormProps) => {
   const { t } = useTranslation()
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
@@ -22,9 +26,27 @@ const ContactForm = ({ propertyId }: ContactFormProps) => {
 
   const onSubmit = async (data: ContactFormType & { marketing?: boolean }) => {
     try {
+      // Si hay información de propiedad, agregarla al mensaje
+      let messageWithPropertyInfo = data.message
+      
+      if (propertyTitle || propertyUrl || propertyPrice || propertyType) {
+        const propertyInfo = []
+        if (propertyType) propertyInfo.push(`Tipo: ${propertyType}`)
+        if (propertyTitle) propertyInfo.push(`Propiedad: ${propertyTitle}`)
+        if (propertyPrice) propertyInfo.push(`Precio: ${propertyPrice}`)
+        if (propertyUrl) propertyInfo.push(`Enlace: ${propertyUrl}`)
+        
+        messageWithPropertyInfo = `${data.message}\n\n--- Información de la Propiedad ---\n${propertyInfo.join('\n')}`
+      }
+      
       await contactService.sendContact({
         ...data,
+        message: messageWithPropertyInfo,
         propertyId,
+        propertyTitle,
+        propertyUrl,
+        propertyPrice,
+        propertyType,
         consent: true,
       })
       setSubmitted(true)

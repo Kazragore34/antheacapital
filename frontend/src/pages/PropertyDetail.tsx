@@ -50,11 +50,20 @@ const PropertyDetail = () => {
     if (!price || price === 0 || isNaN(price)) {
       return 'Consultar precio'
     }
+    // Formato español: 212.737 € (con punto como separador de miles y espacio antes del símbolo)
     return new Intl.NumberFormat('es-ES', {
       style: 'currency',
       currency: 'EUR',
+      minimumFractionDigits: 0,
       maximumFractionDigits: 0,
-    }).format(price)
+    }).format(price).replace('€', '€').trim()
+  }
+
+  const formatNumber = (num: number) => {
+    if (!num || num === 0 || isNaN(num)) {
+      return '-'
+    }
+    return new Intl.NumberFormat('es-ES').format(num)
   }
 
   if (loading) {
@@ -184,7 +193,7 @@ const PropertyDetail = () => {
                   {property.features.area !== undefined && (
                     <div className="bg-gray-800 border border-gray-700 p-4 rounded-lg text-center">
                       <div className="text-2xl mb-2">📐</div>
-                      <div className="font-semibold text-white">{property.features.area}</div>
+                      <div className="font-semibold text-white">{formatNumber(property.features.area)}</div>
                       <div className="text-sm text-gray-400">m²</div>
                     </div>
                   )}
@@ -225,7 +234,13 @@ const PropertyDetail = () => {
             <div className="sticky top-24">
               <div className="bg-gray-900 border border-gray-800 p-6 rounded-lg">
                 <h3 className="font-serif text-2xl mb-4 text-white">Solicitar Información</h3>
-                <ContactForm propertyId={property._id} />
+                <ContactForm 
+                  propertyId={property._id}
+                  propertyTitle={property.title}
+                  propertyUrl={window.location.href}
+                  propertyPrice={formatPrice(property.price)}
+                  propertyType={property.type === 'venta' ? 'Venta' : 'Alquiler'}
+                />
               </div>
             </div>
           </div>

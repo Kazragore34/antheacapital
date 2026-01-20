@@ -20,6 +20,22 @@ export class ContactDto {
   @IsString()
   propertyId?: string
 
+  @IsOptional()
+  @IsString()
+  propertyTitle?: string
+
+  @IsOptional()
+  @IsString()
+  propertyUrl?: string
+
+  @IsOptional()
+  @IsString()
+  propertyPrice?: string
+
+  @IsOptional()
+  @IsString()
+  propertyType?: string
+
   @IsBoolean()
   consent: boolean
 

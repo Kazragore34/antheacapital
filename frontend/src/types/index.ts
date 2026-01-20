@@ -43,6 +43,10 @@ export interface ContactForm {
   phone: string
   message: string
   propertyId?: string
+  propertyTitle?: string
+  propertyUrl?: string
+  propertyPrice?: string
+  propertyType?: string
   consent: boolean
   marketing?: boolean
 }

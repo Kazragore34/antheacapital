@@ -8,11 +8,23 @@ interface PropertyCardProps {
 
 const PropertyCard = ({ property }: PropertyCardProps) => {
   const formatPrice = (price: number) => {
+    if (!price || price === 0 || isNaN(price)) {
+      return 'Consultar precio'
+    }
+    // Formato español: 212.737 € (con punto como separador de miles y espacio antes del símbolo)
     return new Intl.NumberFormat('es-ES', {
       style: 'currency',
       currency: 'EUR',
+      minimumFractionDigits: 0,
       maximumFractionDigits: 0,
-    }).format(price)
+    }).format(price).replace('€', '€').trim()
+  }
+
+  const formatNumber = (num: number) => {
+    if (!num || num === 0 || isNaN(num)) {
+      return '-'
+    }
+    return new Intl.NumberFormat('es-ES').format(num)
   }
 
   return (
@@ -73,7 +85,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
                 </svg>
                 {property.features.bathrooms}
               </span>
-              <span>{property.features.area} m²</span>
+              <span>{formatNumber(property.features.area)} m²</span>
             </div>
           </div>
           <p className="text-gray-300 text-sm mt-2">

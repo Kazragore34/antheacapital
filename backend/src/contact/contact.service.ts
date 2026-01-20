@@ -20,18 +20,29 @@ export class ContactService {
   }
 
   async sendContactEmail(dto: ContactDto) {
+    const hasPropertyInfo = dto.propertyId || dto.propertyTitle || dto.propertyUrl
+    
     const mailOptions = {
       from: this.configService.get('EMAIL_FROM'),
       to: 'contacto@antheacapital.com',
-      subject: `Nuevo contacto desde la web${dto.propertyId ? ' - Propiedad' : ''}`,
+      subject: hasPropertyInfo ? `Solicitud de información - Propiedad` : 'Nuevo contacto desde la web',
       html: `
-        <h2>Nuevo mensaje de contacto</h2>
+        <h2>${hasPropertyInfo ? 'Solicitud de información sobre propiedad' : 'Nuevo mensaje de contacto'}</h2>
         <p><strong>Nombre:</strong> ${dto.name} ${dto.surname}</p>
         <p><strong>Email:</strong> ${dto.email}</p>
         <p><strong>Teléfono:</strong> ${dto.phone}</p>
-        ${dto.propertyId ? `<p><strong>Propiedad ID:</strong> ${dto.propertyId}</p>` : ''}
+        ${hasPropertyInfo ? `
+          <hr style="margin: 20px 0; border: none; border-top: 2px solid #C9A961;">
+          <h3 style="color: #C9A961;">Información de la Propiedad:</h3>
+          ${dto.propertyType ? `<p><strong>Tipo:</strong> ${dto.propertyType}</p>` : ''}
+          ${dto.propertyTitle ? `<p><strong>Título:</strong> ${dto.propertyTitle}</p>` : ''}
+          ${dto.propertyPrice ? `<p><strong>Precio:</strong> ${dto.propertyPrice}</p>` : ''}
+          ${dto.propertyId ? `<p><strong>ID Propiedad:</strong> ${dto.propertyId}</p>` : ''}
+          ${dto.propertyUrl ? `<p><strong>Enlace:</strong> <a href="${dto.propertyUrl}" style="color: #C9A961;">${dto.propertyUrl}</a></p>` : ''}
+          <hr style="margin: 20px 0; border: none; border-top: 2px solid #C9A961;">
+        ` : ''}
         <p><strong>Mensaje:</strong></p>
-        <p>${dto.message}</p>
+        <p style="white-space: pre-wrap;">${dto.message}</p>
       `,
     }
 
