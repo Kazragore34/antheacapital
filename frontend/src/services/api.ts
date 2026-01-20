@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 // En producción, usar URL relativa. En desarrollo, usar la variable de entorno o localhost
+// NOTA: Si el proxy reverso no está configurado, usar el proxy PHP temporal para /contact
 const API_URL = import.meta.env.VITE_API_URL || 
   (import.meta.env.PROD ? '/api' : 'http://localhost:3001/api')
 
