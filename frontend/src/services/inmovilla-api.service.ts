@@ -261,9 +261,9 @@ class InmovillaAPIService {
         tipo = 'alquiler'
       } else if (keyacci === 1 || keyacci === '1') {
         tipo = 'venta'
-      } else if (tipoInmo && tipoInmo.toLowerCase().includes('venta') || tipoInmo && tipoInmo.toLowerCase().includes('vender')) {
+      } else if (tipoInmo && typeof tipoInmo === 'string' && (tipoInmo.toLowerCase().includes('venta') || tipoInmo.toLowerCase().includes('vender'))) {
         tipo = 'venta'
-      } else if (tipoInmo && tipoInmo.toLowerCase().includes('alquiler') || tipoInmo && tipoInmo.toLowerCase().includes('alquilar')) {
+      } else if (tipoInmo && typeof tipoInmo === 'string' && (tipoInmo.toLowerCase().includes('alquiler') || tipoInmo.toLowerCase().includes('alquilar'))) {
         tipo = 'alquiler'
       } else {
         // Inferir del precio si está disponible
