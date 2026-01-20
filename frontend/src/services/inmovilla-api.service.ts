@@ -104,18 +104,40 @@ class InmovillaAPIService {
         console.log(`[InmovillaAPI] Primera propiedad completa:`, JSON.stringify(apiProperties[0], null, 2))
         console.log(`[InmovillaAPI] Keys de la primera propiedad:`, Object.keys(apiProperties[0]))
         
-        // Verificar campos específicos
+        // Verificar campos específicos de API REST
         const primera = apiProperties[0]
-        console.log(`[InmovillaAPI] Verificación de campos:`)
+        console.log(`[InmovillaAPI] Verificación de campos (API REST):`)
         console.log(`  - cod_ofer:`, primera.cod_ofer)
         console.log(`  - ref:`, primera.ref)
+        console.log(`  - tituloes:`, primera.tituloes) // Campo de API REST
+        console.log(`  - descripciones:`, primera.descripciones) // Campo de API REST
+        console.log(`  - precioalq:`, primera.precioalq) // Campo de API REST
+        console.log(`  - precioinmo:`, primera.precioinmo) // Campo de API REST
+        console.log(`  - keyacci:`, primera.keyacci) // Campo de API REST (2 = alquiler)
+        console.log(`  - numfotos:`, primera.numfotos) // Campo de API REST
+        console.log(`  - fotoletra:`, primera.fotoletra) // Campo de API REST
+        console.log(`  - imagenes:`, primera.imagenes) // Array de imágenes construido
+        console.log(`  - calle:`, primera.calle)
+        console.log(`  - numero:`, primera.numero)
+        console.log(`  - m_cons:`, primera.m_cons)
+        
+        // Verificar campos antiguos también
+        console.log(`[InmovillaAPI] Campos antiguos (por si acaso):`)
         console.log(`  - ofertas_titulo1:`, primera.ofertas_titulo1)
         console.log(`  - titulo1:`, primera.titulo1)
         console.log(`  - ofertas_precioinmo:`, primera.ofertas_precioinmo)
         console.log(`  - ofertas_precioalq:`, primera.ofertas_precioalq)
-        console.log(`  - ofertas_tipo_inmo:`, primera.ofertas_tipo_inmo)
         console.log(`  - ofertas_foto1:`, primera.ofertas_foto1)
         console.log(`  - foto1:`, primera.foto1)
+        
+        // Verificar si tiene datos completos o solo básicos
+        const tieneDatosCompletos = primera.tituloes || primera.descripciones || primera.precioalq || primera.precioinmo
+        console.log(`[InmovillaAPI] ¿Tiene datos completos?:`, tieneDatosCompletos ? 'SÍ' : 'NO')
+        if (!tieneDatosCompletos) {
+          console.error(`[InmovillaAPI] ⚠️ PROBLEMA: La propiedad solo tiene datos básicos, no completos!`)
+          console.error(`[InmovillaAPI] Total de campos:`, Object.keys(primera).length)
+          console.error(`[InmovillaAPI] Todos los campos:`, Object.keys(primera))
+        }
       }
 
       // Transformar propiedades de la API al formato interno
