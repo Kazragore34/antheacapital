@@ -222,11 +222,32 @@ if (false && class_exists('PHPMailer\PHPMailer\PHPMailer')) {
             'message' => 'Mensaje enviado correctamente'
         ]);
     } else {
-        http_response_code(500);
-        echo json_encode([
-            'success' => false,
-            'message' => 'Error al enviar el correo. Por favor, intenta más tarde o contacta directamente a contacto@antheacapital.com'
-        ]);
+        // Si mail() falla, intentar con SMTP directo
+        if (function_exists('sendEmailViaSMTP')) {
+            $smtpResult = sendEmailViaSMTP($smtpHost, $smtpPort, $smtpUser, $smtpPass, $fromEmail, $toEmail, $email, $subject, $htmlBody, $textBody);
+            
+            if ($smtpResult['success']) {
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Mensaje enviado correctamente'
+                ]);
+            } else {
+                http_response_code(500);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Error al enviar el correo. Por favor, intenta más tarde o contacta directamente a contacto@antheacapital.com',
+                    'error' => $smtpResult['error'] ?? 'Error desconocido',
+                    'hint' => 'Verifica las credenciales SMTP en contact-handler.php'
+                ]);
+            }
+        } else {
+            http_response_code(500);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Error al enviar el correo. Por favor, intenta más tarde o contacta directamente a contacto@antheacapital.com',
+                'hint' => 'La función sendEmailViaSMTP no está disponible. Verifica que send-email-smtp.php esté en el servidor.'
+            ]);
+        }
     }
 }
 ?>
