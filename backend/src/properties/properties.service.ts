@@ -46,7 +46,10 @@ export class PropertiesService {
   }): Promise<Property[]> {
     try {
       // SOLO usar XML de Inmovilla - NO usar MongoDB como fallback
+      console.log(`[PropertiesService] findAll() called with query:`, JSON.stringify(query))
       console.log(`[PropertiesService] Loading properties from XML: ${this.XML_URL}`)
+      console.log(`[PropertiesService] XML_LOCAL_PATH: ${this.XML_LOCAL_PATH}`)
+      
       const xmlProperties = await this.loadPropertiesFromXML()
       console.log(`[PropertiesService] Loaded ${xmlProperties?.length || 0} properties from XML`)
       
@@ -58,7 +61,12 @@ export class PropertiesService {
       }
 
       // Si no hay XML, devolver array vacío (NO usar MongoDB)
-      console.log('[PropertiesService] No XML properties found. Returning empty array.')
+      console.warn('[PropertiesService] No XML properties found. Returning empty array.')
+      console.warn('[PropertiesService] This could mean:')
+      console.warn('  1. XML URL is not accessible')
+      console.warn('  2. XML file is not found locally')
+      console.warn('  3. XML structure is not as expected')
+      console.warn('  4. All properties were filtered out during transformation')
       return []
     } catch (error) {
       console.error('[PropertiesService] Error fetching properties:', error)
