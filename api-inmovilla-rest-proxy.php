@@ -40,12 +40,15 @@ $order = $_GET['order'] ?? '';
  * Realizar petición a la API REST de Inmovilla
  */
 function callInmovillaAPI($endpoint, $params = []) {
+    // Construir URL base
     $url = INMOVILLA_API_BASE_URL . $endpoint;
     
     // Agregar parámetros a la URL
     if (!empty($params)) {
         $url .= '?' . http_build_query($params);
     }
+    
+    error_log('[API REST Proxy] Llamando a: ' . $url);
     
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
