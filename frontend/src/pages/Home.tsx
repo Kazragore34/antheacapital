@@ -15,16 +15,23 @@ const Home = () => {
   useEffect(() => {
     const loadProperties = async () => {
       try {
-        const properties = await propertiesService.getAll()
-        // Si hay propiedades del backend, usar las primeras 6
-        if (Array.isArray(properties) && properties.length > 0) {
-          setFeaturedProperties(properties.slice(0, 6))
+        // Usar la API para obtener propiedades destacadas
+        const { inmovillaAPIService } = await import('../services/inmovilla-api.service')
+        const featured = await inmovillaAPIService.getFeatured(6)
+        
+        if (Array.isArray(featured) && featured.length > 0) {
+          setFeaturedProperties(featured)
         } else {
-          // Si no hay propiedades, mostrar array vacío (no propiedades de ejemplo)
-          setFeaturedProperties([])
+          // Si no hay destacados, intentar obtener las primeras 6 propiedades normales
+          const properties = await propertiesService.getAll()
+          if (Array.isArray(properties) && properties.length > 0) {
+            setFeaturedProperties(properties.slice(0, 6))
+          } else {
+            setFeaturedProperties([])
+          }
         }
       } catch (error) {
-        console.error('Error loading properties:', error)
+        console.error('Error loading featured properties:', error)
         // En caso de error, mostrar array vacío
         setFeaturedProperties([])
       }
