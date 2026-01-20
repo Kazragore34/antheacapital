@@ -112,7 +112,12 @@ jobs:
         else
           echo "⚠️ Backend node_modules no encontrado - las dependencias deben instalarse en el servidor"
         fi
-        echo "✅ Backend copiado"
+        # Copiar archivos de configuración para Hostinger
+        cp backend/start.sh deploy/backend/ 2>/dev/null || true
+        cp backend/start.bat deploy/backend/ 2>/dev/null || true
+        cp backend/.htaccess deploy/backend/ 2>/dev/null || true
+        cp backend/ecosystem.config.js deploy/backend/ 2>/dev/null || true
+        echo "✅ Backend copiado (incluyendo scripts de inicio y configuración)"
     
     - name: Deploy to Hostinger
       uses: SamKirkland/FTP-Deploy-Action@4.3.0
