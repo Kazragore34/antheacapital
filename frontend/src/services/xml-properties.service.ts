@@ -6,11 +6,15 @@ const XML_URL = '/xml-proxy.php'
 // Transformar propiedad del XML al formato Property
 function transformInmovillaProperty(prop: any): Property | null {
   try {
-    // Extraer codOfer
-    const codOfer = prop.ofertas_cod_ofer?.toString() || prop.datos?.ofertas_cod_ofer?.toString() || ''
+    // Extraer codOfer - buscar en múltiples campos posibles
+    const codOfer = prop.ofertas_cod_ofer?.toString() 
+      || prop.datos?.ofertas_cod_ofer?.toString() 
+      || prop.id?.toString() 
+      || prop.datos?.id?.toString()
+      || ''
     
     if (!codOfer) {
-      console.warn('[XMLPropertiesService] Property sin codOfer, saltando')
+      console.warn('[XMLPropertiesService] Property sin codOfer, saltando. Keys disponibles:', Object.keys(prop).slice(0, 10))
       return null
     }
 
@@ -201,11 +205,15 @@ function extractPropertiesFromXML(xmlDoc: Document): any[] {
     
     // Log primera propiedad para debugging
     if (index === 0) {
+      const codOfer = prop.ofertas_cod_ofer || prop.datos?.ofertas_cod_ofer || prop.id || prop.datos?.id
       console.log('[XMLPropertiesService] Primera propiedad extraída:', {
-        keys: Object.keys(prop),
-        codOfer: prop.ofertas_cod_ofer || prop.datos?.ofertas_cod_ofer,
+        keys: Object.keys(prop).slice(0, 20), // Solo primeros 20 para no saturar
+        codOfer: codOfer,
+        id: prop.id,
+        ofertas_cod_ofer: prop.ofertas_cod_ofer,
         hasFotos: !!prop.fotos,
-        fotosCount: prop.fotos?.foto?.length || 0
+        fotosCount: prop.fotos?.foto?.length || 0,
+        hasDatos: !!prop.datos
       })
     }
     
