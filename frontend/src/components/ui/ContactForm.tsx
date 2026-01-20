@@ -57,14 +57,25 @@ const ContactForm = ({ propertyId, propertyTitle, propertyUrl, propertyPrice, pr
         consent: true,
       })
       
+      // Validar que la respuesta sea JSON válido (no HTML)
+      if (typeof response === 'string' && response.trim().startsWith('<!doctype html>')) {
+        throw new Error('El backend no está accesible. La petición está siendo redirigida al frontend.')
+      }
+      
       console.log('[ContactForm] ✅ Mensaje enviado correctamente:', response)
       setSubmitted(true)
       reset()
       setTimeout(() => setSubmitted(false), 5000)
     } catch (err: any) {
-      console.error('[ContactForm] ❌ Error al enviar mensaje:', err)
+      console.error('[ContactForm] ❌ Error al enviar formulario:', err)
       const errorMessage = err?.response?.data?.message || err?.message || tString('contact.form.error')
-      setError(errorMessage)
+      
+      // Mensaje más específico si el problema es de routing del backend
+      if (errorMessage.includes('HTML') || errorMessage.includes('redirigida') || errorMessage.includes('no está accesible') || errorMessage.includes('backend')) {
+        setError('El servidor no puede procesar tu solicitud en este momento. Por favor, contacta directamente a contacto@antheacapital.com o intenta más tarde.')
+      } else {
+        setError(errorMessage)
+      }
     }
   }
 
