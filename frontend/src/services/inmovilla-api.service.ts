@@ -352,11 +352,20 @@ class InmovillaAPIService {
       const planta = parseInt(apiProp.ofertas_numplanta || apiProp.numplanta || apiProp.ofertas_planta || apiProp.planta || '0') || undefined
 
       // Características adicionales
-      const parking = apiProp.plaza_gara?.includes('Garaje') || apiProp.ofertas_plaza_gara === '1' || apiProp.parking === '1' || apiProp.garaje === '1'
+      // Verificar que plaza_gara sea string antes de usar includes
+      const parking = (typeof apiProp.plaza_gara === 'string' && apiProp.plaza_gara.includes('Garaje')) 
+        || apiProp.ofertas_plaza_gara === '1' 
+        || apiProp.ofertas_plaza_gara === 1
+        || apiProp.parking === '1' 
+        || apiProp.parking === 1
+        || apiProp.parking === 2  // Según los datos, parking puede ser 2 (número de plazas)
+        || apiProp.garaje === '1' 
+        || apiProp.garaje === 1
+        || (apiProp.plaza_gara && apiProp.plaza_gara > 0)  // Si plaza_gara es un número > 0
       const ascensor = apiProp.ofertas_ascensor === '1' || apiProp.ofertas_ascensor === 1 || apiProp.ascensor === '1' || apiProp.ascensor === 1
-      const terraza = apiProp.ofertas_terraza === '1' || apiProp.terraza === '1' || apiProp.ofertas_balcon === '1' || apiProp.balcon === '1'
+      const terraza = apiProp.ofertas_terraza === '1' || apiProp.terraza === '1' || apiProp.ofertas_balcon === '1' || apiProp.balcon === '1' || apiProp.balcon === 1
       const jardin = apiProp.ofertas_jardin === '1' || apiProp.jardin === '1' || apiProp.jardin === 1
-      const piscina = apiProp.ofertas_piscina_prop === '1' || apiProp.piscina_prop === '1' || apiProp.ofertas_piscina_com === '1' || apiProp.piscina_com === '1'
+      const piscina = apiProp.ofertas_piscina_prop === '1' || apiProp.piscina_prop === '1' || apiProp.piscina_prop === 1 || apiProp.ofertas_piscina_com === '1' || apiProp.piscina_com === '1' || apiProp.piscina_com === 1
       const amueblado = apiProp.ofertas_muebles === '1' || apiProp.ofertas_muebles === 1 || apiProp.muebles === '1' || apiProp.muebles === 1
 
       // Imágenes - buscar en múltiples campos posibles
