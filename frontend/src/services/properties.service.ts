@@ -40,6 +40,16 @@ export const propertiesService = {
     }
   },
 
+  getByCodOfer: async (codOfer: string): Promise<Property | null> => {
+    try {
+      const response = await api.get(`/properties/by-cod/${codOfer}`)
+      return response.data || null
+    } catch (error) {
+      console.error('Error fetching property by codOfer:', error)
+      return null
+    }
+  },
+
   create: async (property: Partial<Property>): Promise<Property> => {
     const response = await api.post('/properties', property)
     return response.data

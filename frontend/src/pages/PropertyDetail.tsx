@@ -20,6 +20,18 @@ const PropertyDetail = () => {
 
   const loadProperty = async () => {
     try {
+      // Si el ID es numérico, probablemente es un codOfer de Inmovilla
+      // Intentar buscar por codOfer primero
+      if (id && /^\d+$/.test(id)) {
+        const dataByCod = await propertiesService.getByCodOfer(id)
+        if (dataByCod) {
+          setProperty(dataByCod)
+          setLoading(false)
+          return
+        }
+      }
+      
+      // Si no se encontró por codOfer o el ID no es numérico, buscar por ID normal
       const data = await propertiesService.getById(id!)
       if (data) {
         setProperty(data)

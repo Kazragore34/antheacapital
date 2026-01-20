@@ -44,6 +44,9 @@ export class Property {
 
   @Prop({ enum: ['published', 'draft'], default: 'draft' })
   status: string
+
+  @Prop({ required: false })
+  codOfer?: string
 }
 
 export const PropertySchema = SchemaFactory.createForClass(Property)

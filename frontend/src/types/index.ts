@@ -24,6 +24,7 @@ export interface Property {
   }
   images: string[]
   status: 'published' | 'draft'
+  codOfer?: string
   createdAt?: Date
   updatedAt?: Date
 }

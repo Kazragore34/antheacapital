@@ -85,6 +85,17 @@ jobs:
           echo "✅ Copiado archivos en bruto/ (incluyendo imágenes si existen)"
         fi
         
+        # Copiar carpetas PHP de Inmovilla (ficha/ y cliente/)
+        if [ -d "ficha" ]; then
+          cp -r ficha deploy/
+          echo "✅ Copiado carpeta ficha/ (PHP de Inmovilla)"
+        fi
+        
+        if [ -d "cliente" ]; then
+          cp -r cliente deploy/
+          echo "✅ Copiado carpeta cliente/ (PHP de Inmovilla)"
+        fi
+        
         # Backend
         mkdir -p deploy/backend
         cp -r backend/dist deploy/backend/

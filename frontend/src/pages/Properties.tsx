@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { propertiesService } from '../services/properties.service'
 import { Property } from '../types'
 import PropertyCard from '../components/properties/PropertyCard'
@@ -7,6 +8,8 @@ import PropertyFilters from '../components/properties/PropertyFilters'
 const Properties = () => {
   const [properties, setProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
+  const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
   const [filters, setFilters] = useState<{
     type?: string
     city?: string
@@ -17,8 +20,15 @@ const Properties = () => {
   }>({})
 
   useEffect(() => {
+    // Verificar si hay parámetro post_id en la URL (viene de Inmovilla)
+    const postId = searchParams.get('post_id')
+    if (postId) {
+      // Redirigir a la página de detalle de la propiedad usando el codOfer
+      navigate(`/propiedades/${postId}`, { replace: true })
+      return
+    }
     loadProperties()
-  }, [filters])
+  }, [filters, searchParams, navigate])
 
   // Propiedades de ejemplo para mostrar cuando no hay datos
   const exampleProperties: Property[] = [

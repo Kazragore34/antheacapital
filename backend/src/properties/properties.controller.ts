@@ -45,6 +45,15 @@ export class PropertiesController {
     })
   }
 
+  @Get('by-cod/:codOfer')
+  async findByCodOfer(@Param('codOfer') codOfer: string) {
+    const property = await this.propertiesService.findByCodOfer(codOfer)
+    if (!property) {
+      throw new NotFoundException(`Property with codOfer ${codOfer} not found`)
+    }
+    return property
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.propertiesService.findOne(id)

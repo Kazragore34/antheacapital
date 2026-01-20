@@ -10,6 +10,14 @@
   RewriteCond %{REQUEST_URI} \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|json|pdf)$ [NC]
   RewriteRule ^ - [L]
 
+  # NO redirigir archivos PHP (para Inmovilla)
+  RewriteCond %{REQUEST_URI} \.(php)$ [NC]
+  RewriteRule ^ - [L]
+
+  # NO redirigir carpetas de Inmovilla (ficha/ y cliente/)
+  RewriteCond %{REQUEST_URI} ^/(ficha|cliente)/ [NC]
+  RewriteRule ^ - [L]
+
   # NO redirigir si el archivo o directorio existe
   RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d
@@ -25,6 +33,7 @@
   AddType application/javascript mjs
   AddType text/css css
   AddType image/svg+xml svg
+  AddType application/x-httpd-php php
 </IfModule>
 
 # Compresión GZIP
