@@ -208,12 +208,18 @@ try {
                         continue; // NO incluir propiedades sin datos esenciales
                     }
                     
-                    // Construir URLs de imágenes si numfotos > 0
+                    // Asegurar que cod_ofer esté presente
+                    if (!isset($propiedadCompleta['cod_ofer'])) {
+                        $propiedadCompleta['cod_ofer'] = $codOfer;
+                    }
+                    
+                    // Construir URLs de imágenes SIEMPRE si numfotos > 0
                     $numfotos = isset($propiedadCompleta['numfotos']) ? intval($propiedadCompleta['numfotos']) : 0;
                     $fotoletra = isset($propiedadCompleta['fotoletra']) ? $propiedadCompleta['fotoletra'] : '1';
                     $numagencia = isset($propiedadCompleta['numagencia']) ? $propiedadCompleta['numagencia'] : INMOVILLA_NUMAGENCIA;
                     
-                    if ($numfotos > 0 && !isset($propiedadCompleta['imagenes'])) {
+                    // SIEMPRE construir las URLs de imágenes si hay fotos
+                    if ($numfotos > 0) {
                         $imagenes = [];
                         for ($j = 1; $j <= $numfotos; $j++) {
                             $urlImagen = "https://fotos15.apinmo.com/{$numagencia}/{$codOfer}/{$fotoletra}-{$j}.jpg";
@@ -221,26 +227,26 @@ try {
                         }
                         $propiedadCompleta['imagenes'] = $imagenes;
                         error_log("[API REST Proxy] Propiedad {$codOfer} - Construidas {$numfotos} URLs de imágenes");
+                    } else {
+                        error_log("[API REST Proxy] Propiedad {$codOfer} - numfotos = 0, no hay imágenes");
                     }
                     
-                    // Asegurar que cod_ofer esté presente
-                    if (!isset($propiedadCompleta['cod_ofer'])) {
-                        $propiedadCompleta['cod_ofer'] = $codOfer;
-                    }
+                    // VERIFICAR y LOGUEAR todos los campos importantes
+                    $titulo = isset($propiedadCompleta['tituloes']) ? $propiedadCompleta['tituloes'] : (isset($propiedadCompleta['titulo1']) ? $propiedadCompleta['titulo1'] : null);
+                    $descripcion = isset($propiedadCompleta['descripciones']) ? $propiedadCompleta['descripciones'] : (isset($propiedadCompleta['descrip1']) ? $propiedadCompleta['descrip1'] : null);
+                    $precio = isset($propiedadCompleta['precioalq']) ? $propiedadCompleta['precioalq'] : (isset($propiedadCompleta['precioinmo']) ? $propiedadCompleta['precioinmo'] : null);
+                    $tipo = isset($propiedadCompleta['keyacci']) ? ($propiedadCompleta['keyacci'] == 2 ? 'alquiler' : 'venta') : null;
                     
-                    // VERIFICAR que tenga los campos necesarios
-                    if (!isset($propiedadCompleta['tituloes']) && !isset($propiedadCompleta['titulo1'])) {
-                        error_log("[API REST Proxy] ⚠️ ADVERTENCIA: Propiedad {$codOfer} no tiene título");
-                    }
-                    if (!isset($propiedadCompleta['descripciones']) && !isset($propiedadCompleta['descrip1'])) {
-                        error_log("[API REST Proxy] ⚠️ ADVERTENCIA: Propiedad {$codOfer} no tiene descripción");
-                    }
-                    if (!isset($propiedadCompleta['precioalq']) && !isset($propiedadCompleta['precioinmo'])) {
-                        error_log("[API REST Proxy] ⚠️ ADVERTENCIA: Propiedad {$codOfer} no tiene precio");
-                    }
+                    error_log("[API REST Proxy] ✅ Propiedad {$codOfer} - VERIFICACIÓN FINAL:");
+                    error_log("[API REST Proxy]   - Título: " . ($titulo ? substr($titulo, 0, 50) . '...' : 'NO'));
+                    error_log("[API REST Proxy]   - Descripción: " . ($descripcion ? substr($descripcion, 0, 50) . '...' : 'NO'));
+                    error_log("[API REST Proxy]   - Precio: " . ($precio ? $precio : 'NO'));
+                    error_log("[API REST Proxy]   - Tipo: " . ($tipo ? $tipo : 'NO'));
+                    error_log("[API REST Proxy]   - Imágenes: " . (isset($propiedadCompleta['imagenes']) ? count($propiedadCompleta['imagenes']) : 0));
+                    error_log("[API REST Proxy]   - Total campos: " . count($propiedadCompleta));
                     
+                    // AGREGAR la propiedad con TODOS sus datos completos
                     $propiedadesCompletas[] = $propiedadCompleta;
-                    error_log("[API REST Proxy] ✅ Propiedad {$codOfer} - Agregada con datos completos. Campos: " . count($propiedadCompleta) . " (tituloes: " . (isset($propiedadCompleta['tituloes']) ? 'SÍ' : 'NO') . ", descripciones: " . (isset($propiedadCompleta['descripciones']) ? 'SÍ' : 'NO') . ", precioalq: " . (isset($propiedadCompleta['precioalq']) ? 'SÍ' : 'NO') . ")");
                     
                     // Pequeña pausa para no sobrecargar la API
                     usleep(50000); // 0.05 segundos entre llamadas
