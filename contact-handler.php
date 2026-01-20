@@ -58,17 +58,16 @@ if (!$email) {
 }
 
 // Configuración SMTP
-// Si usas mxroute/mxrouting, necesitas las credenciales SMTP de tu cuenta mxroute
-// Si usas Hostinger directamente, usa smtp.hostinger.com
-// Por defecto intentamos mxroute primero, luego Hostinger
+// IMPORTANTE: Ajusta estos valores según tu proveedor de correo
 
-// Opción 1: mxroute/mxrouting (si tienes cuenta)
-$smtpHost = 'mail.mxrouting.net'; // O el servidor SMTP que te proporcionó mxroute
-$smtpPort = 587; // O 465 para SSL
-$smtpUser = 'contacto@antheacapital.com'; // Tu email completo en mxroute
-$smtpPass = 'AC@pital2025-contacto#'; // Contraseña de tu cuenta en mxroute
+// Opción 1: mxroute/mxrouting (recomendado si usas mxroute)
+// Basado en tus registros DNS que apuntan a fusion.mxrouting.net
+$smtpHost = 'fusion.mxrouting.net'; // Servidor SMTP de mxroute
+$smtpPort = 587; // Puerto para STARTTLS (o 465 para SSL)
+$smtpUser = 'contacto@antheacapital.com'; // Tu email completo
+$smtpPass = 'AC@pital2025-contacto#'; // Contraseña de tu cuenta
 
-// Opción 2: Hostinger (fallback)
+// Opción 2: Hostinger (si prefieres usar Hostinger directamente)
 // $smtpHost = 'smtp.hostinger.com';
 // $smtpPort = 587;
 // $smtpUser = 'contacto@antheacapital.com';
