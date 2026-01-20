@@ -10,7 +10,10 @@
   RewriteCond %{REQUEST_URI} \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|json|pdf)$ [NC]
   RewriteRule ^ - [L]
 
-  # NO redirigir archivos PHP (para Inmovilla)
+  # Redirigir /api/contact al proxy PHP temporal
+  RewriteRule ^api/contact$ api-contact-proxy.php [L]
+  
+  # NO redirigir otros archivos PHP (para Inmovilla)
   RewriteCond %{REQUEST_URI} \.(php)$ [NC]
   RewriteRule ^ - [L]
 

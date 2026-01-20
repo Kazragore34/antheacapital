@@ -163,6 +163,12 @@ jobs:
           echo "✅ Copiado api-inmovilla-rest-proxy.php (proxy para API REST de Inmovilla)"
         fi
         
+        # Copiar api-contact-proxy.php (proxy temporal para /api/contact)
+        if [ -f "api-contact-proxy.php" ]; then
+          cp api-contact-proxy.php deploy/
+          echo "✅ Copiado api-contact-proxy.php (proxy temporal para /api/contact)"
+        fi
+        
         # Backend - COPIAR TODO LO NECESARIO
         echo "📦 Preparando backend para deploy..."
         mkdir -p deploy/backend
