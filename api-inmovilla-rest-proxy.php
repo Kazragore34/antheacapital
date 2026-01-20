@@ -94,25 +94,58 @@ try {
     switch ($action) {
         case 'propiedades':
             // Obtener todas las propiedades con datos completos directamente
-            // Usar el endpoint /propiedades sin ?listado para obtener datos completos
+            // El endpoint /propiedades requiere el parámetro 'listado' según la documentación
             try {
+                // El endpoint /propiedades/?listado devuelve el listado básico
+                // Pero necesitamos datos completos, así que usamos /propiedades sin listado
+                // Sin embargo, puede requerir parámetros mínimos
                 $params = [];
-                if ($limit > 0) {
-                    $params['limit'] = $limit;
-                }
-                if ($offset > 0) {
-                    $params['offset'] = $offset;
-                }
-                if ($where) {
-                    $params['where'] = $where;
-                }
-                if ($order) {
-                    $params['order'] = $order;
+                
+                // Intentar primero con parámetros mínimos requeridos
+                // Según el error 400002 "Faltan parámetros", puede necesitar algún parámetro obligatorio
+                // Probamos con diferentes combinaciones de parámetros
+                
+                // Opción 1: Sin parámetros (puede fallar)
+                // Opción 2: Con limit mínimo
+                // Opción 3: Con listado=false o sin listado
+                
+                // Intentar primero sin parámetros para ver si funciona
+                $response = null;
+                $lastError = null;
+                
+                // Intentar diferentes combinaciones de endpoints
+                $endpointsToTry = [
+                    ['/propiedades', []], // Sin parámetros
+                    ['/propiedades', ['limit' => $limit > 0 ? $limit : 100]], // Con limit
+                    ['/propiedades', ['limit' => $limit > 0 ? $limit : 100, 'offset' => $offset]], // Con limit y offset
+                ];
+                
+                foreach ($endpointsToTry as $endpointConfig) {
+                    list($endpoint, $endpointParams) = $endpointConfig;
+                    try {
+                        error_log("[API REST Proxy] Intentando endpoint: {$endpoint} con params: " . json_encode($endpointParams));
+                        $response = callInmovillaAPI($endpoint, $endpointParams);
+                        $testDecoded = json_decode($response, true);
+                        
+                        // Si no hay error 400, usar este endpoint
+                        if (!isset($testDecoded['error']) || (isset($testDecoded['error']['codigo']) && $testDecoded['error']['codigo'] !== 400002)) {
+                            error_log("[API REST Proxy] Endpoint exitoso: {$endpoint}");
+                            break;
+                        } else {
+                            error_log("[API REST Proxy] Endpoint {$endpoint} devolvió error, probando siguiente...");
+                            $response = null;
+                        }
+                    } catch (Exception $e) {
+                        $lastError = $e->getMessage();
+                        error_log("[API REST Proxy] Endpoint {$endpoint} falló: " . $e->getMessage());
+                        $response = null;
+                        continue;
+                    }
                 }
                 
-                error_log("[API REST Proxy] Llamando a /propiedades con params: " . json_encode($params));
-                
-                $response = callInmovillaAPI('/propiedades', $params);
+                if (!$response) {
+                    throw new Exception("Todos los endpoints de /propiedades fallaron. Último error: " . ($lastError ?? 'Error 400: Faltan parámetros'));
+                }
                 
                 if (empty($response)) {
                     throw new Exception('La API de Inmovilla devolvió una respuesta vacía');
