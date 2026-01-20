@@ -35,6 +35,35 @@ export class PropertiesService {
     return { deletedCount: result.deletedCount || 0 }
   }
 
+  async debug(): Promise<any> {
+    try {
+      const xmlProperties = await this.loadPropertiesFromXML()
+      return {
+        xmlUrl: this.XML_URL,
+        xmlLocalPath: this.XML_LOCAL_PATH,
+        propertiesFound: xmlProperties.length,
+        firstProperty: xmlProperties.length > 0 ? {
+          codOfer: xmlProperties[0].codOfer,
+          title: xmlProperties[0].title,
+          price: xmlProperties[0].price,
+          type: xmlProperties[0].type,
+          city: xmlProperties[0].location?.city,
+        } : null,
+        allProperties: xmlProperties.map(p => ({
+          codOfer: p.codOfer,
+          title: p.title,
+          price: p.price,
+          type: p.type,
+        })),
+      }
+    } catch (error) {
+      return {
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+      }
+    }
+  }
+
   async findAll(query: {
     type?: string
     city?: string

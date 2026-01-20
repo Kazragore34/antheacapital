@@ -45,6 +45,11 @@ export class PropertiesController {
     })
   }
 
+  @Get('debug')
+  async debug() {
+    return this.propertiesService.debug()
+  }
+
   @Get('by-cod/:codOfer')
   async findByCodOfer(@Param('codOfer') codOfer: string) {
     const property = await this.propertiesService.findByCodOfer(codOfer)
