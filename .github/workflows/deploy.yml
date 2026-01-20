@@ -214,6 +214,40 @@ jobs:
         
         echo "✅ Backend completamente preparado para deploy"
     
+    - name: Verificar estructura antes de deploy
+      run: |
+        echo "🔍 Verificando estructura de deploy antes de subir..."
+        echo "📁 Contenido de deploy/:"
+        ls -la deploy/ || echo "deploy/ no existe"
+        echo ""
+        echo "📁 Contenido de deploy/backend/:"
+        ls -la deploy/backend/ || echo "deploy/backend/ no existe"
+        echo ""
+        echo "📁 Verificando dist/:"
+        if [ -d "deploy/backend/dist" ]; then
+          echo "✅ dist/ existe"
+          ls -la deploy/backend/dist/ | head -10
+          echo "📊 Tamaño: $(du -sh deploy/backend/dist | cut -f1)"
+        else
+          echo "❌ dist/ NO existe"
+        fi
+        echo ""
+        echo "📁 Verificando node_modules/:"
+        if [ -d "deploy/backend/node_modules" ]; then
+          echo "✅ node_modules/ existe"
+          ls -la deploy/backend/node_modules/ | head -10
+          echo "📊 Tamaño: $(du -sh deploy/backend/node_modules | cut -f1)"
+          if [ -d "deploy/backend/node_modules/xml2js" ]; then
+            echo "✅ xml2js encontrado en node_modules"
+          else
+            echo "❌ xml2js NO encontrado en node_modules"
+          fi
+        else
+          echo "❌ node_modules/ NO existe"
+        fi
+        echo ""
+        echo "✅ Verificación completada"
+    
     - name: Deploy to Hostinger
       uses: SamKirkland/FTP-Deploy-Action@4.3.0
       with:
@@ -222,4 +256,12 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         local-dir: ./deploy/
         server-dir: /public_html/
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/node_modules/.cache/**
+          **/.DS_Store
+        dangerous-clean-slate: false
+        dry-run: false
+        log-level: verbose
 
