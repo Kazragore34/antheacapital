@@ -108,6 +108,12 @@ jobs:
           echo "✅ Copiado logo-white.svg a la raíz"
         fi
         
+        # Copiar test-smtp.php para diagnóstico
+        if [ -f "test-smtp.php" ]; then
+          cp test-smtp.php deploy/
+          echo "✅ Copiado test-smtp.php para diagnóstico"
+        fi
+        
         # Verificar que el código compilado NO tiene referencias a XML
         if grep -r "XMLPropertiesService\|xml-proxy\|xml-properties" frontend/dist/ 2>/dev/null; then
           echo "❌ ERROR: El código compilado todavía tiene referencias a XML!"
