@@ -28,7 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 define('INMOVILLA_API_TOKEN', 'F614ADA147C30D2D08FF53714B8CC23F');
 define('INMOVILLA_NUMAGENCIA', '13740');
 // URL base de la API REST de Inmovilla (según documentación oficial)
-define('INMOVILLA_API_BASE_URL', 'https://procesos.inmovilla.com/api/v1');
+// IMPORTANTE: Usar procesos.apinmo.com (no procesos.inmovilla.com)
+define('INMOVILLA_API_BASE_URL', 'https://procesos.apinmo.com/api/v1');
 
 // Obtener parámetros
 $action = $_GET['action'] ?? 'propiedades';
@@ -43,7 +44,7 @@ $order = $_GET['order'] ?? '';
  */
 function callInmovillaAPI($endpoint, $params = []) {
     // Construir URL base según documentación oficial
-    // URL: https://procesos.inmovilla.com/api/v1
+    // URL: https://procesos.apinmo.com/api/v1
     $url = INMOVILLA_API_BASE_URL . $endpoint;
     
     // Agregar parámetros a la URL
@@ -161,7 +162,13 @@ try {
                                 // Verificar que sea JSON válido antes de continuar
                                 $testDecoded = json_decode($responseDetalle, true);
                                 if (json_last_error() === JSON_ERROR_NONE && !isset($testDecoded['error'])) {
-                                    break; // Éxito, salir del loop
+                                    // Verificar que tenga la estructura esperada
+                                    if (isset($testDecoded['data']['ficha'][0]) || isset($testDecoded['data']['ficha'])) {
+                                        break; // Éxito, salir del loop
+                                    } else {
+                                        error_log("[API REST Proxy] Respuesta sin estructura esperada para {$codOfer}. Keys: " . implode(', ', array_keys($testDecoded)));
+                                        $responseDetalle = null; // Resetear para reintentar
+                                    }
                                 } else {
                                     error_log("[API REST Proxy] Respuesta inválida o con error para {$codOfer}: " . substr($responseDetalle, 0, 200));
                                     $responseDetalle = null; // Resetear para reintentar
@@ -299,50 +306,52 @@ try {
                 throw new Exception('codOfer es requerido para la acción ficha');
             }
             
-            // Intentar diferentes formatos de endpoint
-            $endpointsToTry = [
-                '/propiedades/' . $codOfer,
-                '/propiedades/?cod_ofer=' . $codOfer,
-                '/propiedades/?id=' . $codOfer,
-                '/propiedad/' . $codOfer,
-                '/propiedad/?cod_ofer=' . $codOfer
-            ];
+            // Usar el endpoint que sabemos que funciona según la documentación
+            // Formato: /propiedades/{codOfer}
+            $endpoint = '/propiedades/' . $codOfer;
             
-            $response = null;
-            $lastError = null;
-            foreach ($endpointsToTry as $endpoint) {
-                try {
-                    error_log("[API REST Proxy] [FICHA] Intentando endpoint: {$endpoint}");
-                    $response = callInmovillaAPI($endpoint, []);
-                    $testDecoded = json_decode($response, true);
-                    
-                    // Si no hay error 404, usar este endpoint
-                    if (!isset($testDecoded['error']) || strpos($response, '404') === false) {
-                        error_log("[API REST Proxy] [FICHA] Endpoint exitoso: {$endpoint}");
-                        break;
-                    }
-                } catch (Exception $e) {
-                    $lastError = $e->getMessage();
-                    error_log("[API REST Proxy] [FICHA] Endpoint {$endpoint} falló: " . $e->getMessage());
-                    continue;
-                }
+            error_log("[API REST Proxy] [FICHA] Obteniendo ficha de propiedad {$codOfer} desde endpoint: {$endpoint}");
+            
+            try {
+                $response = callInmovillaAPI($endpoint, []);
+            } catch (Exception $e) {
+                error_log("[API REST Proxy] [FICHA] Error obteniendo ficha: " . $e->getMessage());
+                throw $e;
             }
             
-            if (!$response) {
-                throw new Exception("Todos los endpoints fallaron para ficha. Último error: " . ($lastError ?? 'Desconocido'));
+            if (empty($response)) {
+                throw new Exception("La API devolvió una respuesta vacía para la propiedad {$codOfer}");
             }
             
             $decoded = json_decode($response, true);
             
-            // Adaptar estructura de respuesta
-            if (isset($decoded['data'])) {
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                error_log("[API REST Proxy] [FICHA] Error decodificando JSON: " . json_last_error_msg());
+                error_log("[API REST Proxy] [FICHA] Respuesta raw (primeros 1000 chars): " . substr($response, 0, 1000));
+                throw new Exception('Error decodificando JSON: ' . json_last_error_msg() . '. Respuesta: ' . substr($response, 0, 500));
+            }
+            
+            // Verificar si hay error en la respuesta
+            if (isset($decoded['error'])) {
+                throw new Exception('Error de la API: ' . ($decoded['mensaje'] ?? $decoded['error']));
+            }
+            
+            // Adaptar estructura de respuesta - la API REST devuelve data.ficha[0]
+            if (isset($decoded['data']['ficha'][0])) {
+                $data = ['ficha' => [$decoded['data']['ficha'][0]]];
+                error_log("[API REST Proxy] [FICHA] Datos extraídos de data.ficha[0]");
+            } elseif (isset($decoded['data']['ficha']) && is_array($decoded['data']['ficha']) && count($decoded['data']['ficha']) > 0) {
+                $data = ['ficha' => [$decoded['data']['ficha'][0]]];
+                error_log("[API REST Proxy] [FICHA] Datos extraídos de data.ficha[0] (alternativo)");
+            } elseif (isset($decoded['data']) && is_array($decoded['data'])) {
                 $data = ['ficha' => [$decoded['data']]];
+                error_log("[API REST Proxy] [FICHA] Datos extraídos de data");
             } elseif (isset($decoded['ficha'])) {
                 $data = $decoded;
-            } elseif (is_array($decoded) && !isset($decoded['success'])) {
-                $data = ['ficha' => [$decoded]];
+                error_log("[API REST Proxy] [FICHA] Datos extraídos de ficha");
             } else {
-                $data = ['ficha' => []];
+                error_log("[API REST Proxy] [FICHA] Estructura no reconocida. Keys disponibles: " . implode(', ', array_keys($decoded)));
+                throw new Exception("Estructura de respuesta no reconocida para la propiedad {$codOfer}");
             }
             break;
             
