@@ -8,7 +8,7 @@ import { useTranslation } from '../hooks/useTranslation'
 import { translateText } from '../services/translation.service'
 
 const PropertyDetail = () => {
-  const { t, language } = useTranslation()
+  const { t, tString, language } = useTranslation()
   const { id } = useParams<{ id: string }>()
   const [property, setProperty] = useState<Property | null>(null)
   const [translatedProperty, setTranslatedProperty] = useState<Property | null>(null)
