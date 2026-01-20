@@ -268,7 +268,39 @@ try {
                 throw new Exception('codOfer es requerido para la acción ficha');
             }
             
-            $response = callInmovillaAPI('/propiedades/' . $codOfer, []);
+            // Intentar diferentes formatos de endpoint
+            $endpointsToTry = [
+                '/propiedades/' . $codOfer,
+                '/propiedades/?cod_ofer=' . $codOfer,
+                '/propiedades/?id=' . $codOfer,
+                '/propiedad/' . $codOfer,
+                '/propiedad/?cod_ofer=' . $codOfer
+            ];
+            
+            $response = null;
+            $lastError = null;
+            foreach ($endpointsToTry as $endpoint) {
+                try {
+                    error_log("[API REST Proxy] [FICHA] Intentando endpoint: {$endpoint}");
+                    $response = callInmovillaAPI($endpoint, []);
+                    $testDecoded = json_decode($response, true);
+                    
+                    // Si no hay error 404, usar este endpoint
+                    if (!isset($testDecoded['error']) || strpos($response, '404') === false) {
+                        error_log("[API REST Proxy] [FICHA] Endpoint exitoso: {$endpoint}");
+                        break;
+                    }
+                } catch (Exception $e) {
+                    $lastError = $e->getMessage();
+                    error_log("[API REST Proxy] [FICHA] Endpoint {$endpoint} falló: " . $e->getMessage());
+                    continue;
+                }
+            }
+            
+            if (!$response) {
+                throw new Exception("Todos los endpoints fallaron para ficha. Último error: " . ($lastError ?? 'Desconocido'));
+            }
+            
             $decoded = json_decode($response, true);
             
             // Adaptar estructura de respuesta
