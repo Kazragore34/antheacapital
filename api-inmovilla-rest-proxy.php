@@ -103,53 +103,76 @@ try {
             // Solución: obtener listado básico y luego detalles completos usando /propiedades/{codOfer}
             try {
                 // Paso 1: Obtener listado básico
+                // Intentar diferentes endpoints según la documentación
                 error_log("[API REST Proxy] ========== INICIO OBTENCIÓN PROPIEDADES ==========");
-                error_log("[API REST Proxy] Llamando a /propiedades/?listado");
-                $response = callInmovillaAPI('/propiedades/?listado', []);
                 
-                // Verificar que la respuesta no esté vacía
-                if (empty($response)) {
-                    error_log("[API REST Proxy] ❌ ERROR: Respuesta vacía del endpoint /propiedades/?listado");
-                    throw new Exception('La API de Inmovilla devolvió una respuesta vacía para el listado básico');
-                }
-                
-                error_log("[API REST Proxy] Respuesta recibida (primeros 500 chars): " . substr($response, 0, 500));
-                
-                $decoded = json_decode($response, true);
-                
-                // Verificar que el JSON se decodificó correctamente
-                if (json_last_error() !== JSON_ERROR_NONE) {
-                    error_log("[API REST Proxy] ❌ ERROR: Error decodificando JSON: " . json_last_error_msg());
-                    error_log("[API REST Proxy] Respuesta completa: " . $response);
-                    throw new Exception('Error decodificando JSON del listado básico: ' . json_last_error_msg() . '. Respuesta: ' . substr($response, 0, 500));
-                }
-                
-                error_log("[API REST Proxy] JSON decodificado correctamente. Tipo: " . gettype($decoded));
-                error_log("[API REST Proxy] Keys del objeto decodificado: " . (is_array($decoded) ? implode(', ', array_keys($decoded)) : 'No es array'));
-                
-                // Extraer listado básico
                 $listadoBasico = [];
-                if (is_array($decoded)) {
-                    $listadoBasico = $decoded;
-                    error_log("[API REST Proxy] Listado básico extraído directamente del array");
-                } elseif (isset($decoded['data']) && is_array($decoded['data'])) {
-                    $listadoBasico = $decoded['data'];
-                    error_log("[API REST Proxy] Listado básico extraído de decoded['data']");
-                } elseif (isset($decoded['error'])) {
-                    error_log("[API REST Proxy] ❌ ERROR de la API: " . ($decoded['mensaje'] ?? $decoded['error']));
-                    throw new Exception('Error de la API: ' . ($decoded['mensaje'] ?? $decoded['error']));
-                } else {
-                    error_log("[API REST Proxy] ⚠️ ADVERTENCIA: Estructura no reconocida. Tipo: " . gettype($decoded));
-                    if (is_array($decoded)) {
-                        error_log("[API REST Proxy] Keys disponibles: " . implode(', ', array_keys($decoded)));
+                $endpointsListado = [
+                    '/propiedades/?listado',
+                    '/propiedades',
+                    '/propiedades/?limit=' . $limit . '&offset=' . $offset
+                ];
+                
+                foreach ($endpointsListado as $endpointListado) {
+                    try {
+                        error_log("[API REST Proxy] Intentando endpoint para listado: {$endpointListado}");
+                        $response = callInmovillaAPI($endpointListado, []);
+                        
+                        // Verificar que la respuesta no esté vacía
+                        if (empty($response)) {
+                            error_log("[API REST Proxy] Respuesta vacía del endpoint {$endpointListado}, intentando siguiente...");
+                            continue;
+                        }
+                        
+                        error_log("[API REST Proxy] Respuesta recibida (primeros 500 chars): " . substr($response, 0, 500));
+                        
+                        $decoded = json_decode($response, true);
+                        
+                        // Verificar que el JSON se decodificó correctamente
+                        if (json_last_error() !== JSON_ERROR_NONE) {
+                            error_log("[API REST Proxy] Error decodificando JSON del endpoint {$endpointListado}: " . json_last_error_msg());
+                            continue;
+                        }
+                        
+                        error_log("[API REST Proxy] JSON decodificado correctamente. Tipo: " . gettype($decoded));
+                        error_log("[API REST Proxy] Keys del objeto decodificado: " . (is_array($decoded) ? implode(', ', array_keys($decoded)) : 'No es array'));
+                        
+                        // Extraer listado básico
+                        if (is_array($decoded)) {
+                            $listadoBasico = $decoded;
+                            error_log("[API REST Proxy] Listado básico extraído directamente del array");
+                        } elseif (isset($decoded['data']) && is_array($decoded['data'])) {
+                            $listadoBasico = $decoded['data'];
+                            error_log("[API REST Proxy] Listado básico extraído de decoded['data']");
+                        } elseif (isset($decoded['data']['paginacion']) && is_array($decoded['data']['paginacion'])) {
+                            $listadoBasico = $decoded['data']['paginacion'];
+                            error_log("[API REST Proxy] Listado básico extraído de decoded['data']['paginacion']");
+                        } elseif (isset($decoded['error'])) {
+                            error_log("[API REST Proxy] Error de la API en endpoint {$endpointListado}: " . ($decoded['mensaje'] ?? $decoded['error']));
+                            continue;
+                        } else {
+                            error_log("[API REST Proxy] Estructura no reconocida en endpoint {$endpointListado}. Tipo: " . gettype($decoded));
+                            if (is_array($decoded)) {
+                                error_log("[API REST Proxy] Keys disponibles: " . implode(', ', array_keys($decoded)));
+                            }
+                            continue;
+                        }
+                        
+                        if (count($listadoBasico) > 0) {
+                            error_log("[API REST Proxy] ✅ ÉXITO: Endpoint {$endpointListado} devolvió " . count($listadoBasico) . " propiedades");
+                            break; // Salir del loop si encontramos datos
+                        }
+                    } catch (Exception $e) {
+                        error_log("[API REST Proxy] Error con endpoint {$endpointListado}: " . $e->getMessage());
+                        continue; // Intentar siguiente endpoint
                     }
                 }
                 
                 error_log("[API REST Proxy] Listado básico obtenido: " . count($listadoBasico) . " propiedades");
                 
                 if (count($listadoBasico) === 0) {
-                    error_log("[API REST Proxy] ❌ ERROR CRÍTICO: El listado básico está vacío. No hay propiedades para procesar.");
-                    error_log("[API REST Proxy] Respuesta completa de la API: " . json_encode($decoded, JSON_PRETTY_PRINT));
+                    error_log("[API REST Proxy] ❌ ERROR CRÍTICO: No se pudo obtener ningún listado básico de ningún endpoint.");
+                    error_log("[API REST Proxy] Todos los endpoints probados fallaron o devolvieron datos vacíos.");
                     $data = ['paginacion' => []];
                     break; // Salir del switch
                 }
