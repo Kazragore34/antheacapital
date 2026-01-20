@@ -1,0 +1,150 @@
+<?php
+/**
+ * Proxy PHP para la API REST de Inmovilla
+ * Usa autenticación por token en lugar de usuario/contraseña
+ * 
+ * Uso:
+ * GET /api-inmovilla-rest-proxy.php?action=propiedades&limit=100
+ * GET /api-inmovilla-rest-proxy.php?action=ficha&codOfer=395378
+ */
+
+// Headers CORS
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Accept, Authorization');
+header('Access-Control-Max-Age: 3600');
+header('Content-Type: application/json; charset=utf-8');
+
+// Manejar preflight OPTIONS request
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
+
+// Configuración de Inmovilla API REST
+define('INMOVILLA_API_TOKEN', 'F614ADA147C30D2D08FF53714B8CC23F');
+define('INMOVILLA_NUMAGENCIA', '13740');
+define('INMOVILLA_API_BASE_URL', 'https://procesos.apinmo.com/api/v1');
+
+// Obtener parámetros
+$action = $_GET['action'] ?? 'propiedades';
+$limit = isset($_GET['limit']) ? intval($_GET['limit']) : 100;
+$offset = isset($_GET['offset']) ? intval($_GET['offset']) : 0;
+$codOfer = $_GET['codOfer'] ?? null;
+$where = $_GET['where'] ?? '';
+$order = $_GET['order'] ?? '';
+
+/**
+ * Realizar petición a la API REST de Inmovilla
+ */
+function callInmovillaAPI($endpoint, $params = []) {
+    $url = INMOVILLA_API_BASE_URL . $endpoint;
+    
+    // Agregar parámetros a la URL
+    if (!empty($params)) {
+        $url .= '?' . http_build_query($params);
+    }
+    
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Authorization: Bearer ' . INMOVILLA_API_TOKEN,
+        'Content-Type: application/json',
+        'Accept: application/json',
+        'X-Agencia: ' . INMOVILLA_NUMAGENCIA
+    ]);
+    
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $error = curl_error($ch);
+    curl_close($ch);
+    
+    if ($error) {
+        throw new Exception('Error en cURL: ' . $error);
+    }
+    
+    if ($httpCode !== 200) {
+        error_log('[API REST Proxy] HTTP Error ' . $httpCode . ': ' . substr($response, 0, 500));
+        throw new Exception('HTTP Error ' . $httpCode . ': ' . substr($response, 0, 200));
+    }
+    
+    return $response;
+}
+
+try {
+    $data = null;
+    
+    switch ($action) {
+        case 'propiedades':
+            // Obtener todas las propiedades
+            $params = [
+                'agencia' => INMOVILLA_NUMAGENCIA,
+                'limit' => $limit,
+                'offset' => $offset,
+            ];
+            
+            if ($where) {
+                // Parsear condiciones WHERE simples
+                $params['where'] = $where;
+            }
+            
+            if ($order) {
+                $params['order'] = $order;
+            }
+            
+            $response = callInmovillaAPI('/propiedades', $params);
+            $data = json_decode($response, true);
+            break;
+            
+        case 'ficha':
+            // Obtener una propiedad específica por codOfer
+            if (!$codOfer) {
+                throw new Exception('codOfer es requerido para la acción ficha');
+            }
+            
+            $response = callInmovillaAPI('/propiedades/' . $codOfer, [
+                'agencia' => INMOVILLA_NUMAGENCIA
+            ]);
+            $data = json_decode($response, true);
+            break;
+            
+        case 'destacados':
+            // Obtener propiedades destacadas
+            $response = callInmovillaAPI('/propiedades', [
+                'agencia' => INMOVILLA_NUMAGENCIA,
+                'destacado' => 1,
+                'limit' => $limit,
+                'order' => $order ?: 'precio'
+            ]);
+            $data = json_decode($response, true);
+            break;
+            
+        default:
+            throw new Exception("Acción no válida: {$action}");
+    }
+    
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        throw new Exception('Error decodificando JSON: ' . json_last_error_msg() . '. Respuesta: ' . substr($response ?? '', 0, 500));
+    }
+    
+    // Devolver respuesta JSON
+    echo json_encode([
+        'success' => true,
+        'action' => $action,
+        'data' => $data,
+        'timestamp' => time()
+    ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+    
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'error' => $e->getMessage(),
+        'timestamp' => time()
+    ], JSON_UNESCAPED_UNICODE);
+}
+?>
