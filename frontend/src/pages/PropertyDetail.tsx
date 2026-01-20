@@ -11,12 +11,18 @@ const PropertyDetail = () => {
   const [loading, setLoading] = useState(true)
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [lightboxIndex, setLightboxIndex] = useState(0)
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0)
 
   useEffect(() => {
     if (id) {
       loadProperty()
     }
   }, [id])
+
+  useEffect(() => {
+    // Resetear imagen seleccionada cuando cambia la propiedad
+    setSelectedImageIndex(0)
+  }, [property?._id])
 
   const loadProperty = async () => {
     try {
@@ -92,51 +98,123 @@ const PropertyDetail = () => {
 
   return (
     <div className="min-h-screen bg-black-soft">
-      {/* Image Gallery */}
+      {/* Modern Image Gallery */}
       {property.images && Array.isArray(property.images) && property.images.length > 0 && (
-        <section className="relative">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            <div className="md:col-span-2">
-              <img
-                src={property.images[0]}
-                alt={property.title}
-                className="w-full h-[60vh] object-cover cursor-pointer hover:opacity-90 transition-opacity"
-                onClick={() => {
-                  setLightboxIndex(0)
-                  setLightboxOpen(true)
-                }}
-                onError={(e) => {
-                  e.currentTarget.src = 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1200'
-                }}
-              />
+        <section className="relative bg-gray-900">
+          <div className="container mx-auto px-4 py-8">
+            {/* Main Image Display */}
+            <div className="relative mb-4 rounded-lg overflow-hidden shadow-2xl">
+              <div className="relative aspect-video bg-gray-800">
+                <img
+                  src={property.images[selectedImageIndex]}
+                  alt={`${property.title} - Imagen ${selectedImageIndex + 1}`}
+                  className="w-full h-full object-cover cursor-pointer transition-transform duration-300 hover:scale-105"
+                  onClick={() => {
+                    setLightboxIndex(selectedImageIndex)
+                    setLightboxOpen(true)
+                  }}
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1200'
+                  }}
+                />
+                {/* Overlay con información */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
+                  <button
+                    onClick={() => {
+                      setLightboxIndex(selectedImageIndex)
+                      setLightboxOpen(true)
+                    }}
+                    className="bg-gold text-black-soft px-6 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-all transform hover:scale-105"
+                  >
+                    Ver en pantalla completa
+                  </button>
+                </div>
+                {/* Contador de imágenes */}
+                <div className="absolute top-4 right-4 bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-semibold">
+                  {selectedImageIndex + 1} / {property.images.length}
+                </div>
+              </div>
             </div>
-            {Array.isArray(property.images) && property.images.slice(1, 5).map((img, index) => (
-              <img
-                key={index}
-                src={img}
-                alt={`${property.title} ${index + 2}`}
-                className="w-full h-48 object-cover cursor-pointer hover:opacity-90 transition-opacity"
-                onClick={() => {
-                  setLightboxIndex(index + 1)
-                  setLightboxOpen(true)
-                }}
-                onError={(e) => {
-                  e.currentTarget.src = 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800'
-                }}
-              />
-            ))}
+
+            {/* Thumbnail Gallery */}
+            {property.images.length > 1 && (
+              <div className="relative">
+                <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                  {property.images.map((img, index) => (
+                    <div
+                      key={index}
+                      className={`relative flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden cursor-pointer transition-all duration-300 ${
+                        selectedImageIndex === index
+                          ? 'ring-2 ring-gold scale-105'
+                          : 'opacity-70 hover:opacity-100 hover:scale-105'
+                      }`}
+                      onClick={() => setSelectedImageIndex(index)}
+                    >
+                      <img
+                        src={img}
+                        alt={`${property.title} - Miniatura ${index + 1}`}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=200'
+                        }}
+                      />
+                      {selectedImageIndex === index && (
+                        <div className="absolute inset-0 bg-gold/20 flex items-center justify-center">
+                          <div className="w-3 h-3 bg-gold rounded-full"></div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                
+                {/* Navigation Arrows */}
+                {property.images.length > 5 && (
+                  <>
+                    {selectedImageIndex > 0 && (
+                      <button
+                        onClick={() => setSelectedImageIndex(selectedImageIndex - 1)}
+                        className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/70 backdrop-blur-sm text-white p-2 rounded-full hover:bg-black/90 transition-all z-10"
+                        aria-label="Imagen anterior"
+                      >
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                        </svg>
+                      </button>
+                    )}
+                    {selectedImageIndex < property.images.length - 1 && (
+                      <button
+                        onClick={() => setSelectedImageIndex(selectedImageIndex + 1)}
+                        className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/70 backdrop-blur-sm text-white p-2 rounded-full hover:bg-black/90 transition-all z-10"
+                        aria-label="Siguiente imagen"
+                      >
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* Ver todas las imágenes button */}
+            {property.images.length > 0 && (
+              <div className="mt-4 text-center">
+                <button
+                  onClick={() => {
+                    setLightboxIndex(selectedImageIndex)
+                    setLightboxOpen(true)
+                  }}
+                  className="inline-flex items-center gap-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white px-6 py-3 rounded-lg font-semibold transition-all hover:border-gold"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  Ver todas las imágenes ({property.images.length})
+                </button>
+              </div>
+            )}
           </div>
-          {property.images.length > 5 && (
-            <button
-              onClick={() => {
-                setLightboxIndex(0)
-                setLightboxOpen(true)
-              }}
-              className="absolute bottom-4 right-4 bg-black bg-opacity-70 text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-all"
-            >
-              Ver todas las imágenes ({property.images.length})
-            </button>
-          )}
         </section>
       )}
 
