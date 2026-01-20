@@ -34,30 +34,36 @@ const Properties = () => {
     setLoading(true)
     try {
       console.log('[Properties] Loading properties with filters:', filters)
+      console.log('[Properties] Calling propertiesService.getAll()...')
+      
       const data = await propertiesService.getAll(filters)
+      
       console.log('[Properties] Received data:', data)
       console.log('[Properties] Data type:', Array.isArray(data) ? 'array' : typeof data)
       console.log('[Properties] Data length:', Array.isArray(data) ? data.length : 'N/A')
       
-      // Solo mostrar propiedades del XML de Inmovilla
-      if (Array.isArray(data) && data.length > 0) {
-        console.log(`[Properties] Setting ${data.length} properties`)
-        setProperties(data)
+      if (Array.isArray(data)) {
+        if (data.length > 0) {
+          console.log(`[Properties] ✅ Setting ${data.length} properties`)
+          setProperties(data)
+        } else {
+          console.warn('[Properties] ⚠️ Empty array received - no properties found')
+          setProperties([])
+        }
       } else {
-        console.warn('[Properties] No properties found or empty array')
-        // No hay propiedades disponibles
+        console.error('[Properties] ❌ Data is not an array:', typeof data, data)
         setProperties([])
       }
     } catch (error) {
-      console.error('[Properties] Error loading properties:', error)
+      console.error('[Properties] ❌ Error loading properties:', error)
       if (error instanceof Error) {
         console.error('[Properties] Error message:', error.message)
         console.error('[Properties] Error stack:', error.stack)
       }
-      // En caso de error, no mostrar propiedades
       setProperties([])
     } finally {
       setLoading(false)
+      console.log('[Properties] Loading completed')
     }
   }
 

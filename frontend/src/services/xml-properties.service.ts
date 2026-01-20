@@ -112,7 +112,6 @@ function extractProvinceFromCP(cp: string): string {
   const cpNum = parseInt(cp.substring(0, 2))
   const provincias: { [key: number]: string } = {
     28: 'Madrid',
-    28: 'Madrid',
   }
   return provincias[cpNum] || ''
 }
@@ -173,14 +172,27 @@ export async function loadPropertiesFromXML(): Promise<Property[]> {
   try {
     console.log('[XMLPropertiesService] Cargando XML desde:', XML_URL)
     
-    // Fetch del XML
-    const response = await fetch(XML_URL)
+    // Fetch del XML con manejo de CORS
+    const response = await fetch(XML_URL, {
+      method: 'GET',
+      mode: 'cors',
+      cache: 'no-cache',
+      headers: {
+        'Accept': 'application/xml, text/xml, */*',
+      },
+    })
+    
     if (!response.ok) {
+      console.error(`[XMLPropertiesService] HTTP error! status: ${response.status}`)
       throw new Error(`HTTP error! status: ${response.status}`)
     }
     
     const xmlText = await response.text()
     console.log(`[XMLPropertiesService] XML cargado (${xmlText.length} caracteres)`)
+    
+    if (!xmlText || xmlText.length === 0) {
+      throw new Error('XML vacío o no válido')
+    }
     
     // Parsear XML
     const xmlDoc = parseXML(xmlText)
@@ -189,6 +201,21 @@ export async function loadPropertiesFromXML(): Promise<Property[]> {
     const propiedades = extractPropertiesFromXML(xmlDoc)
     console.log(`[XMLPropertiesService] Encontradas ${propiedades.length} propiedades en XML`)
     
+    if (propiedades.length === 0) {
+      console.warn('[XMLPropertiesService] No se encontraron propiedades en el XML')
+      // Intentar método alternativo de extracción
+      const altPropiedades = extractPropertiesAlternative(xmlDoc)
+      console.log(`[XMLPropertiesService] Método alternativo encontró ${altPropiedades.length} propiedades`)
+      if (altPropiedades.length > 0) {
+        const properties = altPropiedades
+          .map((prop) => transformInmovillaProperty(prop))
+          .filter((prop): prop is Property => prop !== null)
+        console.log(`[XMLPropertiesService] Transformadas ${properties.length} propiedades`)
+        return properties
+      }
+      return []
+    }
+    
     // Transformar propiedades
     const properties = propiedades
       .map((prop) => transformInmovillaProperty(prop))
@@ -196,11 +223,65 @@ export async function loadPropertiesFromXML(): Promise<Property[]> {
     
     console.log(`[XMLPropertiesService] Transformadas ${properties.length} propiedades`)
     
+    if (properties.length === 0 && propiedades.length > 0) {
+      console.warn('[XMLPropertiesService] Todas las propiedades fueron filtradas durante la transformación')
+      console.log('[XMLPropertiesService] Primera propiedad sin transformar:', propiedades[0])
+    }
+    
     return properties
   } catch (error) {
     console.error('[XMLPropertiesService] Error cargando propiedades desde XML:', error)
+    if (error instanceof Error) {
+      console.error('[XMLPropertiesService] Error message:', error.message)
+      console.error('[XMLPropertiesService] Error stack:', error.stack)
+    }
     return []
   }
+}
+
+// Método alternativo de extracción si el primero falla
+function extractPropertiesAlternative(xmlDoc: Document): any[] {
+  const propiedades: any[] = []
+  
+  // Buscar todas las propiedades posibles
+  const allNodes = xmlDoc.querySelectorAll('*')
+  const propiedadNodes: Element[] = []
+  
+  allNodes.forEach((node) => {
+    if (node.nodeName === 'propiedad' || node.nodeName.toLowerCase() === 'propiedad') {
+      propiedadNodes.push(node as Element)
+    }
+  })
+  
+  propiedadNodes.forEach((propNode) => {
+    const prop: any = {}
+    
+    // Extraer atributos
+    Array.from(propNode.attributes).forEach((attr) => {
+      prop[attr.name] = attr.value
+    })
+    
+    // Extraer elementos hijos
+    Array.from(propNode.children).forEach((child) => {
+      const nodeName = child.nodeName
+      const nodeValue = child.textContent || ''
+      
+      if (nodeName === 'datos') {
+        const datos: any = {}
+        Array.from(child.children).forEach((datoChild) => {
+          datos[datoChild.nodeName] = datoChild.textContent || ''
+        })
+        prop.datos = datos
+        Object.assign(prop, datos)
+      } else {
+        prop[nodeName] = nodeValue
+      }
+    })
+    
+    propiedades.push(prop)
+  })
+  
+  return propiedades
 }
 
 // Filtrar propiedades

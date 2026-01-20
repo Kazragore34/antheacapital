@@ -63,17 +63,17 @@ export const propertiesService = {
     }
   },
 
-  create: async (property: Partial<Property>): Promise<Property> => {
+  create: async (_property: Partial<Property>): Promise<Property> => {
     // No soportado - las propiedades vienen del XML
     throw new Error('Crear propiedades no está soportado - las propiedades vienen del XML de Inmovilla')
   },
 
-  update: async (id: string, property: Partial<Property>): Promise<Property> => {
+  update: async (_id: string, _property: Partial<Property>): Promise<Property> => {
     // No soportado - las propiedades vienen del XML
     throw new Error('Actualizar propiedades no está soportado - las propiedades vienen del XML de Inmovilla')
   },
 
-  delete: async (id: string): Promise<void> => {
+  delete: async (_id: string): Promise<void> => {
     // No soportado - las propiedades vienen del XML
     throw new Error('Eliminar propiedades no está soportado - las propiedades vienen del XML de Inmovilla')
   },
