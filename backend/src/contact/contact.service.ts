@@ -113,12 +113,13 @@ ${dto.message}
     const mailOptions = {
       from: this.configService.get('EMAIL_FROM'),
       to: 'contacto@antheacapital.com',
+      replyTo: dto.email,
       subject: 'Nueva solicitud de valoración',
       html: `
         <h2>Nueva solicitud de valoración</h2>
         <p><strong>Nombre:</strong> ${dto.name}</p>
-        <p><strong>Email:</strong> ${dto.email}</p>
-        <p><strong>Teléfono:</strong> ${dto.phone}</p>
+        <p><strong>Email:</strong> <a href="mailto:${dto.email}">${dto.email}</a></p>
+        <p><strong>Teléfono:</strong> <a href="tel:${dto.phone}">${dto.phone}</a></p>
         <h3>Datos de la propiedad:</h3>
         <p><strong>Dirección:</strong> ${dto.address}</p>
         <p><strong>Tipo:</strong> ${dto.type}</p>
@@ -126,9 +127,31 @@ ${dto.message}
         <p><strong>Habitaciones:</strong> ${dto.bedrooms}</p>
         <p><strong>Estado:</strong> ${dto.state}</p>
       `,
+      text: `
+Nueva solicitud de valoración
+
+Nombre: ${dto.name}
+Email: ${dto.email}
+Teléfono: ${dto.phone}
+
+Datos de la propiedad:
+Dirección: ${dto.address}
+Tipo: ${dto.type}
+Superficie: ${dto.area} m²
+Habitaciones: ${dto.bedrooms}
+Estado: ${dto.state}
+      `.trim(),
     }
 
-    return this.transporter.sendMail(mailOptions)
+    try {
+      this.logger.log(`Enviando correo de valoración a: contacto@antheacapital.com desde: ${mailOptions.from}`)
+      const result = await this.transporter.sendMail(mailOptions)
+      this.logger.log(`✅ Correo de valoración enviado correctamente. MessageId: ${result.messageId}`)
+      return result
+    } catch (error) {
+      this.logger.error(`❌ Error al enviar correo de valoración: ${error.message}`, error.stack)
+      throw error
+    }
   }
 }
 

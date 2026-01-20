@@ -30,6 +30,12 @@ api.interceptors.response.use(
     return response
   },
   (error) => {
+    // Para errores de contacto, siempre rechazar para que el componente pueda manejarlos
+    if (error.config?.url?.includes('/contact')) {
+      console.error('[API] Error en petición de contacto:', error.response?.data || error.message)
+      return Promise.reject(error)
+    }
+    
     // Si la API no está disponible, no romper la aplicación
     if (!error.response) {
       console.warn('API no disponible, continuando sin datos:', error.message)

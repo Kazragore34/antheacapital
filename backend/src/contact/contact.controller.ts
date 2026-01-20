@@ -47,5 +47,33 @@ export class ContactController {
       )
     }
   }
+
+  @Post('test')
+  async testEmail() {
+    try {
+      this.logger.log('🧪 Prueba de envío de correo iniciada')
+      const testDto: ContactDto = {
+        name: 'Test',
+        surname: 'Usuario',
+        email: 'test@example.com',
+        phone: '123456789',
+        message: 'Este es un mensaje de prueba para verificar que el correo funciona correctamente.',
+        consent: true,
+      }
+      await this.contactService.sendContactEmail(testDto)
+      return { 
+        success: true, 
+        message: 'Correo de prueba enviado correctamente. Revisa contacto@antheacapital.com' 
+      }
+    } catch (error) {
+      this.logger.error(`❌ Error en prueba de correo: ${error.message}`, error.stack)
+      return {
+        success: false,
+        message: 'Error al enviar correo de prueba',
+        error: error.message,
+        details: error.stack,
+      }
+    }
+  }
 }
 
