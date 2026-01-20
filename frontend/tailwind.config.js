@@ -16,10 +16,7 @@ export default {
         },
         black: {
           DEFAULT: '#000000',
-          soft: '#6D4C41',
-        },
-        gray: {
-          900: '#6D4C41', // Cambiado de gris oscuro a marrón beige
+          soft: '#1a1a1a',
         },
       },
       fontFamily: {
