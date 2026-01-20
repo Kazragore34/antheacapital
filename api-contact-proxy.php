@@ -26,7 +26,34 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // URL del backend de Node.js
+// Intentar diferentes posibles ubicaciones del backend
 $backendUrl = 'http://localhost:3001/api/contact';
+$backendUrls = [
+    'http://localhost:3001/api/contact',
+    'http://127.0.0.1:3001/api/contact',
+    'http://localhost:8080/api/contact', // Puerto alternativo común en Hostinger
+];
+
+// Probar cada URL hasta encontrar una que funcione
+$workingUrl = null;
+foreach ($backendUrls as $url) {
+    $testCh = curl_init(str_replace('/api/contact', '/api/contact/test', $url));
+    curl_setopt($testCh, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($testCh, CURLOPT_TIMEOUT, 2);
+    curl_setopt($testCh, CURLOPT_CONNECTTIMEOUT, 2);
+    curl_setopt($testCh, CURLOPT_NOBODY, true); // Solo HEAD request
+    curl_exec($testCh);
+    $httpCode = curl_getinfo($testCh, CURLINFO_HTTP_CODE);
+    curl_close($testCh);
+    
+    if ($httpCode > 0 && $httpCode < 500) {
+        $workingUrl = $url;
+        break;
+    }
+}
+
+// Si no encontramos una URL que funcione, usar la predeterminada
+$backendUrl = $workingUrl ?: $backendUrl;
 
 // Obtener el cuerpo de la petición
 $data = file_get_contents('php://input');

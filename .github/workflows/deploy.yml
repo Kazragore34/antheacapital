@@ -102,6 +102,12 @@ jobs:
           exit 1
         fi
         
+        # Copiar logo-white.svg desde frontend/public a la raíz
+        if [ -f "frontend/public/logo-white.svg" ]; then
+          cp frontend/public/logo-white.svg deploy/
+          echo "✅ Copiado logo-white.svg a la raíz"
+        fi
+        
         # Verificar que el código compilado NO tiene referencias a XML
         if grep -r "XMLPropertiesService\|xml-proxy\|xml-properties" frontend/dist/ 2>/dev/null; then
           echo "❌ ERROR: El código compilado todavía tiene referencias a XML!"
