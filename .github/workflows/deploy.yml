@@ -185,10 +185,25 @@ jobs:
         
         # Copiar archivos de configuración para Hostinger
         echo "⚙️ Copiando scripts de inicio y configuración..."
-        cp backend/start.sh deploy/backend/ 2>/dev/null || true
-        cp backend/start.bat deploy/backend/ 2>/dev/null || true
-        cp backend/.htaccess deploy/backend/ 2>/dev/null || true
-        cp backend/ecosystem.config.js deploy/backend/ 2>/dev/null || true
+        if [ -f backend/start.sh ]; then
+          cp backend/start.sh deploy/backend/
+          chmod +x deploy/backend/start.sh
+          echo "✅ start.sh copiado y hecho ejecutable"
+        else
+          echo "⚠️ start.sh no encontrado"
+        fi
+        if [ -f backend/start.bat ]; then
+          cp backend/start.bat deploy/backend/
+          echo "✅ start.bat copiado"
+        fi
+        if [ -f backend/.htaccess ]; then
+          cp backend/.htaccess deploy/backend/
+          echo "✅ backend/.htaccess copiado"
+        fi
+        if [ -f backend/ecosystem.config.js ]; then
+          cp backend/ecosystem.config.js deploy/backend/
+          echo "✅ ecosystem.config.js copiado"
+        fi
         
         # Verificar estructura final
         echo "🔍 Verificando estructura del backend..."
