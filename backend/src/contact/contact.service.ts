@@ -40,6 +40,9 @@ export class ContactService {
       tls: {
         rejectUnauthorized: false, // Para servidores con certificados autofirmados
       },
+      // Opciones de depuración
+      debug: true,
+      logger: true,
     })
 
     // Verificar la conexión al servidor de correo
