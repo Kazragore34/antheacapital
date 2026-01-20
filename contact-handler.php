@@ -222,10 +222,49 @@ if (false && class_exists('PHPMailer\PHPMailer\PHPMailer')) {
         ]);
     }
 } else {
-    // Usar SMTP directo directamente (más confiable que mail())
-    // mail() puede devolver true pero no enviar realmente el correo
+    // Estrategia de envío: 1) API SMTP de mxroute, 2) SMTP directo, 3) mail() como último recurso
+    
+    // 1. Intentar primero con la API SMTP de mxroute (más confiable)
+    error_log("[ContactHandler] Intentando enviar correo vía API SMTP de mxroute");
+    $apiData = [
+        'server' => 'fusion.mxrouting.net',
+        'username' => $smtpUser,
+        'password' => $smtpPass,
+        'from' => $fromEmail,
+        'to' => $toEmail,
+        'replyto' => $email,
+        'subject' => $subject,
+        'body' => $htmlBody
+    ];
+    
+    $ch = curl_init($mxrouteApiUrl);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($apiData));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    $apiResponse = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    
+    if ($httpCode == 200) {
+        $apiResult = json_decode($apiResponse, true);
+        if ($apiResult && isset($apiResult['success']) && $apiResult['success']) {
+            error_log("[ContactHandler] ✅ Correo enviado exitosamente usando API SMTP de mxroute");
+            echo json_encode([
+                'success' => true,
+                'message' => 'Mensaje enviado correctamente'
+            ]);
+            exit;
+        } else {
+            error_log("[ContactHandler] ❌ API SMTP de mxroute falló: " . ($apiResult['message'] ?? $apiResponse));
+        }
+    } else {
+        error_log("[ContactHandler] ❌ API SMTP de mxroute falló con código HTTP: $httpCode");
+    }
+    
+    // 2. Si la API falla, intentar SMTP directo
     if (function_exists('sendEmailViaSMTP')) {
-        // Intentar con cada servidor SMTP hasta que uno funcione
         $smtpResult = null;
         $lastError = '';
         
@@ -235,43 +274,46 @@ if (false && class_exists('PHPMailer\PHPMailer\PHPMailer')) {
             
             if ($smtpResult['success']) {
                 error_log("[ContactHandler] ✅ Correo enviado exitosamente usando $host");
-                break; // Si funciona, salir del bucle
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Mensaje enviado correctamente'
+                ]);
+                exit;
             } else {
                 $lastError = $smtpResult['error'] ?? 'Error desconocido';
                 error_log("[ContactHandler] ❌ Error con $host: $lastError");
+                
+                // Si el error es "Sender verify failed", es un problema de configuración en mxroute
+                if (strpos(strtolower($lastError), 'sender verify') !== false || 
+                    strpos(strtolower($lastError), '550') !== false) {
+                    error_log("[ContactHandler] ⚠️ ERROR CRÍTICO: Sender verify failed. Verifica que el buzón contacto@antheacapital.com existe en el panel de mxroute.");
+                }
             }
         }
         
-        if ($smtpResult && $smtpResult['success']) {
+        // Si todos los servidores SMTP fallan, intentar mail() como último recurso
+        error_log("[ContactHandler] Todos los servidores SMTP fallaron, intentando mail() nativo");
+        $headers = "MIME-Version: 1.0\r\n";
+        $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+        $headers .= "From: $fromEmail\r\n";
+        $headers .= "Reply-To: $email\r\n";
+        
+        if (mail($toEmail, $subject, $htmlBody, $headers)) {
+            error_log("[ContactHandler] ⚠️ mail() devolvió true, pero puede que el correo no se haya enviado realmente");
             echo json_encode([
                 'success' => true,
-                'message' => 'Mensaje enviado correctamente'
+                'message' => 'Mensaje enviado correctamente (usando mail() nativo)',
+                'warning' => 'Si no recibes el correo, verifica la configuración SMTP'
             ]);
         } else {
-            // Si todos los servidores SMTP fallan, intentar mail() como último recurso
-            error_log("[ContactHandler] Todos los servidores SMTP fallaron, intentando mail() nativo");
-            $headers = "MIME-Version: 1.0\r\n";
-            $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-            $headers .= "From: $fromEmail\r\n";
-            $headers .= "Reply-To: $email\r\n";
-            
-            if (mail($toEmail, $subject, $htmlBody, $headers)) {
-                error_log("[ContactHandler] ⚠️ mail() devolvió true, pero puede que el correo no se haya enviado realmente");
-                echo json_encode([
-                    'success' => true,
-                    'message' => 'Mensaje enviado correctamente (usando mail() nativo)',
-                    'warning' => 'Si no recibes el correo, verifica la configuración SMTP'
-                ]);
-            } else {
-                http_response_code(500);
-                error_log("[ContactHandler] ❌ mail() también falló");
-                echo json_encode([
-                    'success' => false,
-                    'message' => 'Error al enviar el correo. Por favor, intenta más tarde o contacta directamente a contacto@antheacapital.com',
-                    'error' => $lastError,
-                    'hint' => 'Verifica las credenciales SMTP en contact-handler.php. Servidores probados: ' . implode(', ', $smtpHosts)
-                ]);
-            }
+            http_response_code(500);
+            error_log("[ContactHandler] ❌ mail() también falló");
+            echo json_encode([
+                'success' => false,
+                'message' => 'Error al enviar el correo. Por favor, intenta más tarde o contacta directamente a contacto@antheacapital.com',
+                'error' => $lastError,
+                'hint' => 'Verifica: 1) Que el buzón contacto@antheacapital.com existe en mxroute, 2) Las credenciales SMTP, 3) La configuración de Email Routing en el panel de mxroute'
+            ]);
         }
     } else {
         // Si la función SMTP no está disponible, usar mail() nativo
