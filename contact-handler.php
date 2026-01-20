@@ -279,7 +279,11 @@ if (false && class_exists('PHPMailer\PHPMailer\PHPMailer')) {
         
         foreach ($smtpHosts as $host) {
             error_log("[ContactHandler] Intentando enviar correo vía SMTP: $host:$smtpPort");
-            $smtpResult = sendEmailViaSMTP($host, $smtpPort, $smtpUser, $smtpPass, $fromEmail, $toEmail, $email, $subject, $htmlBody, $textBody);
+            // Asegurar UTF-8 en todos los parámetros
+            $subjectUtf8 = mb_convert_encoding($subject, 'UTF-8', 'auto');
+            $htmlBodyUtf8 = mb_convert_encoding($htmlBody, 'UTF-8', 'auto');
+            $textBodyUtf8 = mb_convert_encoding($textBody, 'UTF-8', 'auto');
+            $smtpResult = sendEmailViaSMTP($host, $smtpPort, $smtpUser, $smtpPass, $fromEmail, $toEmail, $email, $subjectUtf8, $htmlBodyUtf8, $textBodyUtf8);
             
             if ($smtpResult['success']) {
                 error_log("[ContactHandler] ✅ Correo enviado exitosamente usando $host");
