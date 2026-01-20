@@ -89,9 +89,9 @@ const PropertyDetail = () => {
     }
   }
 
-  const formatPrice = (price: number) => {
+  const formatPrice = (price: number): string => {
     if (!price || price === 0 || isNaN(price)) {
-      return t('properties.card.consultPrice')
+      return tString('properties.card.consultPrice')
     }
     // Formato español: 212.737 € (con punto como separador de miles y espacio antes del símbolo)
     return new Intl.NumberFormat('es-ES', {
