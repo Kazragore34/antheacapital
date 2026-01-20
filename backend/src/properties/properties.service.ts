@@ -125,15 +125,29 @@ export class PropertiesService {
       const result = await parser.parseStringPromise(xmlContent)
       
       console.log('[PropertiesService] XML parsed, checking structure...')
-      if (!result.propiedades || !result.propiedades.propiedad) {
+      console.log('[PropertiesService] XML root keys:', Object.keys(result))
+      
+      // El XML puede tener estructura: propiedades.propiedad o propiedades.propiedad[].datos
+      let propiedades: any[] = []
+      
+      if (result.propiedades && result.propiedades.propiedad) {
+        const props = Array.isArray(result.propiedades.propiedad) 
+          ? result.propiedades.propiedad 
+          : [result.propiedades.propiedad]
+        
+        // Si las propiedades tienen estructura con <datos>, extraer los datos
+        propiedades = props.map((prop: any) => {
+          // Si tiene estructura con datos, combinar datos con propiedades del nivel superior
+          if (prop.datos) {
+            return { ...prop.datos, ...prop } // Combinar datos con propiedades del nivel superior
+          }
+          return prop
+        })
+      } else {
         console.warn('[PropertiesService] XML de Inmovilla no tiene el formato esperado')
         console.warn('[PropertiesService] XML structure:', JSON.stringify(Object.keys(result), null, 2))
         return []
       }
-
-      const propiedades = Array.isArray(result.propiedades.propiedad) 
-        ? result.propiedades.propiedad 
-        : [result.propiedades.propiedad]
 
       console.log(`[PropertiesService] Found ${propiedades.length} propiedades in XML`)
       // Transformar propiedades del XML al formato Property
