@@ -100,7 +100,9 @@ jobs:
         mkdir -p deploy/backend
         cp -r backend/dist deploy/backend/
         cp backend/package.json deploy/backend/
+        cp backend/package-lock.json deploy/backend/ 2>/dev/null || true
         cp backend/.env.example deploy/backend/.env.example
+        cp backend/tsconfig.json deploy/backend/ 2>/dev/null || true
         echo "✅ Backend copiado"
     
     - name: Deploy to Hostinger
