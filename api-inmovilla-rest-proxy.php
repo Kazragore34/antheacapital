@@ -94,22 +94,23 @@ try {
     switch ($action) {
         case 'propiedades':
             // Obtener todas las propiedades
-            $params = [
-                'agencia' => INMOVILLA_NUMAGENCIA,
-                'limit' => $limit,
-                'offset' => $offset,
-            ];
+            // Según la documentación, el endpoint puede requerir parámetros específicos
+            // Probamos primero sin parámetros, luego con los necesarios
+            $params = [];
             
-            if ($where) {
-                // Parsear condiciones WHERE simples
-                $params['where'] = $where;
+            // Si hay límite, agregarlo
+            if ($limit > 0) {
+                $params['limit'] = $limit;
             }
             
-            if ($order) {
-                $params['order'] = $order;
+            // Si hay offset, agregarlo
+            if ($offset > 0) {
+                $params['offset'] = $offset;
             }
             
-            $response = callInmovillaAPI('/propiedades', $params);
+            // Nota: La API REST puede requerir que estos parámetros vayan en el body de un POST
+            // Por ahora probamos con GET y query params
+            $response = callInmovillaAPI('/propiedades/', $params);
             $decoded = json_decode($response, true);
             
             // Adaptar estructura de respuesta al formato esperado por el frontend
