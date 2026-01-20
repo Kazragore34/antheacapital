@@ -4,6 +4,9 @@
  * Esta solución funciona directamente en Hostinger sin necesidad de Node.js
  */
 
+// Incluir función auxiliar para SMTP
+require_once __DIR__ . '/send-email-smtp.php';
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
