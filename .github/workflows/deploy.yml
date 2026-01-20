@@ -326,16 +326,59 @@ jobs:
         echo ""
         echo "✅ Verificación completada"
     
-    - name: Setup SSH
+    - name: Setup SSH and Test Connection
       run: |
+        echo "🔧 Configurando SSH..."
         mkdir -p ~/.ssh
-        echo "${{ secrets.FTP_PASSWORD }}" | sshpass -p "${{ secrets.FTP_PASSWORD }}" ssh -o StrictHostKeyChecking=no -p 65002 ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }} "echo 'SSH connection test'"
+        chmod 700 ~/.ssh
+        
+        # Configurar SSH para evitar problemas de host key
+        ssh-keyscan -p 65002 ${{ secrets.FTP_SERVER }} >> ~/.ssh/known_hosts 2>/dev/null || true
+        
+        echo "🔍 Probando conexión SSH..."
+        # Intentar con timeout más largo y opciones adicionales
+        timeout 30 sshpass -p "${{ secrets.FTP_PASSWORD }}" ssh \
+          -o StrictHostKeyChecking=no \
+          -o UserKnownHostsFile=/dev/null \
+          -o ConnectTimeout=30 \
+          -o ServerAliveInterval=10 \
+          -o ServerAliveCountMax=3 \
+          -p 65002 \
+          ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }} \
+          "echo 'SSH connection test successful'" || {
+          echo "⚠️ WARNING: SSH test falló, pero continuando con deploy..."
+          echo "⚠️ Esto puede indicar que el servidor bloquea conexiones SSH desde GitHub Actions"
+          echo "⚠️ El deploy puede fallar, pero al menos intentaremos"
+        }
     
     - name: Deploy to Hostinger (SFTP via rsync)
+      timeout-minutes: 10
       run: |
+        echo "📦 Instalando herramientas necesarias..."
         sudo apt-get update && sudo apt-get install -y sshpass rsync
-        sshpass -p "${{ secrets.FTP_PASSWORD }}" rsync -avz --delete \
-          -e "ssh -p 65002 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" \
+        
+        echo "🚀 Iniciando deploy a Hostinger..."
+        echo "📂 Origen: ./deploy/"
+        echo "📂 Destino: ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:/home/u571508109/domains/antheacapital.com/public_html/"
+        
+        # Intentar deploy con opciones mejoradas
+        sshpass -p "${{ secrets.FTP_PASSWORD }}" rsync -avz --delete --progress \
+          -e "ssh -p 65002 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=30 -o ServerAliveInterval=10" \
           ./deploy/ \
-          ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:/home/u571508109/domains/antheacapital.com/public_html/
+          ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:/home/u571508109/domains/antheacapital.com/public_html/ \
+          || {
+            echo "❌ ERROR: Deploy falló"
+            echo "💡 Posibles causas:"
+            echo "   1. El servidor Hostinger bloquea conexiones SSH desde GitHub Actions"
+            echo "   2. El puerto 65002 está bloqueado por firewall"
+            echo "   3. Las credenciales SSH han cambiado"
+            echo "   4. El servidor está temporalmente no disponible"
+            echo ""
+            echo "💡 Solución alternativa:"
+            echo "   - Sube manualmente los archivos desde ./deploy/ usando FTP/SFTP"
+            echo "   - O contacta a Hostinger para autorizar conexiones SSH desde GitHub Actions"
+            exit 1
+          }
+        
+        echo "✅ Deploy completado exitosamente"
 
