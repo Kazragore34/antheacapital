@@ -39,7 +39,7 @@ export class PropertiesService {
     status?: string
   }): Promise<Property[]> {
     try {
-      // Intentar leer desde XML de Inmovilla primero
+      // SOLO usar XML de Inmovilla - NO usar MongoDB como fallback
       console.log(`[PropertiesService] Loading properties from XML: ${this.XML_URL}`)
       const xmlProperties = await this.loadPropertiesFromXML()
       console.log(`[PropertiesService] Loaded ${xmlProperties?.length || 0} properties from XML`)
@@ -51,31 +51,15 @@ export class PropertiesService {
         return filtered
       }
 
-      console.log('[PropertiesService] No XML properties found, trying MongoDB...')
-      // Si no hay XML, intentar desde MongoDB
-      const filter: any = {}
-      
-      if (query.status) {
-        filter.status = query.status
-      } else {
-        filter.status = 'published'
-      }
-      
-      if (query.type) filter.type = query.type
-      if (query.city) filter['location.city'] = new RegExp(query.city, 'i')
-      if (query.minPrice || query.maxPrice) {
-        filter.price = {}
-        if (query.minPrice) filter.price.$gte = query.minPrice
-        if (query.maxPrice) filter.price.$lte = query.maxPrice
-      }
-      if (query.bedrooms) filter['features.bedrooms'] = query.bedrooms
-      if (query.minArea) filter['features.area'] = { $gte: query.minArea }
-
-      const properties = await this.propertyModel.find(filter).sort({ createdAt: -1 }).exec()
-      // Asegurar que siempre devolvemos un array
-      return Array.isArray(properties) ? properties : []
+      // Si no hay XML, devolver array vacío (NO usar MongoDB)
+      console.log('[PropertiesService] No XML properties found. Returning empty array.')
+      return []
     } catch (error) {
-      console.error('Error fetching properties:', error)
+      console.error('[PropertiesService] Error fetching properties:', error)
+      if (error instanceof Error) {
+        console.error('[PropertiesService] Error message:', error.message)
+        console.error('[PropertiesService] Error stack:', error.stack)
+      }
       // Devolver array vacío en caso de error
       return []
     }
