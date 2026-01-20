@@ -12,7 +12,7 @@
   
   /* Reemplazar color #1F2937 (gray-800) con color más armonioso */
   .bg-gray-800 {
-    background-color: #0f1419 !important;
+    background-color: #6D4C41 !important;
   }
 }
 
@@ -27,12 +27,12 @@
   
   .card {
     @apply border border-gray-700 rounded-lg shadow-lg transition-all duration-300 hover:shadow-gold/20;
-    background-color: #0f1419; /* Color más armonioso que #1F2937 */
+    background-color: #6D4C41; /* Color marrón beige */
   }
   
   .input-field {
     @apply w-full px-4 py-3 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent transition-all placeholder-gray-500;
-    background-color: #0f1419; /* Color más armonioso que #1F2937 */
+    background-color: #6D4C41; /* Color marrón beige */
   }
 }
 

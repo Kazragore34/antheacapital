@@ -16,7 +16,7 @@ export default {
         },
         black: {
           DEFAULT: '#000000',
-          soft: '#1a1a1a',
+          soft: '#6D4C41',
         },
       },
       fontFamily: {
