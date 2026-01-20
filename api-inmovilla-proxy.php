@@ -22,9 +22,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // Configuración de Inmovilla
-// TODO: Cambiar estos valores por los de producción cuando los tengas
-define('INMOVILLA_NUMAGENCIA', '2');
-define('INMOVILLA_PASSWORD', '82ku9xz2aw3');
+// IMPORTANTE: 
+// - INMOVILLA_NUMAGENCIA: Tu número de agencia en Inmovilla (lo encuentras en tu panel)
+// - INMOVILLA_PASSWORD: Generalmente es la MISMA contraseña con la que inicias sesión en el panel web de Inmovilla
+//   Si no funciona, puede que necesites una contraseña específica de API (consulta con Inmovilla)
+define('INMOVILLA_NUMAGENCIA', '2'); // ← Cambiar por tu número de agencia
+define('INMOVILLA_PASSWORD', '82ku9xz2aw3'); // ← Cambiar por tu contraseña de Inmovilla (generalmente la misma del login)
 define('INMOVILLA_IDIOMA', '1'); // 1 = Español
 
 // Incluir la librería de Inmovilla
