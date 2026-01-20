@@ -23,10 +23,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 // Configuración de Inmovilla API REST
 // Token REST generado desde el panel de Inmovilla
+// Documentación: https://procesos.apinmo.com/api/v1/apidoc/
 define('INMOVILLA_API_TOKEN', 'F614ADA147C30D2D08FF53714B8CC23F');
 define('INMOVILLA_NUMAGENCIA', '13740');
-// URL base de la API REST de Inmovilla (verificar en documentación)
-define('INMOVILLA_API_BASE_URL', 'https://procesos.apinmo.com/api/v1');
+// URL base de la API REST de Inmovilla (según documentación oficial)
+define('INMOVILLA_API_BASE_URL', 'https://procesos.inmovilla.com/api/v1');
 
 // Obtener parámetros
 $action = $_GET['action'] ?? 'propiedades';
@@ -48,20 +49,19 @@ function callInmovillaAPI($endpoint, $params = []) {
         $url .= '?' . http_build_query($params);
     }
     
-    error_log('[API REST Proxy] Llamando a: ' . $url);
-    error_log('[API REST Proxy] Token: ' . substr(INMOVILLA_API_TOKEN, 0, 10) . '...');
-    
-    // Intentar diferentes formatos de autenticación según la documentación de Inmovilla
-    // Formato 1: Token como parámetro en la URL (más común en APIs REST de Inmovilla)
-    $params['token'] = INMOVILLA_API_TOKEN;
-    $params['numagencia'] = INMOVILLA_NUMAGENCIA;
-    
-    // Reconstruir URL con parámetros
+    // Construir URL base
     $url = INMOVILLA_API_BASE_URL . $endpoint;
+    
+    // Agregar parámetros a la URL
     if (!empty($params)) {
         $url .= '?' . http_build_query($params);
     }
     
+    error_log('[API REST Proxy] Llamando a: ' . $url);
+    error_log('[API REST Proxy] Token: ' . substr(INMOVILLA_API_TOKEN, 0, 10) . '...');
+    
+    // Según la documentación oficial: https://procesos.apinmo.com/api/v1/apidoc/
+    // El token debe ir en el header con la key "Token" (no "Authorization: Bearer")
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -70,7 +70,8 @@ function callInmovillaAPI($endpoint, $params = []) {
     curl_setopt($ch, CURLOPT_TIMEOUT, 30);
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Content-Type: application/json',
-        'Accept: application/json'
+        'Accept: application/json',
+        'Token: ' . INMOVILLA_API_TOKEN  // Formato correcto según documentación oficial
     ]);
     
     $response = curl_exec($ch);
