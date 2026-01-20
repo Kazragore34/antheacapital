@@ -120,6 +120,7 @@ const translations: Record<Language, Translations> = {
         addressNotAvailable: 'Dirección no disponible',
         cityNotAvailable: 'Ciudad no disponible',
         provinceNotAvailable: 'Provincia no disponible',
+        gallery: 'Galería de Imágenes',
       },
     },
     // Contact
@@ -468,6 +469,7 @@ const translations: Record<Language, Translations> = {
         addressNotAvailable: 'Address not available',
         cityNotAvailable: 'City not available',
         provinceNotAvailable: 'Province not available',
+        gallery: 'Image Gallery',
       },
     },
     // Services Page
@@ -812,6 +814,7 @@ const translations: Record<Language, Translations> = {
         addressNotAvailable: 'Adresse non disponible',
         cityNotAvailable: 'Ville non disponible',
         provinceNotAvailable: 'Province non disponible',
+        gallery: 'Galerie d\'Images',
       },
     },
     // Services Page
@@ -1156,6 +1159,7 @@ const translations: Record<Language, Translations> = {
         addressNotAvailable: 'Adreça no disponible',
         cityNotAvailable: 'Ciutat no disponible',
         provinceNotAvailable: 'Província no disponible',
+        gallery: 'Galeria d\'Imatges',
       },
     },
     // Services Page
@@ -1500,6 +1504,7 @@ const translations: Record<Language, Translations> = {
         addressNotAvailable: 'Adresse nicht verfügbar',
         cityNotAvailable: 'Stadt nicht verfügbar',
         provinceNotAvailable: 'Provinz nicht verfügbar',
+        gallery: 'Bildergalerie',
       },
     },
     contact: {
@@ -1844,6 +1849,7 @@ const translations: Record<Language, Translations> = {
         addressNotAvailable: 'Indirizzo non disponibile',
         cityNotAvailable: 'Città non disponibile',
         provinceNotAvailable: 'Provincia non disponibile',
+        gallery: 'Galleria Immagini',
       },
     },
     // Services Page
@@ -2148,6 +2154,7 @@ const translations: Record<Language, Translations> = {
         addressNotAvailable: 'Endereço não disponível',
         cityNotAvailable: 'Cidade não disponível',
         provinceNotAvailable: 'Província não disponível',
+        gallery: 'Galeria de Imagens',
       },
     },
     // Services Page
