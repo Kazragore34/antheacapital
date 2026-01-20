@@ -136,11 +136,15 @@ export class PropertiesService {
           : [result.propiedades.propiedad]
         
         // Si las propiedades tienen estructura con <datos>, extraer los datos
-        propiedades = props.map((prop: any) => {
+        propiedades = props.map((prop: any, index: number) => {
           // Si tiene estructura con datos, combinar datos con propiedades del nivel superior
+          // IMPORTANTE: prop.datos tiene prioridad sobre prop para evitar sobrescribir campos
           if (prop.datos) {
-            return { ...prop.datos, ...prop } // Combinar datos con propiedades del nivel superior
+            const combined = { ...prop, ...prop.datos } // Primero prop, luego datos (datos tiene prioridad)
+            console.log(`[PropertiesService] Property ${index + 1}: cod_ofer=${combined.ofertas_cod_ofer || combined.id}, has ${Object.keys(combined).length} fields`)
+            return combined
           }
+          console.log(`[PropertiesService] Property ${index + 1}: no datos structure, has ${Object.keys(prop).length} fields`)
           return prop
         })
       } else {
@@ -150,9 +154,25 @@ export class PropertiesService {
       }
 
       console.log(`[PropertiesService] Found ${propiedades.length} propiedades in XML`)
+      
+      // Log primera propiedad para debugging
+      if (propiedades.length > 0) {
+        const firstProp = propiedades[0]
+        console.log(`[PropertiesService] First property keys: ${Object.keys(firstProp).slice(0, 20).join(', ')}...`)
+        console.log(`[PropertiesService] First property cod_ofer: ${firstProp.ofertas_cod_ofer || firstProp.id || 'NOT FOUND'}`)
+        console.log(`[PropertiesService] First property precio: ${firstProp.ofertas_precioinmo || firstProp.ofertas_precioalq || 'NOT FOUND'}`)
+      }
+      
       // Transformar propiedades del XML al formato Property
-      const properties = propiedades.map((prop: any) => this.transformInmovillaProperty(prop)).filter(Boolean)
-      console.log(`[PropertiesService] Successfully transformed ${properties.length} properties`)
+      const properties = propiedades.map((prop: any, index: number) => {
+        const transformed = this.transformInmovillaProperty(prop)
+        if (!transformed) {
+          console.warn(`[PropertiesService] Property ${index + 1} was filtered out during transformation`)
+        }
+        return transformed
+      }).filter(Boolean)
+      
+      console.log(`[PropertiesService] Successfully transformed ${properties.length} properties from ${propiedades.length} XML entries`)
 
       // Actualizar caché
       this.xmlCache = properties
@@ -172,11 +192,14 @@ export class PropertiesService {
   private transformInmovillaProperty(prop: any): Property | null {
     try {
       // Extraer cod_ofer (campo clave de Inmovilla)
-      const codOfer = prop.ofertas_cod_ofer?.toString() || prop.datos?.id?.toString() || prop.id?.toString() || ''
+      // El XML tiene: <ofertas_cod_ofer>6664661</ofertas_cod_ofer> dentro de <datos>
+      const codOfer = prop.ofertas_cod_ofer?.toString() || prop.datos?.ofertas_cod_ofer?.toString() || prop.datos?.id?.toString() || prop.id?.toString() || ''
       if (!codOfer) {
-        console.warn('[PropertiesService] Property without cod_ofer, skipping')
+        console.warn('[PropertiesService] Property without cod_ofer, skipping. Available keys:', Object.keys(prop).slice(0, 10).join(', '))
         return null
       }
+      
+      console.log(`[PropertiesService] Transforming property ${codOfer}`)
 
       // Extraer imágenes
       const images: string[] = []
