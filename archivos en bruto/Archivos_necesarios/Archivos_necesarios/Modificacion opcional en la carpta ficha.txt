@@ -1,0 +1,31 @@
+Hola.
+
+Ten en cuenta que nosotros enviamos a algunos sitios enlaces a vuestras propiedades (por ejemplo, al portal Idealista o a las redes sociales). 
+Nosotros obviamente no conocemos como son los enlaces a las propiedades en vuestras webs (si son ajenas a inmovilla), así que nosotros construimos el enlace del siguiente modo (suponiendo que la agencia sea [vuestra web]):
+
+Por defecto, mostraremos la ficha en un iframe nuestro predefinido, si queréis mostrar la ficha de vuestra propia web, tendréis que hacer los siguientes ajustes. 
+
+http://[vuestra web]/ficha/index.php?codigo=XXXX_YYYYYY
+
+El anterior es uno de los enlaces que nosotros enviamos a Idealista:
+XXXX es el código de vuestra agencia
+YYYYYY es el código único de la propiedad en inmovilla
+
+En la carpeta /ficha/index.php Las variables soyinmo y dataofe recogen estos dos datos. En base a estos datos vosotros podeis modificáis el window.location para que redireccione a la dirección correcta en vuestra web. Por ejemplo, si en vuestra web los enlaces a las propiedades son del siguiente modo:
+[vuestra web]/propiedades/6800543
+
+Tenéis que poner lo siguiente:
+window.location= <?php echo "$inmoweb/propiedades/$datofe"; ?> ;
+
+Y al escribir esta dirección en el navegador:
+http://[vuestra web]/ficha/index.php?codigo=XXXX_YYYYYY
+
+Redireccionará a esta otra:
+[vuestra web]/propiedades/YYYYYY
+
+
+* Es requisito necesario que lo los IDs de las propeidades (YYYYYY) coincidan son los que tienes en inmovilla.
+
+
+
+Si os queda alguna duda avisadnos.
