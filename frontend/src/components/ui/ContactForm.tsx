@@ -14,7 +14,7 @@ interface ContactFormProps {
 }
 
 const ContactForm = ({ propertyId, propertyTitle, propertyUrl, propertyPrice, propertyType }: ContactFormProps) => {
-  const { t } = useTranslation()
+  const { tString } = useTranslation()
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
   const {
@@ -53,15 +53,15 @@ const ContactForm = ({ propertyId, propertyTitle, propertyUrl, propertyPrice, pr
       reset()
       setTimeout(() => setSubmitted(false), 5000)
     } catch (err) {
-      setError(t('contact.form.error'))
+      setError(tString('contact.form.error'))
     }
   }
 
   if (submitted) {
     return (
       <div className="bg-green-900/20 border border-green-700 rounded-lg p-4 text-center">
-        <p className="text-green-300 font-semibold">{t('contact.form.success')}</p>
-        <p className="text-green-400 text-sm mt-2">{t('contact.form.successSubtext')}</p>
+        <p className="text-green-300 font-semibold">{tString('contact.form.success')}</p>
+        <p className="text-green-400 text-sm mt-2">{tString('contact.form.successSubtext')}</p>
       </div>
     )
   }
@@ -77,11 +77,11 @@ const ContactForm = ({ propertyId, propertyTitle, propertyUrl, propertyPrice, pr
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-300 mb-1">
-            {t('contact.form.name')} *
+            {tString('contact.form.name')} *
           </label>
           <input
             type="text"
-            {...register('name', { required: t('contact.form.nameRequired') })}
+            {...register('name', { required: tString('contact.form.nameRequired') })}
             className="input-field"
           />
           {errors.name && (
@@ -91,11 +91,11 @@ const ContactForm = ({ propertyId, propertyTitle, propertyUrl, propertyPrice, pr
 
         <div>
           <label className="block text-sm font-medium text-gray-300 mb-1">
-            {t('contact.form.surname')} *
+            {tString('contact.form.surname')} *
           </label>
           <input
             type="text"
-            {...register('surname', { required: t('contact.form.surnameRequired') })}
+            {...register('surname', { required: tString('contact.form.surnameRequired') })}
             className="input-field"
           />
           {errors.surname && (
@@ -106,15 +106,15 @@ const ContactForm = ({ propertyId, propertyTitle, propertyUrl, propertyPrice, pr
 
       <div>
         <label className="block text-sm font-medium text-gray-300 mb-1">
-          {t('contact.form.email')} *
+          {tString('contact.form.email')} *
         </label>
         <input
           type="email"
           {...register('email', {
-            required: t('contact.form.emailRequired'),
+            required: tString('contact.form.emailRequired'),
             pattern: {
               value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-              message: t('contact.form.emailInvalid'),
+              message: tString('contact.form.emailInvalid'),
             },
           })}
           className="input-field"
@@ -126,11 +126,11 @@ const ContactForm = ({ propertyId, propertyTitle, propertyUrl, propertyPrice, pr
 
       <div>
         <label className="block text-sm font-medium text-gray-300 mb-1">
-          {t('contact.form.phone')} *
+          {tString('contact.form.phone')} *
         </label>
         <input
           type="tel"
-          {...register('phone', { required: t('contact.form.phoneRequired') })}
+          {...register('phone', { required: tString('contact.form.phoneRequired') })}
           className="input-field"
         />
         {errors.phone && (
@@ -140,10 +140,10 @@ const ContactForm = ({ propertyId, propertyTitle, propertyUrl, propertyPrice, pr
 
       <div>
         <label className="block text-sm font-medium text-gray-300 mb-1">
-          {t('contact.form.message')} *
+          {tString('contact.form.message')} *
         </label>
         <textarea
-          {...register('message', { required: t('contact.form.messageRequired') })}
+          {...register('message', { required: tString('contact.form.messageRequired') })}
           rows={4}
           className="input-field"
         />
@@ -160,18 +160,18 @@ const ContactForm = ({ propertyId, propertyTitle, propertyUrl, propertyPrice, pr
           <input
             type="checkbox"
             {...register('consent', {
-              required: t('contact.form.consentRequired'),
+              required: tString('contact.form.consentRequired'),
             })}
             className="mt-1"
           />
           <span className="text-sm text-gray-300">
-            {t('contact.form.consentText')}{' '}
+            {tString('contact.form.consentText')}{' '}
             <a href="/politica-privacidad" className="text-gold hover:underline">
-              {t('contact.form.privacyPolicy')}
+              {tString('contact.form.privacyPolicy')}
             </a>{' '}
-            {t('contact.form.consentText2')}{' '}
+            {tString('contact.form.consentText2')}{' '}
             <a href="/aviso-legal" className="text-gold hover:underline">
-              {t('contact.form.legalNotice')}
+              {tString('contact.form.legalNotice')}
             </a>
             . *
           </span>
@@ -187,13 +187,13 @@ const ContactForm = ({ propertyId, propertyTitle, propertyUrl, propertyPrice, pr
             className="mt-1"
           />
           <span className="text-sm text-gray-300">
-            {t('contact.form.consentMarketing')}
+            {tString('contact.form.consentMarketing')}
           </span>
         </label>
       </div>
 
       <button type="submit" className="btn-primary w-full">
-        {t('contact.form.send')}
+        {tString('contact.form.send')}
       </button>
     </form>
   )

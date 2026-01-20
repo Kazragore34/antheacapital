@@ -186,7 +186,7 @@ const PropertyDetail = () => {
                   propertyTitle={displayProperty.title}
                   propertyUrl={window.location.href}
                   propertyPrice={formatPrice(displayProperty.price)}
-                  propertyType={displayProperty.type === 'venta' ? t('properties.card.sale') : t('properties.card.rent')}
+                  propertyType={displayProperty.type === 'venta' ? tString('properties.card.sale') : tString('properties.card.rent')}
                 />
               </div>
             </div>

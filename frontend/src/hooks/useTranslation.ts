@@ -28,6 +28,16 @@ export const useTranslation = () => {
     return typeof value === 'string' || Array.isArray(value) ? value : key
   }
 
-  return { t, language }
+  // Función helper que siempre retorna string (para casos donde se necesita garantizar string)
+  const tString = (key: string): string => {
+    const result = t(key)
+    if (Array.isArray(result)) {
+      // Si es un array, retornar el primer elemento o la clave
+      return result[0] || key
+    }
+    return result
+  }
+
+  return { t, tString, language }
 }
 

@@ -13,7 +13,7 @@ interface PropertyFiltersProps {
 }
 
 const PropertyFilters = ({ onFilterChange }: PropertyFiltersProps) => {
-  const { t } = useTranslation()
+  const { tString } = useTranslation()
   const [filters, setFilters] = useState({
     type: '',
     city: '',
@@ -55,7 +55,7 @@ const PropertyFilters = ({ onFilterChange }: PropertyFiltersProps) => {
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <div>
           <label htmlFor="filter-type" className="block text-sm font-medium text-gray-300 mb-2">
-            {t('properties.filters.type')}
+            {tString('properties.filters.type')}
           </label>
           <select
             id="filter-type"
@@ -64,19 +64,19 @@ const PropertyFilters = ({ onFilterChange }: PropertyFiltersProps) => {
             onChange={(e) => handleChange('type', e.target.value)}
             className="input-field"
           >
-            <option value="">{t('properties.filters.all')}</option>
-            <option value="propiedades">{t('properties.filters.properties')}</option>
-            <option value="habitaciones">{t('properties.filters.rooms')}</option>
-            <option value="traspasos">{t('properties.filters.transfers')}</option>
-            <option value="venta">{t('properties.filters.sale')}</option>
-            <option value="alquiler">{t('properties.filters.rent')}</option>
-            <option value="alquiler-opcion-compra">{t('properties.filters.rentOption')}</option>
+            <option value="">{tString('properties.filters.all')}</option>
+            <option value="propiedades">{tString('properties.filters.properties')}</option>
+            <option value="habitaciones">{tString('properties.filters.rooms')}</option>
+            <option value="traspasos">{tString('properties.filters.transfers')}</option>
+            <option value="venta">{tString('properties.filters.sale')}</option>
+            <option value="alquiler">{tString('properties.filters.rent')}</option>
+            <option value="alquiler-opcion-compra">{tString('properties.filters.rentOption')}</option>
           </select>
         </div>
 
         <div>
           <label htmlFor="filter-city" className="block text-sm font-medium text-gray-300 mb-2">
-            {t('properties.filters.city')}
+            {tString('properties.filters.city')}
           </label>
           <input
             id="filter-city"
@@ -84,14 +84,14 @@ const PropertyFilters = ({ onFilterChange }: PropertyFiltersProps) => {
             type="text"
             value={filters.city}
             onChange={(e) => handleChange('city', e.target.value)}
-            placeholder={t('properties.filters.cityPlaceholder')}
+            placeholder={tString('properties.filters.cityPlaceholder')}
             className="input-field"
           />
         </div>
 
         <div>
           <label htmlFor="filter-min-price" className="block text-sm font-medium text-gray-300 mb-2">
-            {t('properties.filters.minPrice')}
+            {tString('properties.filters.minPrice')}
           </label>
           <input
             id="filter-min-price"
@@ -106,7 +106,7 @@ const PropertyFilters = ({ onFilterChange }: PropertyFiltersProps) => {
 
         <div>
           <label htmlFor="filter-max-price" className="block text-sm font-medium text-gray-300 mb-2">
-            {t('properties.filters.maxPrice')}
+            {tString('properties.filters.maxPrice')}
           </label>
           <input
             id="filter-max-price"
@@ -121,7 +121,7 @@ const PropertyFilters = ({ onFilterChange }: PropertyFiltersProps) => {
 
         <div>
           <label htmlFor="filter-bedrooms" className="block text-sm font-medium text-gray-300 mb-2">
-            {t('properties.filters.bedrooms')}
+            {tString('properties.filters.bedrooms')}
           </label>
           <select
             id="filter-bedrooms"
@@ -130,7 +130,7 @@ const PropertyFilters = ({ onFilterChange }: PropertyFiltersProps) => {
             onChange={(e) => handleChange('bedrooms', e.target.value)}
             className="input-field"
           >
-            <option value="">{t('properties.filters.allBedrooms')}</option>
+            <option value="">{tString('properties.filters.allBedrooms')}</option>
             <option value="1">1+</option>
             <option value="2">2+</option>
             <option value="3">3+</option>
@@ -141,7 +141,7 @@ const PropertyFilters = ({ onFilterChange }: PropertyFiltersProps) => {
 
         <div>
           <label htmlFor="filter-min-area" className="block text-sm font-medium text-gray-300 mb-2">
-            {t('properties.filters.minArea')}
+            {tString('properties.filters.minArea')}
           </label>
           <input
             id="filter-min-area"
@@ -160,7 +160,7 @@ const PropertyFilters = ({ onFilterChange }: PropertyFiltersProps) => {
           onClick={clearFilters}
           className="text-sm text-gray-300 hover:text-gold transition-colors"
         >
-          {t('properties.filters.clear')}
+          {tString('properties.filters.clear')}
         </button>
       </div>
     </div>
