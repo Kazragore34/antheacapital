@@ -157,19 +157,26 @@ export class PropertiesService {
 
   private transformInmovillaProperty(prop: any): Property | null {
     try {
+      // Extraer cod_ofer (campo clave de Inmovilla)
+      const codOfer = prop.ofertas_cod_ofer?.toString() || prop.datos?.id?.toString() || prop.id?.toString() || ''
+      if (!codOfer) {
+        console.warn('[PropertiesService] Property without cod_ofer, skipping')
+        return null
+      }
+
       // Extraer imágenes
       const images: string[] = []
       for (let i = 1; i <= 20; i++) {
-        const foto = prop[`foto${i}`]
+        const foto = prop[`ofertas_foto${i}`] || prop[`foto${i}`]
         if (foto && typeof foto === 'string' && foto.trim()) {
           images.push(foto.trim())
         }
       }
 
       // Determinar tipo (venta/alquiler)
-      const accion = prop.accion?.toLowerCase() || ''
-      const precioAlq = parseFloat(prop.precioalq || '0') || 0
-      const precioInmo = parseFloat(prop.precioinmo || '0') || 0
+      const accion = (prop.accionoferta_accion || prop.accion || '').toLowerCase()
+      const precioAlq = parseFloat(prop.ofertas_precioalq || prop.precioalq || '0') || 0
+      const precioInmo = parseFloat(prop.ofertas_precioinmo || prop.precioinmo || '0') || 0
       
       let tipo = 'venta' // Por defecto
       if (accion.includes('alquilar') || accion.includes('alquiler') || precioAlq > 0) {
@@ -180,47 +187,57 @@ export class PropertiesService {
 
       // Precio (priorizar según tipo)
       const precio = tipo === 'alquiler' 
-        ? (parseFloat(prop.precioalq || '0') || 0)
-        : (parseFloat(prop.precioinmo || prop.precio || '0') || 0)
+        ? precioAlq
+        : precioInmo
+
+      if (precio === 0) {
+        console.warn(`[PropertiesService] Property ${codOfer} has price 0, skipping`)
+        return null
+      }
 
       // Características
-      const habitaciones = parseInt(prop.habdobles || prop.habitaciones || '0') || 0
-      const banos = parseInt(prop.banyos || '0') || 0
-      const area = parseFloat(prop.m_cons || prop.m_uties || '0') || 0
-      const planta = parseInt(prop.numplanta || '0') || undefined
+      const habitaciones = parseInt(prop.ofertas_habdobles || prop.habdobles || prop.ofertas_habitaciones || prop.habitaciones || '0') || 0
+      const banos = parseInt(prop.ofertas_banyos || prop.banyos || '0') || 0
+      const area = parseFloat(prop.ofertas_m_cons || prop.m_cons || prop.ofertas_m_uties || prop.m_uties || '0') || 0
+      const planta = parseInt(prop.ofertas_numplanta || prop.numplanta || prop.ofertas_planta || prop.planta || '0') || undefined
 
       // Ubicación
-      const ciudad = prop.ciudad || ''
-      const zona = prop.zona || ''
-      const cp = prop.cp || ''
-      const provincia = this.extractProvinceFromCP(cp) || ciudad
+      const ciudad = prop.ciudad_ciudad || prop.ciudad || ''
+      const zona = prop.zonas_zona || prop.zona || ''
+      const cp = prop.ofertas_cp || prop.cp || ''
+      const provincia = (prop.provincias_provincia || prop.provincia || this.extractProvinceFromCP(cp) || ciudad).trim()
+      const calle = prop.ofertas_calle || prop.calle || ''
+      const numero = prop.ofertas_numero || prop.numero || ''
+      const direccion = [calle, numero].filter(Boolean).join(' ') || zona || ciudad
 
       // Título y descripción
-      const titulo = prop.titulo1 || prop.titulo2 || `Propiedad en ${ciudad}`
-      const descripcion = prop.descrip1 || prop.descrip2 || prop.tinterior || ''
+      const titulo = prop.ofertas_titulo1 || prop.titulo1 || prop.ofertas_titulo2 || prop.titulo2 || `Propiedad en ${ciudad || 'Aranjuez'}`
+      const descripcion = prop.ofertas_descrip1 || prop.descrip1 || prop.ofertas_descrip2 || prop.descrip2 || prop.ofertas_tinterior || prop.tinterior || ''
 
       // Características adicionales
-      const parking = prop.plaza_gara === '1' || prop.parking === '1' || prop.garaje === '1'
-      const ascensor = prop.ascensor === '1' || prop.ascensor === 1
-      const terraza = prop.terraza === '1' || prop.terraza === 1 || prop.balcon === '1'
-      const jardin = prop.jardin === '1' || prop.jardin === 1
-      const piscina = prop.piscina_prop === '1' || prop.piscina_com === '1'
-      const amueblado = prop.muebles === '1' || prop.muebles === 1
+      const parking = prop.plaza_gara?.includes('Garaje') || prop.ofertas_plaza_gara === '1' || prop.parking === '1' || prop.garaje === '1'
+      const ascensor = prop.ofertas_ascensor === '1' || prop.ofertas_ascensor === 1 || prop.ascensor === '1' || prop.ascensor === 1
+      const terraza = prop.ofertas_terraza === '1' || prop.terraza === '1' || prop.ofertas_balcon === '1' || prop.balcon === '1'
+      const jardin = prop.ofertas_jardin === '1' || prop.jardin === '1' || prop.jardin === 1
+      const piscina = prop.ofertas_piscina_prop === '1' || prop.piscina_prop === '1' || prop.ofertas_piscina_com === '1' || prop.piscina_com === '1'
+      const amueblado = prop.ofertas_muebles === '1' || prop.ofertas_muebles === 1 || prop.muebles === '1' || prop.muebles === 1
 
       const property: Property = {
-        _id: prop.id?.toString() || '',
-        codOfer: prop.id?.toString() || '',
+        _id: codOfer,
+        codOfer: codOfer,
         title: titulo,
         description: descripcion,
         type: tipo as 'venta' | 'alquiler',
         price: precio,
         location: {
-          address: zona || ciudad,
-          city: ciudad,
-          province: provincia,
-          coordinates: prop.latitud && prop.altitud 
-            ? [parseFloat(prop.latitud), parseFloat(prop.altitud)]
-            : undefined
+          address: direccion,
+          city: ciudad || 'Aranjuez',
+          province: provincia || 'Madrid',
+          coordinates: prop.ofertas_latitud && prop.ofertas_altitud 
+            ? [parseFloat(prop.ofertas_latitud), parseFloat(prop.ofertas_altitud)]
+            : (prop.latitud && prop.altitud 
+              ? [parseFloat(prop.latitud), parseFloat(prop.altitud)]
+              : undefined)
         },
         features: {
           bedrooms: habitaciones,
