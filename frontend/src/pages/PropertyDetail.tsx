@@ -4,8 +4,10 @@ import { propertiesService } from '../services/properties.service'
 import { Property } from '../types'
 import ImageLightbox from '../components/properties/ImageLightbox'
 import ContactForm from '../components/ui/ContactForm'
+import { useTranslation } from '../hooks/useTranslation'
 
 const PropertyDetail = () => {
+  const { t } = useTranslation()
   const { id } = useParams<{ id: string }>()
   const [property, setProperty] = useState<Property | null>(null)
   const [loading, setLoading] = useState(true)
@@ -54,7 +56,7 @@ const PropertyDetail = () => {
 
   const formatPrice = (price: number) => {
     if (!price || price === 0 || isNaN(price)) {
-      return 'Consultar precio'
+      return t('properties.card.consultPrice')
     }
     // Formato español: 212.737 € (con punto como separador de miles y espacio antes del símbolo)
     return new Intl.NumberFormat('es-ES', {
@@ -77,7 +79,7 @@ const PropertyDetail = () => {
       <div className="min-h-screen flex items-center justify-center bg-black-soft">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-gold"></div>
-          <p className="mt-4 text-gray-300">Cargando propiedad...</p>
+          <p className="mt-4 text-gray-300">{t('properties.detail.loading')}</p>
         </div>
       </div>
     )
@@ -87,9 +89,9 @@ const PropertyDetail = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-black-soft">
         <div className="text-center">
-          <h2 className="text-2xl font-semibold mb-4 text-white">Propiedad no encontrada</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-white">{t('properties.detail.notFound')}</h2>
           <Link to="/propiedades" className="btn-primary">
-            Volver a Propiedades
+            {t('properties.detail.backToProperties')}
           </Link>
         </div>
       </div>
@@ -178,7 +180,7 @@ const PropertyDetail = () => {
                     ? 'bg-gold text-black-soft' 
                     : 'bg-gray-700 text-white'
                 }`}>
-                  {property.type === 'venta' ? 'Venta' : 'Alquiler'}
+                  {property.type === 'venta' ? t('properties.card.sale') : t('properties.card.rent')}
                 </span>
                 <span className="text-3xl font-serif text-gold">
                   {formatPrice(property.price)}
@@ -193,7 +195,7 @@ const PropertyDetail = () => {
             </div>
 
             <div className="mb-8">
-              <h2 className="font-serif text-2xl mb-4 text-white">Descripción</h2>
+              <h2 className="font-serif text-2xl mb-4 text-white">{t('properties.detail.description')}</h2>
               <p className="text-gray-300 leading-relaxed whitespace-pre-line">
                 {property.description}
               </p>
@@ -201,55 +203,55 @@ const PropertyDetail = () => {
 
             {property.features && (
               <div className="mb-8">
-                <h2 className="font-serif text-2xl mb-4 text-white">Características</h2>
+                <h2 className="font-serif text-2xl mb-4 text-white">{t('properties.detail.characteristics')}</h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {property.features.bedrooms !== undefined && (
                     <div className="bg-gray-800 border border-gray-700 p-4 rounded-lg text-center">
                       <div className="text-2xl mb-2">🛏️</div>
                       <div className="font-semibold text-white">{property.features.bedrooms}</div>
-                      <div className="text-sm text-gray-400">Habitaciones</div>
+                      <div className="text-sm text-gray-400">{t('properties.detail.bedrooms')}</div>
                     </div>
                   )}
                   {property.features.bathrooms !== undefined && (
                     <div className="bg-gray-800 border border-gray-700 p-4 rounded-lg text-center">
                       <div className="text-2xl mb-2">🚿</div>
                       <div className="font-semibold text-white">{property.features.bathrooms}</div>
-                      <div className="text-sm text-gray-400">Baños</div>
+                      <div className="text-sm text-gray-400">{t('properties.detail.bathrooms')}</div>
                     </div>
                   )}
                   {property.features.area !== undefined && (
                     <div className="bg-gray-800 border border-gray-700 p-4 rounded-lg text-center">
                       <div className="text-2xl mb-2">📐</div>
                       <div className="font-semibold text-white">{formatNumber(property.features.area)}</div>
-                      <div className="text-sm text-gray-400">m²</div>
+                      <div className="text-sm text-gray-400">{t('properties.detail.area')}</div>
                     </div>
                   )}
                   {property.features.floor && (
                     <div className="bg-gray-800 border border-gray-700 p-4 rounded-lg text-center">
                       <div className="text-2xl mb-2">🏢</div>
                       <div className="font-semibold text-white">{property.features.floor}º</div>
-                      <div className="text-sm text-gray-400">Planta</div>
+                      <div className="text-sm text-gray-400">{t('properties.detail.floor')}</div>
                     </div>
                   )}
                 </div>
                 <div className="mt-4 flex flex-wrap gap-2">
                   {property.features.parking && (
-                    <span className="px-3 py-1 bg-gray-800 border border-gray-700 rounded-full text-sm text-white">Parking</span>
+                    <span className="px-3 py-1 bg-gray-800 border border-gray-700 rounded-full text-sm text-white">{t('properties.detail.parking')}</span>
                   )}
                   {property.features.elevator && (
-                    <span className="px-3 py-1 bg-gray-800 border border-gray-700 rounded-full text-sm text-white">Ascensor</span>
+                    <span className="px-3 py-1 bg-gray-800 border border-gray-700 rounded-full text-sm text-white">{t('properties.detail.elevator')}</span>
                   )}
                   {property.features.terrace && (
-                    <span className="px-3 py-1 bg-gray-800 border border-gray-700 rounded-full text-sm text-white">Terraza</span>
+                    <span className="px-3 py-1 bg-gray-800 border border-gray-700 rounded-full text-sm text-white">{t('properties.detail.terrace')}</span>
                   )}
                   {property.features.garden && (
-                    <span className="px-3 py-1 bg-gray-800 border border-gray-700 rounded-full text-sm text-white">Jardín</span>
+                    <span className="px-3 py-1 bg-gray-800 border border-gray-700 rounded-full text-sm text-white">{t('properties.detail.garden')}</span>
                   )}
                   {property.features.pool && (
-                    <span className="px-3 py-1 bg-gray-800 border border-gray-700 rounded-full text-sm text-white">Piscina</span>
+                    <span className="px-3 py-1 bg-gray-800 border border-gray-700 rounded-full text-sm text-white">{t('properties.detail.pool')}</span>
                   )}
                   {property.features.furnished && (
-                    <span className="px-3 py-1 bg-gray-800 border border-gray-700 rounded-full text-sm text-white">Amueblado</span>
+                    <span className="px-3 py-1 bg-gray-800 border border-gray-700 rounded-full text-sm text-white">{t('properties.detail.furnished')}</span>
                   )}
                 </div>
               </div>
@@ -260,13 +262,13 @@ const PropertyDetail = () => {
           <div className="lg:col-span-1">
             <div className="sticky top-24">
               <div className="bg-gray-900 border border-gray-800 p-6 rounded-lg">
-                <h3 className="font-serif text-2xl mb-4 text-white">Solicitar Información</h3>
+                <h3 className="font-serif text-2xl mb-4 text-white">{t('properties.detail.requestInfo')}</h3>
                 <ContactForm 
                   propertyId={property._id}
                   propertyTitle={property.title}
                   propertyUrl={window.location.href}
                   propertyPrice={formatPrice(property.price)}
-                  propertyType={property.type === 'venta' ? 'Venta' : 'Alquiler'}
+                  propertyType={property.type === 'venta' ? t('properties.card.sale') : t('properties.card.rent')}
                 />
               </div>
             </div>

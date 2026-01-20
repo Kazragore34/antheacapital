@@ -4,8 +4,10 @@ import { propertiesService } from '../services/properties.service'
 import { Property } from '../types'
 import PropertyCard from '../components/properties/PropertyCard'
 import PropertyFilters from '../components/properties/PropertyFilters'
+import { useTranslation } from '../hooks/useTranslation'
 
 const Properties = () => {
+  const { t } = useTranslation()
   const [properties, setProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
   const [searchParams] = useSearchParams()
@@ -72,10 +74,10 @@ const Properties = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h1 className="font-serif text-4xl md:text-5xl mb-4 text-white">
-            Nuestras Propiedades
+            {t('properties.title')}
           </h1>
           <p className="text-gray-300 text-lg">
-            Encuentra la propiedad perfecta para ti
+            {t('properties.subtitle')}
           </p>
         </div>
 
@@ -84,7 +86,7 @@ const Properties = () => {
         {loading ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-gold"></div>
-            <p className="mt-4 text-gray-300">Cargando propiedades...</p>
+            <p className="mt-4 text-gray-300">{t('properties.loading')}</p>
           </div>
         ) : properties.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -95,7 +97,7 @@ const Properties = () => {
         ) : (
           <div className="text-center py-12 bg-gray-800 rounded-lg border border-gray-700">
             <p className="text-gray-400 text-lg">
-              No se encontraron propiedades con los filtros seleccionados.
+              {t('properties.noResults')}
             </p>
           </div>
         )}

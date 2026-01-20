@@ -1,15 +1,17 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Property } from '../../types'
+import { useTranslation } from '../../hooks/useTranslation'
 
 interface PropertyCardProps {
   property: Property
 }
 
 const PropertyCard = ({ property }: PropertyCardProps) => {
+  const { t } = useTranslation()
   const formatPrice = (price: number) => {
     if (!price || price === 0 || isNaN(price)) {
-      return 'Consultar precio'
+      return t('properties.card.consultPrice')
     }
     // Formato español: 212.737 € (con punto como separador de miles y espacio antes del símbolo)
     return new Intl.NumberFormat('es-ES', {
@@ -46,7 +48,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
             />
           ) : (
             <div className="w-full h-full bg-gray-800 flex items-center justify-center">
-              <span className="text-gray-500">Sin imagen</span>
+              <span className="text-gray-500">{t('properties.card.noImage')}</span>
             </div>
           )}
           <div className="absolute top-4 left-4">
@@ -55,7 +57,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
                 ? 'bg-gold text-black-soft' 
                 : 'bg-gray-700 text-white'
             }`}>
-              {property.type === 'venta' ? 'Venta' : 'Alquiler'}
+              {property.type === 'venta' ? t('properties.card.sale') : t('properties.card.rent')}
             </span>
           </div>
           <div className="absolute top-4 right-4">
