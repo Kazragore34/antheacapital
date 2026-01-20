@@ -149,14 +149,28 @@ $order = $_GET['order'] ?? 'precioinmo, precioalq';
 
 
 try {
+    // Activar reporte de errores para debugging
+    error_reporting(E_ALL);
+    ini_set('display_errors', 0); // No mostrar errores en pantalla, solo en logs
+    ini_set('log_errors', 1);
+    
+    error_log('[API Proxy] Acción solicitada: ' . $action);
+    error_log('[API Proxy] Parámetros recibidos: ' . json_encode($_GET));
+    error_log('[API Proxy] Numagencia: ' . INMOVILLA_NUMAGENCIA);
+    error_log('[API Proxy] Password configurado: ' . (INMOVILLA_PASSWORD ? 'Sí (longitud: ' . strlen(INMOVILLA_PASSWORD) . ')' : 'No'));
+    
     // Verificar que las funciones de Inmovilla estén disponibles
     if (!function_exists('Procesos')) {
+        error_log('[API Proxy] ERROR: Función Procesos no encontrada');
         throw new Exception('La función Procesos no está disponible. Verifica que apiinmovilla.php esté incluido correctamente.');
     }
     
     if (!function_exists('PedirDatos')) {
+        error_log('[API Proxy] ERROR: Función PedirDatos no encontrada');
         throw new Exception('La función PedirDatos no está disponible. Verifica que apiinmovilla.php esté incluido correctamente.');
     }
+    
+    error_log('[API Proxy] Funciones de Inmovilla disponibles correctamente');
     
     // Limpiar array de peticiones global
     $GLOBALS['arrpeticiones'] = array();
@@ -238,11 +252,30 @@ try {
     ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
     
 } catch (Exception $e) {
+    // Log del error para debugging
+    error_log('[API Proxy] Error: ' . $e->getMessage());
+    error_log('[API Proxy] Stack trace: ' . $e->getTraceAsString());
+    
     http_response_code(500);
     echo json_encode([
         'success' => false,
         'error' => $e->getMessage(),
-        'timestamp' => time()
-    ], JSON_UNESCAPED_UNICODE);
+        'timestamp' => time(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine()
+    ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+} catch (Error $e) {
+    // Capturar errores fatales de PHP
+    error_log('[API Proxy] Fatal Error: ' . $e->getMessage());
+    error_log('[API Proxy] Stack trace: ' . $e->getTraceAsString());
+    
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'error' => 'Error fatal en el servidor: ' . $e->getMessage(),
+        'timestamp' => time(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine()
+    ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 }
 ?>
