@@ -207,15 +207,17 @@ class InmovillaAPIService {
       }
 
       // Determinar tipo
+      // El listado básico no tiene información de tipo/precio, usar 'venta' por defecto
+      // Los detalles completos se obtendrán al hacer clic en la propiedad
       const tipoInmo = apiProp.ofertas_tipo_inmo || apiProp.tipo_inmo || ''
-      let tipo: 'venta' | 'alquiler' = 'alquiler'
+      let tipo: 'venta' | 'alquiler' = 'venta' // Por defecto venta
       
       if (tipoInmo.toLowerCase().includes('venta') || tipoInmo.toLowerCase().includes('vender')) {
         tipo = 'venta'
       } else if (tipoInmo.toLowerCase().includes('alquiler') || tipoInmo.toLowerCase().includes('alquilar')) {
         tipo = 'alquiler'
       } else {
-        // Inferir del precio
+        // Si no hay tipo en el listado básico, intentar inferir del precio si está disponible
         const precioVenta = parseFloat(apiProp.ofertas_precioinmo || apiProp.precioinmo || '0') || 0
         const precioAlq = parseFloat(apiProp.ofertas_precioalq || apiProp.precioalq || '0') || 0
         if (precioVenta > 0 && precioAlq === 0) {
@@ -224,10 +226,8 @@ class InmovillaAPIService {
           tipo = 'alquiler'
         } else if (precioVenta > 0 && precioAlq > 0) {
           tipo = 'venta' // Priorizar venta si ambos existen
-        } else {
-          console.warn(`[InmovillaAPI] Propiedad ${codOfer} con tipo desconocido, saltando`)
-          return null
         }
+        // Si no hay precio ni tipo, usar 'venta' por defecto (no saltar la propiedad)
       }
 
       // Precio
