@@ -89,10 +89,13 @@ export class PropertiesService {
   private async loadPropertiesFromXML(): Promise<Property[]> {
     const now = Date.now()
     
-    // Usar caché si está disponible y no ha expirado
-    if (this.xmlCache && (now - this.xmlCacheTime) < this.CACHE_DURATION) {
-      return this.xmlCache
-    }
+    // CACHÉ DESHABILITADO TEMPORALMENTE PARA FORZAR RECARGA DEL XML
+    // if (this.xmlCache && (now - this.xmlCacheTime) < this.CACHE_DURATION) {
+    //   console.log('[PropertiesService] Returning cached properties')
+    //   return this.xmlCache
+    // }
+    
+    console.log('[PropertiesService] Loading fresh XML data (cache disabled)')
 
     try {
       let xmlContent: string
