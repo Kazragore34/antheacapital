@@ -14,6 +14,11 @@
   .bg-gray-800 {
     background-color: #6D4C41 !important;
   }
+  
+  /* Reemplazar gray-900 con el nuevo color */
+  .bg-gray-900 {
+    background-color: #6D4C41 !important;
+  }
 }
 
 @layer components {
