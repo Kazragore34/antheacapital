@@ -105,6 +105,7 @@ if (file_exists($apiPath)) {
             curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.3) Gecko/20070309 Firefox/2.0.0.3");
             
             $page = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             $error = curl_error($ch);
             curl_close($ch);
             
@@ -112,6 +113,10 @@ if (file_exists($apiPath)) {
             
             if ($error) {
                 throw new Exception("Error en cURL: {$error}");
+            }
+            
+            if ($httpCode !== 200) {
+                throw new Exception("HTTP Error {$httpCode}: La API de Inmovilla devolvió un error. Verifica las credenciales.");
             }
             
             return $json ? $page : null;
@@ -169,11 +174,30 @@ try {
     // Pedir datos a la API (con JSON)
     $jsonResponse = PedirDatos(INMOVILLA_NUMAGENCIA, INMOVILLA_PASSWORD, INMOVILLA_IDIOMA, 1);
     
+    // Verificar que la respuesta no esté vacía
+    if (empty($jsonResponse)) {
+        throw new Exception('La API de Inmovilla devolvió una respuesta vacía');
+    }
+    
+    // Limpiar posibles caracteres BOM o espacios al inicio
+    $jsonResponse = trim($jsonResponse);
+    
+    // Verificar si la respuesta parece ser JSON
+    if (substr($jsonResponse, 0, 1) !== '{' && substr($jsonResponse, 0, 1) !== '[') {
+        // La respuesta puede ser un error o HTML
+        error_log('[API Proxy] Respuesta no JSON recibida: ' . substr($jsonResponse, 0, 500));
+        throw new Exception('La API de Inmovilla devolvió una respuesta que no es JSON válido. Verifica las credenciales.');
+    }
+    
     // Decodificar JSON
     $data = json_decode($jsonResponse, true);
     
     if (json_last_error() !== JSON_ERROR_NONE) {
-        throw new Exception('Error decodificando JSON: ' . json_last_error_msg());
+        $errorMsg = json_last_error_msg();
+        $responsePreview = substr($jsonResponse, 0, 500);
+        error_log('[API Proxy] Error decodificando JSON: ' . $errorMsg);
+        error_log('[API Proxy] Respuesta recibida (primeros 500 chars): ' . $responsePreview);
+        throw new Exception('Error decodificando JSON: ' . $errorMsg . '. Respuesta: ' . $responsePreview);
     }
     
     // Devolver respuesta JSON
