@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback, useMemo, ReactNode } from 'react'
 import { Language } from '../i18n/translations'
 
 interface LanguageContextType {
@@ -91,7 +91,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   }, [language])
 
   // Memoizar el valor del contexto para evitar re-renders innecesarios
-  const contextValue = useCallback(() => ({ language, setLanguage }), [language, setLanguage])()
+  const contextValue = useMemo(() => ({ language, setLanguage }), [language, setLanguage])
 
   return (
     <LanguageContext.Provider value={contextValue}>
