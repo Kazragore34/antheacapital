@@ -207,15 +207,22 @@ class InmovillaAPIService {
    */
   private transformProperty(apiProp: any): Property | null {
     try {
+      console.log(`[InmovillaAPI] Transformando propiedad, objeto recibido:`, apiProp)
+      console.log(`[InmovillaAPI] Tipo del objeto:`, typeof apiProp)
+      console.log(`[InmovillaAPI] Es array?:`, Array.isArray(apiProp))
+      console.log(`[InmovillaAPI] Keys disponibles:`, Object.keys(apiProp))
+      
       // Extraer codOfer - la API REST devuelve cod_ofer (con guión bajo)
       const codOfer = apiProp.cod_ofer?.toString() 
         || apiProp.ofertas_cod_ofer?.toString() 
         || apiProp.id?.toString() 
         || ''
       
+      console.log(`[InmovillaAPI] codOfer extraído:`, codOfer)
+      
       if (!codOfer) {
         console.warn('[InmovillaAPI] Property sin codOfer, saltando. Keys disponibles:', Object.keys(apiProp).slice(0, 10))
-        console.warn('[InmovillaAPI] Propiedad completa:', apiProp)
+        console.warn('[InmovillaAPI] Propiedad completa:', JSON.stringify(apiProp, null, 2))
         return null
       }
 
@@ -260,8 +267,35 @@ class InmovillaAPIService {
 
       // Título y descripción - usar ref si está disponible, sino codOfer
       const ref = apiProp.ref || codOfer
-      const titulo = apiProp.ofertas_titulo1 || apiProp.titulo1 || apiProp.ofertas_titulo2 || apiProp.titulo2 || `Propiedad ${ref}`
-      const descripcion = apiProp.ofertas_descrip1 || apiProp.descrip1 || apiProp.ofertas_descrip2 || apiProp.descrip2 || apiProp.ofertas_tinterior || apiProp.tinterior || ''
+      
+      // Buscar título en múltiples campos posibles
+      const titulo = apiProp.ofertas_titulo1 
+        || apiProp.titulo1 
+        || apiProp.ofertas_titulo2 
+        || apiProp.titulo2
+        || apiProp.titulo
+        || apiProp.nombre
+        || `Propiedad ${ref}`
+      
+      console.log(`[InmovillaAPI] Título encontrado:`, titulo)
+      console.log(`[InmovillaAPI] Campos de título disponibles:`, {
+        ofertas_titulo1: apiProp.ofertas_titulo1,
+        titulo1: apiProp.titulo1,
+        ofertas_titulo2: apiProp.ofertas_titulo2,
+        titulo2: apiProp.titulo2,
+        titulo: apiProp.titulo,
+        nombre: apiProp.nombre
+      })
+      
+      const descripcion = apiProp.ofertas_descrip1 
+        || apiProp.descrip1 
+        || apiProp.ofertas_descrip2 
+        || apiProp.descrip2 
+        || apiProp.ofertas_tinterior 
+        || apiProp.tinterior
+        || apiProp.descripcion
+        || apiProp.descrip
+        || ''
 
       // El listado básico solo tiene cod_ofer, ref, nodisponible, prospecto, fechaact
       // Si no hay más datos, crear una propiedad básica que se completará al hacer clic
@@ -281,17 +315,53 @@ class InmovillaAPIService {
       const piscina = apiProp.ofertas_piscina_prop === '1' || apiProp.piscina_prop === '1' || apiProp.ofertas_piscina_com === '1' || apiProp.piscina_com === '1'
       const amueblado = apiProp.ofertas_muebles === '1' || apiProp.ofertas_muebles === 1 || apiProp.muebles === '1' || apiProp.muebles === 1
 
-      // Imágenes
+      // Imágenes - buscar en múltiples campos posibles
       const images: string[] = []
+      
       // Buscar en campos directos como foto1, foto2, etc.
       for (let i = 1; i <= 20; i++) {
         const fotoKey = `ofertas_foto${i}`
         const fotoKeyAlt = `foto${i}`
-        const foto = apiProp[fotoKey] || apiProp[fotoKeyAlt]
-        if (foto && typeof foto === 'string' && foto.startsWith('http') && !images.includes(foto)) {
-          images.push(foto)
+        const fotoKeyAlt2 = `imagen${i}`
+        const fotoKeyAlt3 = `image${i}`
+        const foto = apiProp[fotoKey] || apiProp[fotoKeyAlt] || apiProp[fotoKeyAlt2] || apiProp[fotoKeyAlt3]
+        
+        if (foto) {
+          // Si es un string con URL
+          if (typeof foto === 'string' && (foto.startsWith('http') || foto.startsWith('/'))) {
+            if (!images.includes(foto)) {
+              images.push(foto)
+            }
+          }
+          // Si es un objeto con URL
+          else if (typeof foto === 'object' && foto.url) {
+            if (!images.includes(foto.url)) {
+              images.push(foto.url)
+            }
+          }
         }
       }
+      
+      // Buscar también en arrays de imágenes
+      if (Array.isArray(apiProp.imagenes)) {
+        apiProp.imagenes.forEach((img: any) => {
+          const url = typeof img === 'string' ? img : img.url || img.src
+          if (url && !images.includes(url)) {
+            images.push(url)
+          }
+        })
+      }
+      
+      if (Array.isArray(apiProp.fotos)) {
+        apiProp.fotos.forEach((img: any) => {
+          const url = typeof img === 'string' ? img : img.url || img.src
+          if (url && !images.includes(url)) {
+            images.push(url)
+          }
+        })
+      }
+      
+      console.log(`[InmovillaAPI] Imágenes encontradas (${images.length}):`, images)
 
       const property: Property = {
         _id: codOfer,
