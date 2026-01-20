@@ -206,12 +206,12 @@ jobs:
           else
             echo "⚠️ WARNING: xml2js NO encontrado en node_modules, instalando..."
             cd backend
-            npm install xml2js
+            npm install xml2js > /dev/null 2>&1
             cd ..
           fi
-          # Copiar node_modules (usar tar para mejor rendimiento con muchos archivos)
-          echo "📦 Copiando node_modules (puede tardar varios minutos)..."
-          cp -r backend/node_modules deploy/backend/ || {
+          # Copiar node_modules (reducir logs usando tar y redirigiendo salida)
+          echo "📦 Copiando node_modules (puede tardar varios minutos, logs reducidos)..."
+          cp -r backend/node_modules deploy/backend/ 2>&1 | head -20 || {
             echo "⚠️ Error copiando node_modules completo, intentando copiar solo xml2js..."
             mkdir -p deploy/backend/node_modules
             cp -r backend/node_modules/xml2js deploy/backend/node_modules/ 2>/dev/null || true
@@ -313,13 +313,13 @@ jobs:
         echo "📁 Verificando node_modules/:"
         if [ -d "deploy/backend/node_modules" ]; then
           echo "✅ node_modules/ existe"
-          ls -la deploy/backend/node_modules/ | head -10
-          echo "📊 Tamaño: $(du -sh deploy/backend/node_modules | cut -f1)"
+          echo "📊 Tamaño: $(du -sh deploy/backend/node_modules 2>/dev/null | cut -f1 || echo 'calculando...')"
           if [ -d "deploy/backend/node_modules/xml2js" ]; then
             echo "✅ xml2js encontrado en node_modules"
           else
             echo "❌ xml2js NO encontrado en node_modules"
           fi
+          echo "📦 Total de paquetes: $(find deploy/backend/node_modules -maxdepth 1 -type d 2>/dev/null | wc -l || echo 'N/A')"
         else
           echo "❌ node_modules/ NO existe"
         fi
@@ -361,12 +361,13 @@ jobs:
         echo "📂 Origen: ./deploy/"
         echo "📂 Destino: ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:/home/u571508109/domains/antheacapital.com/public_html/"
         
-        # Intentar deploy con opciones mejoradas
-        sshpass -p "${{ secrets.FTP_PASSWORD }}" rsync -avz --delete --progress \
+        # Intentar deploy con opciones mejoradas (reducir logs de progreso)
+        echo "📤 Subiendo archivos (esto puede tardar varios minutos)..."
+        sshpass -p "${{ secrets.FTP_PASSWORD }}" rsync -avz --delete \
           -e "ssh -p 65002 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=30 -o ServerAliveInterval=10" \
           ./deploy/ \
           ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:/home/u571508109/domains/antheacapital.com/public_html/ \
-          || {
+          2>&1 | grep -E "(sending|sent|deleting|total|error|ERROR)" | head -50 || {
             echo "❌ ERROR: Deploy falló"
             echo "💡 Posibles causas:"
             echo "   1. El servidor Hostinger bloquea conexiones SSH desde GitHub Actions"
