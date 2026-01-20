@@ -7,15 +7,22 @@
 function sendEmailViaSMTP($host, $port, $user, $pass, $from, $to, $replyTo, $subject, $htmlBody, $textBody) {
     $error = '';
     
+    // Log para debugging (solo en desarrollo, eliminar en producción)
+    error_log("[SMTP] Intentando conectar a $host:$port");
+    
     // Conectar al servidor SMTP
     $socket = @fsockopen($host, $port, $errno, $errstr, 10);
     
     if (!$socket) {
+        $errorMsg = "No se pudo conectar al servidor SMTP: $errstr ($errno)";
+        error_log("[SMTP] ERROR: $errorMsg");
         return [
             'success' => false,
-            'error' => "No se pudo conectar al servidor SMTP: $errstr ($errno)"
+            'error' => $errorMsg
         ];
     }
+    
+    error_log("[SMTP] Conexión establecida a $host:$port");
     
     // Leer respuesta inicial
     $response = fgets($socket, 515);
