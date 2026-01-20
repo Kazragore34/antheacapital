@@ -60,25 +60,25 @@ if (!$email) {
     exit;
 }
 
-// Configuración SMTP
-// IMPORTANTE: Ajusta estos valores según tu proveedor de correo
+// Configuración SMTP para mxroute/mxrouting
+// IMPORTANTE: Basado en tus registros DNS que apuntan a fusion.mxrouting.net
+// Para mxroute, el servidor SMTP suele ser el mismo que el servidor MX o uno específico para SMTP
 
-// Opción 1: mxroute/mxrouting (recomendado si usas mxroute)
-// Basado en tus registros DNS que apuntan a fusion.mxrouting.net
-// NOTA: El servidor SMTP puede ser diferente al servidor web
-// Para mxroute, el servidor SMTP suele ser: mail.mxrouting.net, smtp.mxrouting.net, o fusion.mxrouting.net
-$smtpHost = 'mail.mxrouting.net'; // Servidor SMTP de mxroute (intentar mail.mxrouting.net primero)
+// Servidores SMTP de mxroute para probar (en orden de prioridad)
+// mxroute generalmente usa el mismo dominio que los registros MX para SMTP
+$smtpHosts = [
+    'fusion.mxrouting.net',  // Basado en tus registros MX
+    'mail.mxrouting.net',     // Servidor SMTP común de mxroute
+    'smtp.mxrouting.net',    // Alternativa común
+    'mx.mxrouting.net',      // Otra alternativa
+];
+
 $smtpPort = 587; // Puerto para STARTTLS (o 465 para SSL)
 $smtpUser = 'contacto@antheacapital.com'; // Tu email completo
 $smtpPass = 'AC@pital2025-contacto#'; // Contraseña de tu cuenta
 
-// Servidores SMTP alternativos de mxroute para probar
-$smtpHosts = [
-    'mail.mxrouting.net',
-    'smtp.mxrouting.net',
-    'fusion.mxrouting.net',
-    'mx.mxrouting.net',
-];
+// Usar el primer servidor como predeterminado
+$smtpHost = $smtpHosts[0];
 
 // Opción 2: Hostinger (si prefieres usar Hostinger directamente)
 // $smtpHost = 'smtp.hostinger.com';
