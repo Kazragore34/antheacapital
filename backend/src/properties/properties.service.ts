@@ -40,13 +40,18 @@ export class PropertiesService {
   }): Promise<Property[]> {
     try {
       // Intentar leer desde XML de Inmovilla primero
+      console.log(`[PropertiesService] Loading properties from XML: ${this.XML_URL}`)
       const xmlProperties = await this.loadPropertiesFromXML()
+      console.log(`[PropertiesService] Loaded ${xmlProperties?.length || 0} properties from XML`)
       
       if (xmlProperties && xmlProperties.length > 0) {
         // Aplicar filtros a propiedades del XML
-        return this.filterProperties(xmlProperties, query)
+        const filtered = this.filterProperties(xmlProperties, query)
+        console.log(`[PropertiesService] After filtering: ${filtered.length} properties`)
+        return filtered
       }
 
+      console.log('[PropertiesService] No XML properties found, trying MongoDB...')
       // Si no hay XML, intentar desde MongoDB
       const filter: any = {}
       
@@ -122,11 +127,14 @@ export class PropertiesService {
       }
 
       // Parsear XML
+      console.log(`[PropertiesService] Parsing XML content (${xmlContent.length} chars)`)
       const parser = new xml2js.Parser({ explicitArray: false, mergeAttrs: true })
       const result = await parser.parseStringPromise(xmlContent)
       
+      console.log('[PropertiesService] XML parsed, checking structure...')
       if (!result.propiedades || !result.propiedades.propiedad) {
-        console.warn('XML de Inmovilla no tiene el formato esperado')
+        console.warn('[PropertiesService] XML de Inmovilla no tiene el formato esperado')
+        console.warn('[PropertiesService] XML structure:', JSON.stringify(Object.keys(result), null, 2))
         return []
       }
 
@@ -134,8 +142,10 @@ export class PropertiesService {
         ? result.propiedades.propiedad 
         : [result.propiedades.propiedad]
 
+      console.log(`[PropertiesService] Found ${propiedades.length} propiedades in XML`)
       // Transformar propiedades del XML al formato Property
       const properties = propiedades.map((prop: any) => this.transformInmovillaProperty(prop)).filter(Boolean)
+      console.log(`[PropertiesService] Successfully transformed ${properties.length} properties`)
 
       // Actualizar caché
       this.xmlCache = properties
@@ -143,7 +153,11 @@ export class PropertiesService {
 
       return properties
     } catch (error) {
-      console.error('Error loading properties from XML:', error)
+      console.error('[PropertiesService] Error loading properties from XML:', error)
+      if (error instanceof Error) {
+        console.error('[PropertiesService] Error message:', error.message)
+        console.error('[PropertiesService] Error stack:', error.stack)
+      }
       return []
     }
   }
@@ -253,13 +267,28 @@ export class PropertiesService {
 
   private async fetchXMLFromURL(url: string): Promise<string> {
     return new Promise((resolve, reject) => {
+      console.log(`[PropertiesService] Fetching XML from URL: ${url}`)
       const client = url.startsWith('https') ? https : http
       client.get(url, (res) => {
+        console.log(`[PropertiesService] HTTP Status: ${res.statusCode}`)
+        if (res.statusCode !== 200) {
+          reject(new Error(`HTTP ${res.statusCode}: ${res.statusMessage}`))
+          return
+        }
         let data = ''
         res.on('data', (chunk) => { data += chunk })
-        res.on('end', () => resolve(data))
-        res.on('error', reject)
-      }).on('error', reject)
+        res.on('end', () => {
+          console.log(`[PropertiesService] XML fetched successfully (${data.length} chars)`)
+          resolve(data)
+        })
+        res.on('error', (err) => {
+          console.error('[PropertiesService] Error reading XML stream:', err)
+          reject(err)
+        })
+      }).on('error', (err) => {
+        console.error('[PropertiesService] Error fetching XML:', err)
+        reject(err)
+      })
     })
   }
 
