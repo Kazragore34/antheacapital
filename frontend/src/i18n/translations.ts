@@ -1955,6 +1955,17 @@ const translations: Record<Language, Translations> = {
       contact: 'Contatto',
       rightsReserved: 'Tutti i diritti riservati',
     },
+    // Floating Assistant
+    assistant: {
+      title: 'Lucia',
+      role: 'Assistente Virtuale',
+      greeting: 'Ciao! Sono Lucia, la tua assistente virtuale. Sono qui per aiutarti con qualsiasi domanda sulle nostre proprietà e servizi.',
+      comingSoon: 'L\'assistente virtuale sarà disponibile a breve',
+      placeholder: 'Scrivi la tua domanda...',
+      openLabel: 'Apri assistente virtuale Lucia',
+      closeLabel: 'Chiudi',
+      sendLabel: 'Invia messaggio',
+    },
     contact: {
       title: 'Contatto',
       subtitle: 'Siamo qui per aiutarti. Contattaci',
