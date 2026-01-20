@@ -131,29 +131,40 @@ try {
                     error_log("[API REST Proxy] Obteniendo detalles completos de propiedad {$codOfer} ({$i}/{$maxPropiedades})");
                     
                     // Usar el endpoint que sabemos que funciona: /propiedades/{codOfer}
-                    try {
-                        $responseDetalle = callInmovillaAPI('/propiedades/' . $codOfer, []);
-                    } catch (Exception $e) {
-                        error_log("[API REST Proxy] ERROR obteniendo detalles de {$codOfer}: " . $e->getMessage());
-                        // Si falla obtener detalles, usar datos básicos para que al menos se muestre algo
-                        $propiedadesCompletas[] = $propBasica;
-                        continue;
+                    // INTENTAR MÚLTIPLES VECES si falla
+                    $responseDetalle = null;
+                    $intentos = 0;
+                    $maxIntentos = 3;
+                    
+                    while ($intentos < $maxIntentos && empty($responseDetalle)) {
+                        try {
+                            $intentos++;
+                            error_log("[API REST Proxy] Intento {$intentos}/{$maxIntentos} para obtener detalles de {$codOfer}");
+                            $responseDetalle = callInmovillaAPI('/propiedades/' . $codOfer, []);
+                            
+                            if (!empty($responseDetalle)) {
+                                break; // Éxito, salir del loop
+                            }
+                        } catch (Exception $e) {
+                            error_log("[API REST Proxy] Intento {$intentos} falló para {$codOfer}: " . $e->getMessage());
+                            if ($intentos < $maxIntentos) {
+                                usleep(200000); // Esperar 0.2 segundos antes de reintentar
+                            }
+                        }
                     }
                     
                     if (empty($responseDetalle)) {
-                        error_log("[API REST Proxy] ERROR CRÍTICO: Respuesta vacía para {$codOfer}");
-                        // Usar datos básicos si no se pueden obtener detalles
-                        $propiedadesCompletas[] = $propBasica;
+                        error_log("[API REST Proxy] ❌ ERROR: No se pudieron obtener detalles de {$codOfer} después de {$maxIntentos} intentos");
+                        // NO usar datos básicos - saltar esta propiedad completamente
                         continue;
                     }
                     
                     $detalleDecoded = json_decode($responseDetalle, true);
                     
                     if (json_last_error() !== JSON_ERROR_NONE) {
-                        error_log("[API REST Proxy] ERROR CRÍTICO: Error decodificando JSON para {$codOfer}: " . json_last_error_msg());
+                        error_log("[API REST Proxy] ❌ ERROR: Error decodificando JSON para {$codOfer}: " . json_last_error_msg());
                         error_log("[API REST Proxy] Respuesta raw (primeros 1000 chars): " . substr($responseDetalle, 0, 1000));
-                        // Usar datos básicos si no se puede decodificar
-                        $propiedadesCompletas[] = $propBasica;
+                        // NO usar datos básicos - saltar esta propiedad
                         continue;
                     }
                     
@@ -170,17 +181,31 @@ try {
                         error_log("[API REST Proxy] Keys disponibles: " . implode(', ', array_keys($detalleDecoded)));
                         if (isset($detalleDecoded['data'])) {
                             error_log("[API REST Proxy] Keys de data: " . implode(', ', array_keys($detalleDecoded['data'])));
+                            if (isset($detalleDecoded['data']['ficha'])) {
+                                error_log("[API REST Proxy] Tipo de data.ficha: " . gettype($detalleDecoded['data']['ficha']));
+                                if (is_array($detalleDecoded['data']['ficha'])) {
+                                    error_log("[API REST Proxy] Tamaño de data.ficha: " . count($detalleDecoded['data']['ficha']));
+                                }
+                            }
                         }
-                        // Usar datos básicos si no se puede extraer estructura
-                        $propiedadesCompletas[] = $propBasica;
+                        // NO usar datos básicos - saltar esta propiedad
                         continue;
                     }
                     
                     if (!$propiedadCompleta || !is_array($propiedadCompleta)) {
                         error_log("[API REST Proxy] ❌ ERROR: No se pudo extraer datos completos para {$codOfer}");
-                        // Usar datos básicos si no se puede extraer
-                        $propiedadesCompletas[] = $propBasica;
+                        // NO usar datos básicos - saltar esta propiedad
                         continue;
+                    }
+                    
+                    // VERIFICAR que tenga los campos necesarios - si no los tiene, NO incluirla
+                    $tieneTitulo = isset($propiedadCompleta['tituloes']) || isset($propiedadCompleta['titulo1']);
+                    $tieneDescripcion = isset($propiedadCompleta['descripciones']) || isset($propiedadCompleta['descrip1']);
+                    $tienePrecio = isset($propiedadCompleta['precioalq']) || isset($propiedadCompleta['precioinmo']);
+                    
+                    if (!$tieneTitulo && !$tieneDescripcion && !$tienePrecio) {
+                        error_log("[API REST Proxy] ❌ ERROR: Propiedad {$codOfer} no tiene título, descripción ni precio - NO incluir");
+                        continue; // NO incluir propiedades sin datos esenciales
                     }
                     
                     // Construir URLs de imágenes si numfotos > 0
@@ -223,23 +248,19 @@ try {
                 
                 error_log("[API REST Proxy] Total propiedades completas obtenidas: " . count($propiedadesCompletas));
                 
-                // Si no se obtuvieron propiedades completas, usar al menos las básicas
-                if (count($propiedadesCompletas) === 0 && count($listadoBasico) > 0) {
-                    error_log("[API REST Proxy] ⚠️ No se pudieron obtener detalles completos, usando datos básicos");
-                    $propiedadesCompletas = array_slice($listadoBasico, 0, $maxPropiedades);
+                // NO usar datos básicos como fallback - solo devolver propiedades con datos completos
+                if (count($propiedadesCompletas) === 0) {
+                    error_log("[API REST Proxy] ⚠️ No se pudieron obtener detalles completos de ninguna propiedad");
+                    // Devolver array vacío en lugar de datos básicos
+                    $data = ['paginacion' => []];
+                } else {
+                    $data = ['paginacion' => $propiedadesCompletas];
                 }
-                
-                $data = ['paginacion' => $propiedadesCompletas];
             } catch (Exception $e) {
                 error_log("[API REST Proxy] Error en case propiedades: " . $e->getMessage());
                 error_log("[API REST Proxy] Stack trace: " . $e->getTraceAsString());
-                // En lugar de lanzar excepción, devolver datos básicos si están disponibles
-                if (isset($listadoBasico) && count($listadoBasico) > 0) {
-                    error_log("[API REST Proxy] ⚠️ Usando datos básicos debido a error");
-                    $data = ['paginacion' => array_slice($listadoBasico, 0, min(count($listadoBasico), $limit > 0 ? $limit : 100))];
-                } else {
-                    throw $e; // Solo lanzar si no hay datos básicos disponibles
-                }
+                // NO usar datos básicos - devolver error o array vacío
+                throw $e; // Lanzar excepción para que se capture en el catch general
             }
             break;
             
