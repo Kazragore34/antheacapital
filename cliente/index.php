@@ -5,10 +5,21 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
         <style type="text/css">
-            body, html, iframe {
+            body, html {
                 margin: 0;
                 border: 0;
                 padding: 0;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+            }
+            iframe {
+                margin: 0;
+                border: 0;
+                padding: 0;
+                width: 100%;
+                height: 100vh;
+                display: block;
             }
         </style>
 </head>
