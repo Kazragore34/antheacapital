@@ -100,8 +100,21 @@ class InmovillaAPIService {
 
       console.log(`[InmovillaAPI] Propiedades extraídas: ${apiProperties.length}`)
       if (apiProperties.length > 0) {
-        console.log(`[InmovillaAPI] Primera propiedad:`, apiProperties[0])
+        console.log(`[InmovillaAPI] Primera propiedad completa:`, JSON.stringify(apiProperties[0], null, 2))
         console.log(`[InmovillaAPI] Keys de la primera propiedad:`, Object.keys(apiProperties[0]))
+        
+        // Verificar campos específicos
+        const primera = apiProperties[0]
+        console.log(`[InmovillaAPI] Verificación de campos:`)
+        console.log(`  - cod_ofer:`, primera.cod_ofer)
+        console.log(`  - ref:`, primera.ref)
+        console.log(`  - ofertas_titulo1:`, primera.ofertas_titulo1)
+        console.log(`  - titulo1:`, primera.titulo1)
+        console.log(`  - ofertas_precioinmo:`, primera.ofertas_precioinmo)
+        console.log(`  - ofertas_precioalq:`, primera.ofertas_precioalq)
+        console.log(`  - ofertas_tipo_inmo:`, primera.ofertas_tipo_inmo)
+        console.log(`  - ofertas_foto1:`, primera.ofertas_foto1)
+        console.log(`  - foto1:`, primera.foto1)
       }
 
       // Transformar propiedades de la API al formato interno

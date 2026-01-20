@@ -126,16 +126,44 @@ try {
                     $responseDetalle = callInmovillaAPI('/propiedades/' . $codOfer, []);
                     $detalleDecoded = json_decode($responseDetalle, true);
                     
+                    // Log para debugging
+                    error_log("Propiedad {$codOfer} - Respuesta detalle: " . json_encode($detalleDecoded));
+                    
+                    $propiedadCompleta = null;
+                    
                     if (is_array($detalleDecoded)) {
                         // Si la respuesta es directamente un array, usar el primer elemento
-                        if (isset($detalleDecoded[0])) {
-                            $propiedadesCompletas[] = $detalleDecoded[0];
-                        } else {
-                            $propiedadesCompletas[] = $detalleDecoded;
+                        if (isset($detalleDecoded[0]) && is_array($detalleDecoded[0])) {
+                            $propiedadCompleta = $detalleDecoded[0];
+                        } elseif (!isset($detalleDecoded['success']) && !isset($detalleDecoded['error'])) {
+                            // Es un objeto de propiedad directamente
+                            $propiedadCompleta = $detalleDecoded;
                         }
-                    } elseif (isset($detalleDecoded['data'])) {
-                        $propiedadesCompletas[] = $detalleDecoded['data'];
+                    }
+                    
+                    // Buscar en diferentes estructuras posibles
+                    if (!$propiedadCompleta && isset($detalleDecoded['data'])) {
+                        if (is_array($detalleDecoded['data'])) {
+                            $propiedadCompleta = $detalleDecoded['data'];
+                        }
+                    }
+                    
+                    if (!$propiedadCompleta && isset($detalleDecoded['ficha'])) {
+                        if (is_array($detalleDecoded['ficha']) && isset($detalleDecoded['ficha'][0])) {
+                            $propiedadCompleta = $detalleDecoded['ficha'][0];
+                        } elseif (is_array($detalleDecoded['ficha'])) {
+                            $propiedadCompleta = $detalleDecoded['ficha'];
+                        }
+                    }
+                    
+                    if ($propiedadCompleta && is_array($propiedadCompleta)) {
+                        // Asegurar que cod_ofer esté presente
+                        if (!isset($propiedadCompleta['cod_ofer'])) {
+                            $propiedadCompleta['cod_ofer'] = $codOfer;
+                        }
+                        $propiedadesCompletas[] = $propiedadCompleta;
                     } else {
+                        error_log("Propiedad {$codOfer} - No se pudo extraer datos completos, usando básicos");
                         // Si falla, usar al menos los datos básicos
                         $propiedadesCompletas[] = $propBasica;
                     }
