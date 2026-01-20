@@ -73,20 +73,10 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     return () => window.removeEventListener('storage', handleStorageChange)
   }, [language])
 
-  // Establecer el idioma inicial en el HTML y asegurar sincronización
+  // Establecer el idioma inicial en el HTML
   useEffect(() => {
     if (typeof document !== 'undefined') {
       document.documentElement.lang = language
-    }
-    
-    // Verificar que el localStorage esté sincronizado
-    const stored = getStoredLanguage()
-    if (stored !== language) {
-      // Si hay una discrepancia, usar el valor del localStorage (más reciente)
-      setLanguageState(stored)
-      if (typeof document !== 'undefined') {
-        document.documentElement.lang = stored
-      }
     }
   }, [language])
 
