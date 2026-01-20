@@ -145,14 +145,30 @@ export class PropertiesService {
 
       // Intentar leer desde URL primero
       if (this.XML_URL && this.XML_URL.startsWith('http')) {
-        xmlContent = await this.fetchXMLFromURL(this.XML_URL)
+        try {
+          xmlContent = await this.fetchXMLFromURL(this.XML_URL)
+          console.log(`[PropertiesService] XML loaded from URL: ${xmlContent ? xmlContent.length : 0} chars`)
+        } catch (urlError) {
+          console.warn(`[PropertiesService] Failed to load XML from URL: ${urlError}`)
+          console.log(`[PropertiesService] Trying local file as fallback...`)
+          // Fallback a archivo local si la URL falla
+          try {
+            xmlContent = await this.readXMLFromFile(this.XML_LOCAL_PATH)
+            console.log(`[PropertiesService] XML loaded from local file: ${xmlContent ? xmlContent.length : 0} chars`)
+          } catch (fileError) {
+            console.error(`[PropertiesService] Failed to load XML from local file: ${fileError}`)
+            xmlContent = null
+          }
+        }
       } else {
         // Leer desde archivo local
         xmlContent = await this.readXMLFromFile(this.XML_LOCAL_PATH)
       }
 
-      if (!xmlContent) {
-        console.warn('No se pudo cargar el XML de Inmovilla')
+      if (!xmlContent || xmlContent.length === 0) {
+        console.error('[PropertiesService] No se pudo cargar el XML de Inmovilla desde ninguna fuente')
+        console.error(`[PropertiesService] XML_URL: ${this.XML_URL}`)
+        console.error(`[PropertiesService] XML_LOCAL_PATH: ${this.XML_LOCAL_PATH}`)
         return []
       }
 
@@ -201,15 +217,39 @@ export class PropertiesService {
       }
       
       // Transformar propiedades del XML al formato Property
+      let transformedCount = 0
+      let filteredCount = 0
       const properties = propiedades.map((prop: any, index: number) => {
         const transformed = this.transformInmovillaProperty(prop)
         if (!transformed) {
-          console.warn(`[PropertiesService] Property ${index + 1} was filtered out during transformation`)
+          filteredCount++
+          if (index < 5) { // Solo log las primeras 5 para no saturar
+            console.warn(`[PropertiesService] Property ${index + 1} was filtered out during transformation`)
+            console.warn(`[PropertiesService] Property data sample:`, {
+              codOfer: prop.ofertas_cod_ofer || prop.id,
+              precio: prop.ofertas_precioinmo || prop.ofertas_precioalq,
+              titulo: prop.ofertas_titulo1 || prop.titulo1,
+            })
+          }
+        } else {
+          transformedCount++
         }
         return transformed
       }).filter(Boolean)
       
-      console.log(`[PropertiesService] Successfully transformed ${properties.length} properties from ${propiedades.length} XML entries`)
+      console.log(`[PropertiesService] Transformation summary:`)
+      console.log(`  - Total XML entries: ${propiedades.length}`)
+      console.log(`  - Successfully transformed: ${transformedCount}`)
+      console.log(`  - Filtered out: ${filteredCount}`)
+      console.log(`  - Final properties array length: ${properties.length}`)
+      
+      if (properties.length === 0 && propiedades.length > 0) {
+        console.error('[PropertiesService] WARNING: All properties were filtered out!')
+        console.error('[PropertiesService] This usually means:')
+        console.error('  1. Properties have price 0 and no title/city')
+        console.error('  2. Properties are missing cod_ofer')
+        console.error('  3. XML structure is different than expected')
+      }
 
       // Actualizar caché
       this.xmlCache = properties
@@ -260,12 +300,19 @@ export class PropertiesService {
       }
 
       // Precio (priorizar según tipo)
-      const precio = tipo === 'alquiler' 
+      let precio = tipo === 'alquiler' 
         ? precioAlq
         : precioInmo
 
+      // Si no hay precio, intentar otros campos
       if (precio === 0) {
-        console.warn(`[PropertiesService] Property ${codOfer} has price 0, skipping`)
+        precio = parseFloat(prop.ofertas_precio || prop.precio || '0') || 0
+      }
+
+      // Si aún no hay precio, usar 0 pero NO filtrar (mostrar "Consultar precio")
+      // Solo filtrar si realmente no hay datos válidos
+      if (precio === 0 && !titulo && !ciudad) {
+        console.warn(`[PropertiesService] Property ${codOfer} has no valid data, skipping`)
         return null
       }
 

@@ -47,6 +47,9 @@ const PropertyDetail = () => {
   }
 
   const formatPrice = (price: number) => {
+    if (!price || price === 0 || isNaN(price)) {
+      return 'Consultar precio'
+    }
     return new Intl.NumberFormat('es-ES', {
       style: 'currency',
       currency: 'EUR',
