@@ -4,9 +4,11 @@
  * Soluciona el problema de CORS permitiendo que el frontend acceda al XML
  */
 
+// Headers CORS - IMPORTANTE: Deben ir ANTES de cualquier output
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Headers: Content-Type, Accept');
+header('Access-Control-Max-Age: 3600');
 header('Content-Type: application/xml; charset=utf-8');
 
 // Manejar preflight OPTIONS request
