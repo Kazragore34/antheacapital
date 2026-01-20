@@ -220,38 +220,75 @@ if (false && class_exists('PHPMailer\PHPMailer\PHPMailer')) {
         ]);
     }
 } else {
-    // Usar mail() nativo de PHP (menos confiable pero funciona)
-    $headers = "MIME-Version: 1.0\r\n";
-    $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-    $headers .= "From: $fromEmail\r\n";
-    $headers .= "Reply-To: $email\r\n";
-    
-    if (mail($toEmail, $subject, $htmlBody, $headers)) {
-        echo json_encode([
-            'success' => true,
-            'message' => 'Mensaje enviado correctamente'
-        ]);
-    } else {
-        // Si mail() falla, intentar con SMTP directo
-        if (function_exists('sendEmailViaSMTP')) {
-            $smtpResult = sendEmailViaSMTP($smtpHost, $smtpPort, $smtpUser, $smtpPass, $fromEmail, $toEmail, $email, $subject, $htmlBody, $textBody);
+    // Usar SMTP directo directamente (más confiable que mail())
+    // mail() puede devolver true pero no enviar realmente el correo
+    if (function_exists('sendEmailViaSMTP')) {
+        // Intentar con cada servidor SMTP hasta que uno funcione
+        $smtpResult = null;
+        $lastError = '';
+        
+        foreach ($smtpHosts as $host) {
+            error_log("[ContactHandler] Intentando enviar correo vía SMTP: $host:$smtpPort");
+            $smtpResult = sendEmailViaSMTP($host, $smtpPort, $smtpUser, $smtpPass, $fromEmail, $toEmail, $email, $subject, $htmlBody, $textBody);
             
             if ($smtpResult['success']) {
+                error_log("[ContactHandler] ✅ Correo enviado exitosamente usando $host");
+                break; // Si funciona, salir del bucle
+            } else {
+                $lastError = $smtpResult['error'] ?? 'Error desconocido';
+                error_log("[ContactHandler] ❌ Error con $host: $lastError");
+            }
+        }
+        
+        if ($smtpResult && $smtpResult['success']) {
+            echo json_encode([
+                'success' => true,
+                'message' => 'Mensaje enviado correctamente'
+            ]);
+        } else {
+            // Si todos los servidores SMTP fallan, intentar mail() como último recurso
+            error_log("[ContactHandler] Todos los servidores SMTP fallaron, intentando mail() nativo");
+            $headers = "MIME-Version: 1.0\r\n";
+            $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+            $headers .= "From: $fromEmail\r\n";
+            $headers .= "Reply-To: $email\r\n";
+            
+            if (mail($toEmail, $subject, $htmlBody, $headers)) {
+                error_log("[ContactHandler] ⚠️ mail() devolvió true, pero puede que el correo no se haya enviado realmente");
                 echo json_encode([
                     'success' => true,
-                    'message' => 'Mensaje enviado correctamente'
+                    'message' => 'Mensaje enviado correctamente (usando mail() nativo)',
+                    'warning' => 'Si no recibes el correo, verifica la configuración SMTP'
                 ]);
             } else {
                 http_response_code(500);
+                error_log("[ContactHandler] ❌ mail() también falló");
                 echo json_encode([
                     'success' => false,
                     'message' => 'Error al enviar el correo. Por favor, intenta más tarde o contacta directamente a contacto@antheacapital.com',
-                    'error' => $smtpResult['error'] ?? 'Error desconocido',
-                    'hint' => 'Verifica las credenciales SMTP en contact-handler.php'
+                    'error' => $lastError,
+                    'hint' => 'Verifica las credenciales SMTP en contact-handler.php. Servidores probados: ' . implode(', ', $smtpHosts)
                 ]);
             }
+        }
+    } else {
+        // Si la función SMTP no está disponible, usar mail() nativo
+        error_log("[ContactHandler] ⚠️ sendEmailViaSMTP no disponible, usando mail() nativo");
+        $headers = "MIME-Version: 1.0\r\n";
+        $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+        $headers .= "From: $fromEmail\r\n";
+        $headers .= "Reply-To: $email\r\n";
+        
+        if (mail($toEmail, $subject, $htmlBody, $headers)) {
+            error_log("[ContactHandler] ⚠️ mail() devolvió true, pero puede que el correo no se haya enviado realmente");
+            echo json_encode([
+                'success' => true,
+                'message' => 'Mensaje enviado correctamente (usando mail() nativo)',
+                'warning' => 'Si no recibes el correo, verifica la configuración SMTP'
+            ]);
         } else {
             http_response_code(500);
+            error_log("[ContactHandler] ❌ mail() falló");
             echo json_encode([
                 'success' => false,
                 'message' => 'Error al enviar el correo. Por favor, intenta más tarde o contacta directamente a contacto@antheacapital.com',
