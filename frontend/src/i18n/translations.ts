@@ -218,6 +218,115 @@ const translations: Record<Language, Translations> = {
       subtitle: 'Solicita una valoración profesional de tu propiedad',
       button: 'Solicitar Valoración Gratuita',
     },
+    // Services Page
+    servicesPage: {
+      title: 'Nuestros Servicios',
+      subtitle: 'Soluciones integrales para todas sus necesidades inmobiliarias',
+      needMoreInfo: '¿Necesita más información?',
+      needMoreInfoText: 'Contacte con nosotros y le asesoraremos sobre el servicio que mejor se adapte a sus necesidades',
+      contactNow: 'Contactar Ahora',
+      viewInsurance: 'Ver Seguros',
+      moreInfo: 'Más Información',
+      items: {
+        asesoramiento: {
+          title: 'Asesoramiento Integral',
+          description: 'Servicio completo de gestión integral y asesoramiento personalizado adaptado a sus necesidades específicas.',
+          features: [
+            'Gestión integral de su propiedad',
+            'Asesoramiento personalizado',
+            'Análisis de mercado',
+            'Estrategia adaptada a sus necesidades',
+            'Seguimiento continuo',
+          ],
+        },
+        financiacion: {
+          title: 'Financiación',
+          description: 'Le ayudamos a encontrar la mejor opción de financiación hipotecaria para su inversión inmobiliaria.',
+          features: [
+            'Comparativa de hipotecas',
+            'Asesoramiento hipotecario',
+            'Gestión de documentación',
+            'Tramitación de escrituras',
+            'Asesoramiento financiero',
+          ],
+        },
+        seguros: {
+          title: 'Seguros',
+          description: 'Protección completa para su inversión con los mejores seguros del mercado.',
+          features: [
+            'Seguros de hogar',
+            'Seguros de vida',
+            'Seguros de impago',
+            'Asesoramiento personalizado',
+            'Comparativa de ofertas',
+          ],
+        },
+        alquiler: {
+          title: 'Alquiler Garantizado',
+          description: 'Servicio de alquiler garantizado que le proporciona tranquilidad y seguridad en sus inversiones inmobiliarias.',
+          features: [
+            'Renta garantizada',
+            'Gestión de inquilinos',
+            'Mantenimiento incluido',
+            'Seguro de impago',
+            'Tranquilidad total',
+          ],
+        },
+      },
+    },
+    // About Page
+    aboutPage: {
+      title: 'Sobre Anthea Capital',
+      subtitle: 'Inmobiliaria premium en Aranjuez, Madrid',
+      mission: {
+        title: 'Nuestra Misión',
+        text: 'En Anthea Capital Consulting, nos dedicamos a ofrecer un servicio inmobiliario de excelencia, proporcionando asesoramiento integral y personalizado a nuestros clientes. Nuestra misión es ayudarle a encontrar la propiedad perfecta o a vender su inmueble con el máximo valor, siempre con transparencia, profesionalidad y atención al detalle.',
+      },
+      vision: {
+        title: 'Nuestra Visión',
+        text: 'Aspiramos a ser la inmobiliaria de referencia en Aranjuez y la Comunidad de Madrid, reconocida por nuestro compromiso con la calidad, la innovación y la satisfacción del cliente. Queremos ser el socio de confianza para todas sus necesidades inmobiliarias, desde la compra y venta hasta el alquiler y la gestión de propiedades.',
+      },
+      values: {
+        title: 'Nuestros Valores',
+        transparencia: {
+          title: 'Transparencia',
+          description: 'Actuamos con honestidad y claridad en todas nuestras operaciones, manteniendo a nuestros clientes informados en todo momento.',
+        },
+        profesionalidad: {
+          title: 'Profesionalidad',
+          description: 'Contamos con un equipo altamente cualificado y experiencia en el sector inmobiliario para ofrecer el mejor servicio.',
+        },
+        compromiso: {
+          title: 'Compromiso',
+          description: 'Nos comprometemos con cada cliente para alcanzar sus objetivos, dedicando el tiempo y esfuerzo necesarios.',
+        },
+        excelencia: {
+          title: 'Excelencia',
+          description: 'Buscamos la excelencia en cada detalle, desde la valoración hasta la firma de la escritura.',
+        },
+        innovacion: {
+          title: 'Innovación',
+          description: 'Utilizamos las últimas tecnologías y estrategias de marketing para dar máxima visibilidad a las propiedades.',
+        },
+        confianza: {
+          title: 'Confianza',
+          description: 'Construimos relaciones duraderas basadas en la confianza mutua y el respeto.',
+        },
+      },
+      team: {
+        title: 'Nuestro Equipo',
+        director: 'Ana María Sánchez Trillo',
+        role: 'Directora y Asesora Inmobiliaria',
+      },
+    },
+    // Footer
+    footer: {
+      companyDescription: 'Inmobiliaria premium en Aranjuez, Madrid',
+      quickLinks: 'Enlaces Rápidos',
+      legal: 'Legal',
+      contact: 'Contacto',
+      rightsReserved: 'Todos los derechos reservados',
+    },
     // Common
     common: {
       required: 'obligatorio',
@@ -349,6 +458,115 @@ const translations: Record<Language, Translations> = {
         cityNotAvailable: 'City not available',
         provinceNotAvailable: 'Province not available',
       },
+    },
+    // Services Page
+    servicesPage: {
+      title: 'Our Services',
+      subtitle: 'Comprehensive solutions for all your real estate needs',
+      needMoreInfo: 'Need more information?',
+      needMoreInfoText: 'Contact us and we will advise you on the service that best suits your needs',
+      contactNow: 'Contact Now',
+      viewInsurance: 'View Insurance',
+      moreInfo: 'More Information',
+      items: {
+        asesoramiento: {
+          title: 'Comprehensive Advisory',
+          description: 'Complete service of comprehensive management and personalized advisory tailored to your specific needs.',
+          features: [
+            'Comprehensive property management',
+            'Personalized advisory',
+            'Market analysis',
+            'Strategy adapted to your needs',
+            'Continuous follow-up',
+          ],
+        },
+        financiacion: {
+          title: 'Financing',
+          description: 'We help you find the best mortgage financing option for your real estate investment.',
+          features: [
+            'Mortgage comparison',
+            'Mortgage advisory',
+            'Documentation management',
+            'Deed processing',
+            'Financial advisory',
+          ],
+        },
+        seguros: {
+          title: 'Insurance',
+          description: 'Complete protection for your investment with the best insurance on the market.',
+          features: [
+            'Home insurance',
+            'Life insurance',
+            'Non-payment insurance',
+            'Personalized advisory',
+            'Offer comparison',
+          ],
+        },
+        alquiler: {
+          title: 'Guaranteed Rental',
+          description: 'Guaranteed rental service that provides peace of mind and security in your real estate investments.',
+          features: [
+            'Guaranteed rent',
+            'Tenant management',
+            'Maintenance included',
+            'Non-payment insurance',
+            'Total peace of mind',
+          ],
+        },
+      },
+    },
+    // About Page
+    aboutPage: {
+      title: 'About Anthea Capital',
+      subtitle: 'Premium real estate agency in Aranjuez, Madrid',
+      mission: {
+        title: 'Our Mission',
+        text: 'At Anthea Capital Consulting, we are dedicated to offering excellent real estate service, providing comprehensive and personalized advisory to our clients. Our mission is to help you find the perfect property or sell your property at maximum value, always with transparency, professionalism and attention to detail.',
+      },
+      vision: {
+        title: 'Our Vision',
+        text: 'We aspire to be the reference real estate agency in Aranjuez and the Community of Madrid, recognized for our commitment to quality, innovation and customer satisfaction. We want to be the trusted partner for all your real estate needs, from buying and selling to renting and property management.',
+      },
+      values: {
+        title: 'Our Values',
+        transparencia: {
+          title: 'Transparency',
+          description: 'We act with honesty and clarity in all our operations, keeping our clients informed at all times.',
+        },
+        profesionalidad: {
+          title: 'Professionalism',
+          description: 'We have a highly qualified team and experience in the real estate sector to offer the best service.',
+        },
+        compromiso: {
+          title: 'Commitment',
+          description: 'We commit to each client to achieve their objectives, dedicating the necessary time and effort.',
+        },
+        excelencia: {
+          title: 'Excellence',
+          description: 'We seek excellence in every detail, from valuation to deed signing.',
+        },
+        innovacion: {
+          title: 'Innovation',
+          description: 'We use the latest technologies and marketing strategies to give maximum visibility to properties.',
+        },
+        confianza: {
+          title: 'Trust',
+          description: 'We build lasting relationships based on mutual trust and respect.',
+        },
+      },
+      team: {
+        title: 'Our Team',
+        director: 'Ana María Sánchez Trillo',
+        role: 'Director and Real Estate Advisor',
+      },
+    },
+    // Footer
+    footer: {
+      companyDescription: 'Premium real estate agency in Aranjuez, Madrid',
+      quickLinks: 'Quick Links',
+      legal: 'Legal',
+      contact: 'Contact',
+      rightsReserved: 'All rights reserved',
     },
     contact: {
       title: 'Contact',
@@ -574,6 +792,115 @@ const translations: Record<Language, Translations> = {
         provinceNotAvailable: 'Province non disponible',
       },
     },
+    // Services Page
+    servicesPage: {
+      title: 'Nos Services',
+      subtitle: 'Solutions complètes pour tous vos besoins immobiliers',
+      needMoreInfo: 'Besoin de plus d\'informations?',
+      needMoreInfoText: 'Contactez-nous et nous vous conseillerons sur le service qui convient le mieux à vos besoins',
+      contactNow: 'Contacter Maintenant',
+      viewInsurance: 'Voir les Assurances',
+      moreInfo: 'Plus d\'Informations',
+      items: {
+        asesoramiento: {
+          title: 'Conseil Intégral',
+          description: 'Service complet de gestion intégrale et conseil personnalisé adapté à vos besoins spécifiques.',
+          features: [
+            'Gestion intégrale de votre propriété',
+            'Conseil personnalisé',
+            'Analyse de marché',
+            'Stratégie adaptée à vos besoins',
+            'Suivi continu',
+          ],
+        },
+        financiacion: {
+          title: 'Financement',
+          description: 'Nous vous aidons à trouver la meilleure option de financement hypothécaire pour votre investissement immobilier.',
+          features: [
+            'Comparaison d\'hypothèques',
+            'Conseil hypothécaire',
+            'Gestion de la documentation',
+            'Traitement des actes',
+            'Conseil financier',
+          ],
+        },
+        seguros: {
+          title: 'Assurances',
+          description: 'Protection complète pour votre investissement avec les meilleures assurances du marché.',
+          features: [
+            'Assurances habitation',
+            'Assurances vie',
+            'Assurances impayés',
+            'Conseil personnalisé',
+            'Comparaison d\'offres',
+          ],
+        },
+        alquiler: {
+          title: 'Location Garantie',
+          description: 'Service de location garantie qui vous apporte tranquillité et sécurité dans vos investissements immobiliers.',
+          features: [
+            'Loyer garanti',
+            'Gestion des locataires',
+            'Maintenance incluse',
+            'Assurance impayés',
+            'Tranquillité totale',
+          ],
+        },
+      },
+    },
+    // About Page
+    aboutPage: {
+      title: 'À Propos d\'Anthea Capital',
+      subtitle: 'Agence immobilière premium à Aranjuez, Madrid',
+      mission: {
+        title: 'Notre Mission',
+        text: 'Chez Anthea Capital Consulting, nous nous consacrons à offrir un service immobilier d\'excellence, en fournissant des conseils complets et personnalisés à nos clients. Notre mission est de vous aider à trouver la propriété parfaite ou à vendre votre bien au maximum de sa valeur, toujours avec transparence, professionnalisme et attention aux détails.',
+      },
+      vision: {
+        title: 'Notre Vision',
+        text: 'Nous aspirons à être l\'agence immobilière de référence à Aranjuez et dans la Communauté de Madrid, reconnue pour notre engagement envers la qualité, l\'innovation et la satisfaction du client. Nous voulons être le partenaire de confiance pour tous vos besoins immobiliers, de l\'achat et de la vente à la location et à la gestion de propriétés.',
+      },
+      values: {
+        title: 'Nos Valeurs',
+        transparencia: {
+          title: 'Transparence',
+          description: 'Nous agissons avec honnêteté et clarté dans toutes nos opérations, en gardant nos clients informés à tout moment.',
+        },
+        profesionalidad: {
+          title: 'Professionnalisme',
+          description: 'Nous avons une équipe hautement qualifiée et une expérience dans le secteur immobilier pour offrir le meilleur service.',
+        },
+        compromiso: {
+          title: 'Engagement',
+          description: 'Nous nous engageons avec chaque client pour atteindre ses objectifs, en consacrant le temps et les efforts nécessaires.',
+        },
+        excelencia: {
+          title: 'Excellence',
+          description: 'Nous recherchons l\'excellence dans chaque détail, de l\'évaluation à la signature de l\'acte.',
+        },
+        innovacion: {
+          title: 'Innovation',
+          description: 'Nous utilisons les dernières technologies et stratégies de marketing pour donner une visibilité maximale aux propriétés.',
+        },
+        confianza: {
+          title: 'Confiance',
+          description: 'Nous construisons des relations durables basées sur la confiance mutuelle et le respect.',
+        },
+      },
+      team: {
+        title: 'Notre Équipe',
+        director: 'Ana María Sánchez Trillo',
+        role: 'Directrice et Conseillère Immobilière',
+      },
+    },
+    // Footer
+    footer: {
+      companyDescription: 'Agence immobilière premium à Aranjuez, Madrid',
+      quickLinks: 'Liens Rapides',
+      legal: 'Légal',
+      contact: 'Contact',
+      rightsReserved: 'Tous droits réservés',
+    },
     contact: {
       title: 'Contact',
       subtitle: 'Nous sommes là pour vous aider. Contactez-nous',
@@ -797,6 +1124,115 @@ const translations: Record<Language, Translations> = {
         cityNotAvailable: 'Ciutat no disponible',
         provinceNotAvailable: 'Província no disponible',
       },
+    },
+    // Services Page
+    servicesPage: {
+      title: 'Els Nostres Serveis',
+      subtitle: 'Solucions integrals per a totes les vostres necessitats immobiliàries',
+      needMoreInfo: 'Necessiteu més informació?',
+      needMoreInfoText: 'Contacteu amb nosaltres i us assessorarem sobre el servei que millor s\'adapti a les vostres necessitats',
+      contactNow: 'Contactar Ara',
+      viewInsurance: 'Veure Asseguances',
+      moreInfo: 'Més Informació',
+      items: {
+        asesoramiento: {
+          title: 'Assessorament Integral',
+          description: 'Servei complet de gestió integral i assessorament personalitzat adaptat a les vostres necessitats específiques.',
+          features: [
+            'Gestió integral de la vostra propietat',
+            'Assessorament personalitzat',
+            'Anàlisi de mercat',
+            'Estratègia adaptada a les vostres necessitats',
+            'Seguiment continu',
+          ],
+        },
+        financiacion: {
+          title: 'Finançament',
+          description: 'Us ajudem a trobar la millor opció de finançament hipotecari per a la vostra inversió immobiliària.',
+          features: [
+            'Comparativa d\'hipoteques',
+            'Assessorament hipotecari',
+            'Gestió de documentació',
+            'Tramitació d\'escriptures',
+            'Assessorament financer',
+          ],
+        },
+        seguros: {
+          title: 'Asseguances',
+          description: 'Protecció completa per a la vostra inversió amb les millors asseguances del mercat.',
+          features: [
+            'Assegurances de llar',
+            'Assegurances de vida',
+            'Assegurances d\'impagament',
+            'Assessorament personalitzat',
+            'Comparativa d\'ofertes',
+          ],
+        },
+        alquiler: {
+          title: 'Lloguer Garantit',
+          description: 'Servei de lloguer garantit que us proporciona tranquil·litat i seguretat en les vostres inversions immobiliàries.',
+          features: [
+            'Renda garantida',
+            'Gestió d\'inquilins',
+            'Manteniment inclòs',
+            'Assegurança d\'impagament',
+            'Tranquil·litat total',
+          ],
+        },
+      },
+    },
+    // About Page
+    aboutPage: {
+      title: 'Sobre Anthea Capital',
+      subtitle: 'Immobiliària premium a Aranjuez, Madrid',
+      mission: {
+        title: 'La Nostra Missió',
+        text: 'A Anthea Capital Consulting, ens dediquem a oferir un servei immobiliari d\'excel·lència, proporcionant assessorament integral i personalitzat als nostres clients. La nostra missió és ajudar-vos a trobar la propietat perfecta o a vendre el vostre immoble amb el màxim valor, sempre amb transparència, professionalitat i atenció al detall.',
+      },
+      vision: {
+        title: 'La Nostra Visió',
+        text: 'Aspirem a ser la immobiliària de referència a Aranjuez i la Comunitat de Madrid, reconeguda pel nostre compromís amb la qualitat, la innovació i la satisfacció del client. Volem ser el soci de confiança per a totes les vostres necessitats immobiliàries, des de la compra i venda fins al lloguer i la gestió de propietats.',
+      },
+      values: {
+        title: 'Els Nostres Valors',
+        transparencia: {
+          title: 'Transparència',
+          description: 'Actuem amb honestitat i claredat en totes les nostres operacions, mantenint els nostres clients informats en tot moment.',
+        },
+        profesionalidad: {
+          title: 'Professionalitat',
+          description: 'Comptem amb un equip altament qualificat i experiència en el sector immobiliari per oferir el millor servei.',
+        },
+        compromiso: {
+          title: 'Compromís',
+          description: 'Ens comprometem amb cada client per assolir els seus objectius, dedicant el temps i l\'esforç necessaris.',
+        },
+        excelencia: {
+          title: 'Excel·lència',
+          description: 'Busquem l\'excel·lència en cada detall, des de la valoració fins a la signatura de l\'escriptura.',
+        },
+        innovacion: {
+          title: 'Innovació',
+          description: 'Utilitzem les últimes tecnologies i estratègies de màrqueting per donar màxima visibilitat a les propietats.',
+        },
+        confianza: {
+          title: 'Confiança',
+          description: 'Construïm relacions duradores basades en la confiança mútua i el respecte.',
+        },
+      },
+      team: {
+        title: 'El Nostre Equip',
+        director: 'Ana María Sánchez Trillo',
+        role: 'Directora i Assessora Immobiliària',
+      },
+    },
+    // Footer
+    footer: {
+      companyDescription: 'Immobiliària premium a Aranjuez, Madrid',
+      quickLinks: 'Enllaços Ràpids',
+      legal: 'Legal',
+      contact: 'Contacte',
+      rightsReserved: 'Tots els drets reservats',
     },
     contact: {
       title: 'Contacte',
@@ -1079,6 +1515,115 @@ const translations: Record<Language, Translations> = {
         additionalInfoText: 'Sie können detaillierte Informationen zum Datenschutz in',
       },
     },
+    // Services Page
+    servicesPage: {
+      title: 'Unsere Dienstleistungen',
+      subtitle: 'Umfassende Lösungen für alle Ihre Immobilienbedürfnisse',
+      needMoreInfo: 'Benötigen Sie weitere Informationen?',
+      needMoreInfoText: 'Kontaktieren Sie uns und wir beraten Sie über den Service, der am besten zu Ihren Bedürfnissen passt',
+      contactNow: 'Jetzt Kontaktieren',
+      viewInsurance: 'Versicherungen Anzeigen',
+      moreInfo: 'Weitere Informationen',
+      items: {
+        asesoramiento: {
+          title: 'Umfassende Beratung',
+          description: 'Vollständiger Service für umfassendes Management und personalisierte Beratung, die auf Ihre spezifischen Bedürfnisse zugeschnitten ist.',
+          features: [
+            'Umfassendes Immobilienmanagement',
+            'Personalisierte Beratung',
+            'Marktanalyse',
+            'An Ihre Bedürfnisse angepasste Strategie',
+            'Kontinuierliche Betreuung',
+          ],
+        },
+        financiacion: {
+          title: 'Finanzierung',
+          description: 'Wir helfen Ihnen, die beste Hypothekenfinanzierungsoption für Ihre Immobilieninvestition zu finden.',
+          features: [
+            'Hypothekenvergleich',
+            'Hypothekenberatung',
+            'Dokumentenverwaltung',
+            'Grundstücksverarbeitung',
+            'Finanzberatung',
+          ],
+        },
+        seguros: {
+          title: 'Versicherungen',
+          description: 'Vollständiger Schutz für Ihre Investition mit den besten Versicherungen auf dem Markt.',
+          features: [
+            'Hausratversicherung',
+            'Lebensversicherung',
+            'Nichtzahlungsversicherung',
+            'Personalisierte Beratung',
+            'Angebotsvergleich',
+          ],
+        },
+        alquiler: {
+          title: 'Garantierte Miete',
+          description: 'Garantierter Mietdienst, der Ihnen Ruhe und Sicherheit bei Ihren Immobilieninvestitionen bietet.',
+          features: [
+            'Garantierte Miete',
+            'Mieterverwaltung',
+            'Wartung inbegriffen',
+            'Nichtzahlungsversicherung',
+            'Vollständige Ruhe',
+          ],
+        },
+      },
+    },
+    // About Page
+    aboutPage: {
+      title: 'Über Anthea Capital',
+      subtitle: 'Premium-Immobilienagentur in Aranjuez, Madrid',
+      mission: {
+        title: 'Unsere Mission',
+        text: 'Bei Anthea Capital Consulting widmen wir uns der Bereitstellung eines exzellenten Immobilienservice, der unseren Kunden umfassende und personalisierte Beratung bietet. Unsere Mission ist es, Ihnen zu helfen, die perfekte Immobilie zu finden oder Ihre Immobilie mit maximalem Wert zu verkaufen, immer mit Transparenz, Professionalität und Aufmerksamkeit für Details.',
+      },
+      vision: {
+        title: 'Unsere Vision',
+        text: 'Wir streben danach, die Referenz-Immobilienagentur in Aranjuez und der Gemeinschaft Madrid zu sein, anerkannt für unser Engagement für Qualität, Innovation und Kundenzufriedenheit. Wir möchten der vertrauenswürdige Partner für alle Ihre Immobilienbedürfnisse sein, vom Kauf und Verkauf bis zur Vermietung und Immobilienverwaltung.',
+      },
+      values: {
+        title: 'Unsere Werte',
+        transparencia: {
+          title: 'Transparenz',
+          description: 'Wir handeln mit Ehrlichkeit und Klarheit in allen unseren Operationen und halten unsere Kunden jederzeit informiert.',
+        },
+        profesionalidad: {
+          title: 'Professionalität',
+          description: 'Wir haben ein hochqualifiziertes Team und Erfahrung im Immobiliensektor, um den besten Service zu bieten.',
+        },
+        compromiso: {
+          title: 'Engagement',
+          description: 'Wir verpflichten uns jedem Kunden, seine Ziele zu erreichen, und widmen die notwendige Zeit und Mühe.',
+        },
+        excelencia: {
+          title: 'Exzellenz',
+          description: 'Wir streben Exzellenz in jedem Detail an, von der Bewertung bis zur Unterzeichnung der Urkunde.',
+        },
+        innovacion: {
+          title: 'Innovation',
+          description: 'Wir nutzen die neuesten Technologien und Marketingstrategien, um Immobilien maximale Sichtbarkeit zu verleihen.',
+        },
+        confianza: {
+          title: 'Vertrauen',
+          description: 'Wir bauen dauerhafte Beziehungen auf, die auf gegenseitigem Vertrauen und Respekt basieren.',
+        },
+      },
+      team: {
+        title: 'Unser Team',
+        director: 'Ana María Sánchez Trillo',
+        role: 'Direktorin und Immobilienberaterin',
+      },
+    },
+    // Footer
+    footer: {
+      companyDescription: 'Premium-Immobilienagentur in Aranjuez, Madrid',
+      quickLinks: 'Schnelllinks',
+      legal: 'Rechtliches',
+      contact: 'Kontakt',
+      rightsReserved: 'Alle Rechte vorbehalten',
+    },
     valuation: {
       title: 'Kostenlose Bewertung',
       subtitle: 'Fordern Sie eine professionelle Bewertung Ihrer Immobilie an',
@@ -1245,6 +1790,115 @@ const translations: Record<Language, Translations> = {
         cityNotAvailable: 'Città non disponibile',
         provinceNotAvailable: 'Provincia non disponibile',
       },
+    },
+    // Services Page
+    servicesPage: {
+      title: 'I Nostri Servizi',
+      subtitle: 'Soluzioni complete per tutte le tue esigenze immobiliari',
+      needMoreInfo: 'Hai bisogno di maggiori informazioni?',
+      needMoreInfoText: 'Contattaci e ti consiglieremo sul servizio che meglio si adatta alle tue esigenze',
+      contactNow: 'Contatta Ora',
+      viewInsurance: 'Vedi Assicurazioni',
+      moreInfo: 'Maggiori Informazioni',
+      items: {
+        asesoramiento: {
+          title: 'Consulenza Integrale',
+          description: 'Servizio completo di gestione integrale e consulenza personalizzata adattata alle tue esigenze specifiche.',
+          features: [
+            'Gestione integrale della tua proprietà',
+            'Consulenza personalizzata',
+            'Analisi di mercato',
+            'Strategia adattata alle tue esigenze',
+            'Monitoraggio continuo',
+          ],
+        },
+        financiacion: {
+          title: 'Finanziamento',
+          description: 'Ti aiutiamo a trovare la migliore opzione di finanziamento ipotecario per il tuo investimento immobiliare.',
+          features: [
+            'Confronto mutui',
+            'Consulenza ipotecaria',
+            'Gestione documentazione',
+            'Trattamento atti',
+            'Consulenza finanziaria',
+          ],
+        },
+        seguros: {
+          title: 'Assicurazioni',
+          description: 'Protezione completa per il tuo investimento con le migliori assicurazioni sul mercato.',
+          features: [
+            'Assicurazioni casa',
+            'Assicurazioni vita',
+            'Assicurazioni mancato pagamento',
+            'Consulenza personalizzata',
+            'Confronto offerte',
+          ],
+        },
+        alquiler: {
+          title: 'Affitto Garantito',
+          description: 'Servizio di affitto garantito che ti fornisce tranquillità e sicurezza nei tuoi investimenti immobiliari.',
+          features: [
+            'Affitto garantito',
+            'Gestione inquilini',
+            'Manutenzione inclusa',
+            'Assicurazione mancato pagamento',
+            'Tranquillità totale',
+          ],
+        },
+      },
+    },
+    // About Page
+    aboutPage: {
+      title: 'Su Anthea Capital',
+      subtitle: 'Agenzia immobiliare premium ad Aranjuez, Madrid',
+      mission: {
+        title: 'La Nostra Missione',
+        text: 'In Anthea Capital Consulting, ci dedichiamo a offrire un servizio immobiliare di eccellenza, fornendo consulenza integrale e personalizzata ai nostri clienti. La nostra missione è aiutarti a trovare la proprietà perfetta o vendere la tua proprietà al massimo valore, sempre con trasparenza, professionalità e attenzione ai dettagli.',
+      },
+      vision: {
+        title: 'La Nostra Visione',
+        text: 'Aspiriamo a essere l\'agenzia immobiliare di riferimento ad Aranjuez e nella Comunità di Madrid, riconosciuta per il nostro impegno verso la qualità, l\'innovazione e la soddisfazione del cliente. Vogliamo essere il partner di fiducia per tutte le tue esigenze immobiliari, dall\'acquisto e vendita all\'affitto e alla gestione delle proprietà.',
+      },
+      values: {
+        title: 'I Nostri Valori',
+        transparencia: {
+          title: 'Trasparenza',
+          description: 'Agiamo con onestà e chiarezza in tutte le nostre operazioni, mantenendo i nostri clienti informati in ogni momento.',
+        },
+        profesionalidad: {
+          title: 'Professionalità',
+          description: 'Abbiamo un team altamente qualificato ed esperienza nel settore immobiliare per offrire il miglior servizio.',
+        },
+        compromiso: {
+          title: 'Impegno',
+          description: 'Ci impegniamo con ogni cliente per raggiungere i suoi obiettivi, dedicando il tempo e lo sforzo necessari.',
+        },
+        excelencia: {
+          title: 'Eccellenza',
+          description: 'Cerchiamo l\'eccellenza in ogni dettaglio, dalla valutazione alla firma dell\'atto.',
+        },
+        innovacion: {
+          title: 'Innovazione',
+          description: 'Utilizziamo le ultime tecnologie e strategie di marketing per dare massima visibilità alle proprietà.',
+        },
+        confianza: {
+          title: 'Fiducia',
+          description: 'Costruiamo relazioni durature basate sulla fiducia reciproca e sul rispetto.',
+        },
+      },
+      team: {
+        title: 'Il Nostro Team',
+        director: 'Ana María Sánchez Trillo',
+        role: 'Direttrice e Consulente Immobiliare',
+      },
+    },
+    // Footer
+    footer: {
+      companyDescription: 'Agenzia immobiliare premium ad Aranjuez, Madrid',
+      quickLinks: 'Collegamenti Rapidi',
+      legal: 'Legale',
+      contact: 'Contatto',
+      rightsReserved: 'Tutti i diritti riservati',
     },
     contact: {
       title: 'Contatto',
@@ -1429,6 +2083,115 @@ const translations: Record<Language, Translations> = {
         cityNotAvailable: 'Cidade não disponível',
         provinceNotAvailable: 'Província não disponível',
       },
+    },
+    // Services Page
+    servicesPage: {
+      title: 'Nossos Serviços',
+      subtitle: 'Soluções completas para todas as suas necessidades imobiliárias',
+      needMoreInfo: 'Precisa de mais informações?',
+      needMoreInfoText: 'Entre em contato conosco e aconselharemos sobre o serviço que melhor se adapta às suas necessidades',
+      contactNow: 'Contatar Agora',
+      viewInsurance: 'Ver Seguros',
+      moreInfo: 'Mais Informações',
+      items: {
+        asesoramiento: {
+          title: 'Assessoria Integral',
+          description: 'Serviço completo de gestão integral e assessoria personalizada adaptada às suas necessidades específicas.',
+          features: [
+            'Gestão integral da sua propriedade',
+            'Assessoria personalizada',
+            'Análise de mercado',
+            'Estratégia adaptada às suas necessidades',
+            'Acompanhamento contínuo',
+          ],
+        },
+        financiacion: {
+          title: 'Financiamento',
+          description: 'Ajudamos você a encontrar a melhor opção de financiamento hipotecário para seu investimento imobiliário.',
+          features: [
+            'Comparação de hipotecas',
+            'Assessoria hipotecária',
+            'Gestão de documentação',
+            'Tramitação de escrituras',
+            'Assessoria financeira',
+          ],
+        },
+        seguros: {
+          title: 'Seguros',
+          description: 'Proteção completa para seu investimento com os melhores seguros do mercado.',
+          features: [
+            'Seguros residenciais',
+            'Seguros de vida',
+            'Seguros de inadimplência',
+            'Assessoria personalizada',
+            'Comparação de ofertas',
+          ],
+        },
+        alquiler: {
+          title: 'Aluguel Garantido',
+          description: 'Serviço de aluguel garantido que proporciona tranquilidade e segurança em seus investimentos imobiliários.',
+          features: [
+            'Renda garantida',
+            'Gestão de inquilinos',
+            'Manutenção incluída',
+            'Seguro de inadimplência',
+            'Tranquilidade total',
+          ],
+        },
+      },
+    },
+    // About Page
+    aboutPage: {
+      title: 'Sobre Anthea Capital',
+      subtitle: 'Imobiliária premium em Aranjuez, Madrid',
+      mission: {
+        title: 'Nossa Missão',
+        text: 'Na Anthea Capital Consulting, nos dedicamos a oferecer um serviço imobiliário de excelência, fornecendo assessoria integral e personalizada aos nossos clientes. Nossa missão é ajudá-lo a encontrar a propriedade perfeita ou vender sua propriedade com o máximo valor, sempre com transparência, profissionalismo e atenção aos detalhes.',
+      },
+      vision: {
+        title: 'Nossa Visão',
+        text: 'Aspiramos a ser a imobiliária de referência em Aranjuez e na Comunidade de Madrid, reconhecida por nosso compromisso com qualidade, inovação e satisfação do cliente. Queremos ser o parceiro de confiança para todas as suas necessidades imobiliárias, desde compra e venda até aluguel e gestão de propriedades.',
+      },
+      values: {
+        title: 'Nossos Valores',
+        transparencia: {
+          title: 'Transparência',
+          description: 'Agimos com honestidade e clareza em todas as nossas operações, mantendo nossos clientes informados em todos os momentos.',
+        },
+        profesionalidad: {
+          title: 'Profissionalismo',
+          description: 'Temos uma equipe altamente qualificada e experiência no setor imobiliário para oferecer o melhor serviço.',
+        },
+        compromiso: {
+          title: 'Compromisso',
+          description: 'Nos comprometemos com cada cliente para alcançar seus objetivos, dedicando o tempo e esforço necessários.',
+        },
+        excelencia: {
+          title: 'Excelência',
+          description: 'Buscamos a excelência em cada detalhe, desde a avaliação até a assinatura da escritura.',
+        },
+        innovacion: {
+          title: 'Inovação',
+          description: 'Utilizamos as últimas tecnologias e estratégias de marketing para dar máxima visibilidade às propriedades.',
+        },
+        confianza: {
+          title: 'Confiança',
+          description: 'Construímos relacionamentos duradouros baseados em confiança mútua e respeito.',
+        },
+      },
+      team: {
+        title: 'Nossa Equipe',
+        director: 'Ana María Sánchez Trillo',
+        role: 'Diretora e Consultora Imobiliária',
+      },
+    },
+    // Footer
+    footer: {
+      companyDescription: 'Imobiliária premium em Aranjuez, Madrid',
+      quickLinks: 'Links Rápidos',
+      legal: 'Legal',
+      contact: 'Contato',
+      rightsReserved: 'Todos os direitos reservados',
     },
     contact: {
       title: 'Contato',

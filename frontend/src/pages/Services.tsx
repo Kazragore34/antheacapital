@@ -1,55 +1,34 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { useTranslation } from '../hooks/useTranslation'
 
 const Services = () => {
+  const { t } = useTranslation()
+  
   const services = [
     {
-      title: 'Asesoramiento Integral',
-      description: 'Servicio completo de gestión integral y asesoramiento personalizado adaptado a sus necesidades específicas.',
+      title: t('servicesPage.items.asesoramiento.title'),
+      description: t('servicesPage.items.asesoramiento.description'),
       icon: '💼',
-      features: [
-        'Gestión integral de su propiedad',
-        'Asesoramiento personalizado',
-        'Análisis de mercado',
-        'Estrategia adaptada a sus necesidades',
-        'Seguimiento continuo',
-      ],
+      features: t('servicesPage.items.asesoramiento.features') as string[],
     },
     {
-      title: 'Financiación',
-      description: 'Le ayudamos a encontrar la mejor opción de financiación hipotecaria para su inversión inmobiliaria.',
+      title: t('servicesPage.items.financiacion.title'),
+      description: t('servicesPage.items.financiacion.description'),
       icon: '🏦',
-      features: [
-        'Comparativa de hipotecas',
-        'Asesoramiento hipotecario',
-        'Gestión de documentación',
-        'Tramitación de escrituras',
-        'Asesoramiento financiero',
-      ],
+      features: t('servicesPage.items.financiacion.features') as string[],
     },
     {
-      title: 'Seguros',
-      description: 'Protección completa para su inversión con los mejores seguros del mercado.',
+      title: t('servicesPage.items.seguros.title'),
+      description: t('servicesPage.items.seguros.description'),
       icon: '🛡️',
-      features: [
-        'Seguros de hogar',
-        'Seguros de vida',
-        'Seguros de impago',
-        'Asesoramiento personalizado',
-        'Comparativa de ofertas',
-      ],
+      features: t('servicesPage.items.seguros.features') as string[],
     },
     {
-      title: 'Alquiler Garantizado',
-      description: 'Servicio de alquiler garantizado que le proporciona tranquilidad y seguridad en sus inversiones inmobiliarias.',
+      title: t('servicesPage.items.alquiler.title'),
+      description: t('servicesPage.items.alquiler.description'),
       icon: '🔑',
-      features: [
-        'Renta garantizada',
-        'Gestión de inquilinos',
-        'Mantenimiento incluido',
-        'Seguro de impago',
-        'Tranquilidad total',
-      ],
+      features: t('servicesPage.items.alquiler.features') as string[],
     },
   ]
 
@@ -63,7 +42,7 @@ const Services = () => {
             animate={{ opacity: 1, y: 0 }}
             className="font-serif text-4xl md:text-6xl mb-6"
           >
-            Nuestros Servicios
+            {t('servicesPage.title')}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -71,7 +50,7 @@ const Services = () => {
             transition={{ delay: 0.2 }}
             className="text-xl md:text-2xl text-gray-300"
           >
-            Soluciones integrales para todas sus necesidades inmobiliarias
+            {t('servicesPage.subtitle')}
           </motion.p>
         </div>
       </section>
@@ -156,13 +135,13 @@ const Services = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  {service.title === 'Seguros' ? (
+                  {service.title === t('servicesPage.items.seguros.title') ? (
                     <Link to="/seguros" className="btn-secondary inline-block relative z-10">
-                      Ver Seguros
+                      {t('servicesPage.viewInsurance')}
                     </Link>
                   ) : (
                     <Link to="/contacto" className="btn-secondary inline-block relative z-10">
-                      Más Información
+                      {t('servicesPage.moreInfo')}
                     </Link>
                   )}
                 </motion.div>
@@ -202,7 +181,7 @@ const Services = () => {
                 viewport={{ once: true }}
                 transition={{ delay: 0.2 }}
               >
-                ¿Necesita más información?
+                {t('servicesPage.needMoreInfo')}
               </motion.h2>
               <motion.p 
                 className="text-xl mb-8"
@@ -211,14 +190,14 @@ const Services = () => {
                 viewport={{ once: true }}
                 transition={{ delay: 0.3 }}
               >
-                Contacte con nosotros y le asesoraremos sobre el servicio que mejor se adapte a sus necesidades
+                {t('servicesPage.needMoreInfoText')}
               </motion.p>
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <Link to="/contacto" className="btn-secondary bg-black-soft text-gold hover:bg-gray-900 border-black-soft inline-block">
-                  Contactar Ahora
+                  {t('servicesPage.contactNow')}
                 </Link>
               </motion.div>
             </div>

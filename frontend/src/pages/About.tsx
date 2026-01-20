@@ -1,6 +1,9 @@
 import { motion } from 'framer-motion'
+import { useTranslation } from '../hooks/useTranslation'
 
 const About = () => {
+  const { t } = useTranslation()
+  
   return (
     <div className="min-h-screen bg-black-soft">
       {/* Hero Section */}
@@ -11,7 +14,7 @@ const About = () => {
             animate={{ opacity: 1, y: 0 }}
             className="font-serif text-4xl md:text-6xl mb-6"
           >
-            Sobre Anthea Capital
+            {t('aboutPage.title')}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -19,7 +22,7 @@ const About = () => {
             transition={{ delay: 0.2 }}
             className="text-xl md:text-2xl text-gray-300"
           >
-            Inmobiliaria premium en Aranjuez, Madrid
+            {t('aboutPage.subtitle')}
           </motion.p>
         </div>
       </section>
@@ -34,13 +37,10 @@ const About = () => {
             className="text-center mb-16"
           >
             <h2 className="font-serif text-4xl md:text-5xl mb-6 text-white">
-              Nuestra Misión
+              {t('aboutPage.mission.title')}
             </h2>
             <p className="text-lg text-gray-300 leading-relaxed">
-              En Anthea Capital Consulting, nos dedicamos a ofrecer un servicio inmobiliario de excelencia, 
-              proporcionando asesoramiento integral y personalizado a nuestros clientes. Nuestra misión es 
-              ayudarle a encontrar la propiedad perfecta o a vender su inmueble con el máximo valor, siempre 
-              con transparencia, profesionalidad y atención al detalle.
+              {t('aboutPage.mission.text')}
             </p>
           </motion.div>
 
@@ -52,13 +52,10 @@ const About = () => {
             className="text-center mb-16"
           >
             <h2 className="font-serif text-4xl md:text-5xl mb-6 text-white">
-              Nuestra Visión
+              {t('aboutPage.vision.title')}
             </h2>
             <p className="text-lg text-gray-300 leading-relaxed">
-              Aspiramos a ser la inmobiliaria de referencia en Aranjuez y la Comunidad de Madrid, reconocida 
-              por nuestro compromiso con la calidad, la innovación y la satisfacción del cliente. Queremos 
-              ser el socio de confianza para todas sus necesidades inmobiliarias, desde la compra y venta 
-              hasta el alquiler y la gestión de propiedades.
+              {t('aboutPage.vision.text')}
             </p>
           </motion.div>
 
@@ -70,38 +67,38 @@ const About = () => {
             className="mb-16"
           >
             <h2 className="font-serif text-4xl md:text-5xl mb-8 text-center text-white">
-              Nuestros Valores
+              {t('aboutPage.values.title')}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
                 {
-                  title: 'Transparencia',
-                  description: 'Actuamos con honestidad y claridad en todas nuestras operaciones, manteniendo a nuestros clientes informados en todo momento.',
+                  title: t('aboutPage.values.transparencia.title'),
+                  description: t('aboutPage.values.transparencia.description'),
                   icon: '🔍',
                 },
                 {
-                  title: 'Profesionalidad',
-                  description: 'Contamos con un equipo altamente cualificado y experiencia en el sector inmobiliario para ofrecer el mejor servicio.',
+                  title: t('aboutPage.values.profesionalidad.title'),
+                  description: t('aboutPage.values.profesionalidad.description'),
                   icon: '💼',
                 },
                 {
-                  title: 'Compromiso',
-                  description: 'Nos comprometemos con cada cliente para alcanzar sus objetivos, dedicando el tiempo y esfuerzo necesarios.',
+                  title: t('aboutPage.values.compromiso.title'),
+                  description: t('aboutPage.values.compromiso.description'),
                   icon: '🤝',
                 },
                 {
-                  title: 'Excelencia',
-                  description: 'Buscamos la excelencia en cada detalle, desde la valoración hasta la firma de la escritura.',
+                  title: t('aboutPage.values.excelencia.title'),
+                  description: t('aboutPage.values.excelencia.description'),
                   icon: '⭐',
                 },
                 {
-                  title: 'Innovación',
-                  description: 'Utilizamos las últimas tecnologías y estrategias de marketing para dar máxima visibilidad a las propiedades.',
+                  title: t('aboutPage.values.innovacion.title'),
+                  description: t('aboutPage.values.innovacion.description'),
                   icon: '🚀',
                 },
                 {
-                  title: 'Confianza',
-                  description: 'Construimos relaciones duraderas basadas en la confianza mutua y el respeto.',
+                  title: t('aboutPage.values.confianza.title'),
+                  description: t('aboutPage.values.confianza.description'),
                   icon: '💎',
                 },
               ].map((value, index) => (
@@ -122,15 +119,15 @@ const About = () => {
             className="bg-gray-800 border border-gray-700 rounded-lg p-8 text-center"
           >
             <h2 className="font-serif text-3xl mb-6 text-white">
-              Nuestro Equipo
+              {t('aboutPage.team.title')}
             </h2>
             <div className="max-w-md mx-auto">
               <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 shadow-lg">
                 <div className="w-32 h-32 bg-gold rounded-full mx-auto mb-4 flex items-center justify-center text-4xl text-black-soft">
                   AM
                 </div>
-                <h3 className="font-serif text-xl mb-2 text-white">Ana María Sánchez Trillo</h3>
-                <p className="text-gray-300 mb-4">Directora y Asesora Inmobiliaria</p>
+                <h3 className="font-serif text-xl mb-2 text-white">{t('aboutPage.team.director')}</h3>
+                <p className="text-gray-300 mb-4">{t('aboutPage.team.role')}</p>
                 <div className="space-y-2 text-sm text-gray-300">
                   <p>
                     <a href="mailto:contacto@antheacapital.com" className="text-gold hover:underline">
