@@ -314,6 +314,18 @@ export class PropertiesService {
         precio = parseFloat(prop.ofertas_precio || prop.precio || '0') || 0
       }
 
+      // Ubicación (declarar primero para usar después)
+      const ciudad = prop.ciudad_ciudad || prop.ciudad || ''
+      const zona = prop.zonas_zona || prop.zona || ''
+      const cp = prop.ofertas_cp || prop.cp || ''
+      const provincia = (prop.provincias_provincia || prop.provincia || this.extractProvinceFromCP(cp) || ciudad).trim()
+      const calle = prop.ofertas_calle || prop.calle || ''
+      const numero = prop.ofertas_numero || prop.numero || ''
+      const direccion = [calle, numero].filter(Boolean).join(' ') || zona || ciudad
+
+      // Título y descripción (declarar antes de usar en el filtro)
+      const titulo = prop.ofertas_titulo1 || prop.titulo1 || prop.ofertas_titulo2 || prop.titulo2 || `Propiedad en ${ciudad || 'Aranjuez'}`
+
       // Si aún no hay precio, usar 0 pero NO filtrar (mostrar "Consultar precio")
       // Solo filtrar si realmente no hay datos válidos
       if (precio === 0 && !titulo && !ciudad) {
@@ -327,17 +339,7 @@ export class PropertiesService {
       const area = parseFloat(prop.ofertas_m_cons || prop.m_cons || prop.ofertas_m_uties || prop.m_uties || '0') || 0
       const planta = parseInt(prop.ofertas_numplanta || prop.numplanta || prop.ofertas_planta || prop.planta || '0') || undefined
 
-      // Ubicación
-      const ciudad = prop.ciudad_ciudad || prop.ciudad || ''
-      const zona = prop.zonas_zona || prop.zona || ''
-      const cp = prop.ofertas_cp || prop.cp || ''
-      const provincia = (prop.provincias_provincia || prop.provincia || this.extractProvinceFromCP(cp) || ciudad).trim()
-      const calle = prop.ofertas_calle || prop.calle || ''
-      const numero = prop.ofertas_numero || prop.numero || ''
-      const direccion = [calle, numero].filter(Boolean).join(' ') || zona || ciudad
-
-      // Título y descripción
-      const titulo = prop.ofertas_titulo1 || prop.titulo1 || prop.ofertas_titulo2 || prop.titulo2 || `Propiedad en ${ciudad || 'Aranjuez'}`
+      // Descripción
       const descripcion = prop.ofertas_descrip1 || prop.descrip1 || prop.ofertas_descrip2 || prop.descrip2 || prop.ofertas_tinterior || prop.tinterior || ''
 
       // Características adicionales
@@ -348,7 +350,7 @@ export class PropertiesService {
       const piscina = prop.ofertas_piscina_prop === '1' || prop.piscina_prop === '1' || prop.ofertas_piscina_com === '1' || prop.piscina_com === '1'
       const amueblado = prop.ofertas_muebles === '1' || prop.ofertas_muebles === 1 || prop.muebles === '1' || prop.muebles === 1
 
-      const property: Property = {
+      const property: any = {
         _id: codOfer,
         codOfer: codOfer,
         title: titulo,

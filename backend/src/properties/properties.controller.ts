@@ -8,6 +8,7 @@ import {
   Delete,
   Query,
   UseGuards,
+  NotFoundException,
 } from '@nestjs/common'
 import { PropertiesService } from './properties.service'
 import { CreatePropertyDto } from './dto/create-property.dto'
