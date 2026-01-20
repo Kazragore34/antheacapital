@@ -95,9 +95,8 @@ try {
         case 'propiedades':
             // Obtener todas las propiedades
             // Según la documentación oficial: GET /propiedades/?listado devuelve solo datos básicos
-            // Para obtener propiedades completas, necesitamos usar el endpoint sin ?listado
-            // pero la documentación indica que /propiedades/?listado es para listar
-            // Probamos primero con el listado básico y luego obtenemos detalles completos
+            // Para obtener propiedades completas, primero obtenemos el listado básico
+            // y luego obtenemos los detalles completos de cada propiedad
             $response = callInmovillaAPI('/propiedades/?listado', []);
             $decoded = json_decode($response, true);
             
@@ -109,10 +108,48 @@ try {
                 $listadoBasico = $decoded['data'];
             }
             
-            // Si tenemos propiedades básicas, obtener detalles completos de cada una
-            // Pero esto sería muy lento con muchas propiedades, así que por ahora
-            // devolvemos el listado básico y el frontend puede obtener detalles cuando sea necesario
-            $data = ['paginacion' => $listadoBasico];
+            // Obtener detalles completos de cada propiedad en paralelo
+            // Limitar a 50 propiedades para evitar timeout (se puede aumentar después)
+            $propiedadesCompletas = [];
+            $maxPropiedades = min(count($listadoBasico), 50);
+            
+            for ($i = 0; $i < $maxPropiedades; $i++) {
+                $propBasica = $listadoBasico[$i];
+                $codOfer = $propBasica['cod_ofer'] ?? null;
+                
+                if (!$codOfer) {
+                    continue;
+                }
+                
+                try {
+                    // Obtener detalles completos de esta propiedad
+                    $responseDetalle = callInmovillaAPI('/propiedades/' . $codOfer, []);
+                    $detalleDecoded = json_decode($responseDetalle, true);
+                    
+                    if (is_array($detalleDecoded)) {
+                        // Si la respuesta es directamente un array, usar el primer elemento
+                        if (isset($detalleDecoded[0])) {
+                            $propiedadesCompletas[] = $detalleDecoded[0];
+                        } else {
+                            $propiedadesCompletas[] = $detalleDecoded;
+                        }
+                    } elseif (isset($detalleDecoded['data'])) {
+                        $propiedadesCompletas[] = $detalleDecoded['data'];
+                    } else {
+                        // Si falla, usar al menos los datos básicos
+                        $propiedadesCompletas[] = $propBasica;
+                    }
+                } catch (Exception $e) {
+                    error_log("Error obteniendo detalles de propiedad {$codOfer}: " . $e->getMessage());
+                    // Si falla, usar al menos los datos básicos
+                    $propiedadesCompletas[] = $propBasica;
+                }
+                
+                // Pequeña pausa para no sobrecargar la API
+                usleep(100000); // 0.1 segundos entre llamadas
+            }
+            
+            $data = ['paginacion' => $propiedadesCompletas];
             break;
             
         case 'ficha':
