@@ -212,7 +212,20 @@ try {
             }
             
             error_log("[API REST Proxy] Total propiedades completas obtenidas: " . count($propiedadesCompletas));
-            $data = ['paginacion' => $propiedadesCompletas];
+            
+            // Si debug está activado, incluir información adicional
+            if ($debug) {
+                $data = [
+                    'paginacion' => $propiedadesCompletas,
+                    'debug' => [
+                        'total_basicas' => count($listadoBasico),
+                        'total_completas' => count($propiedadesCompletas),
+                        'max_procesadas' => $maxPropiedades
+                    ]
+                ];
+            } else {
+                $data = ['paginacion' => $propiedadesCompletas];
+            }
             break;
             
         case 'ficha':
