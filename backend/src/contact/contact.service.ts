@@ -1,21 +1,54 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import * as nodemailer from 'nodemailer'
 import { ContactDto, ValuationDto } from './dto/contact.dto'
 
 @Injectable()
 export class ContactService {
+  private readonly logger = new Logger(ContactService.name)
   private transporter: nodemailer.Transporter
 
   constructor(private configService: ConfigService) {
+    const emailHost = this.configService.get('EMAIL_HOST')
+    const emailPort = this.configService.get('EMAIL_PORT')
+    const emailUser = this.configService.get('EMAIL_USER')
+    const emailPass = this.configService.get('EMAIL_PASS')
+    const emailFrom = this.configService.get('EMAIL_FROM')
+
+    // Verificar que todas las variables de entorno estén configuradas
+    if (!emailHost || !emailPort || !emailUser || !emailPass || !emailFrom) {
+      this.logger.error('⚠️ Variables de entorno de correo no configuradas:')
+      this.logger.error(`EMAIL_HOST: ${emailHost ? '✓' : '✗'}`)
+      this.logger.error(`EMAIL_PORT: ${emailPort ? '✓' : '✗'}`)
+      this.logger.error(`EMAIL_USER: ${emailUser ? '✓' : '✗'}`)
+      this.logger.error(`EMAIL_PASS: ${emailPass ? '✓' : '✗'}`)
+      this.logger.error(`EMAIL_FROM: ${emailFrom ? '✓' : '✗'}`)
+      throw new Error('Variables de entorno de correo no configuradas. Por favor, configure EMAIL_HOST, EMAIL_PORT, EMAIL_USER, EMAIL_PASS y EMAIL_FROM.')
+    }
+
+    this.logger.log(`Configurando transporte de correo: ${emailHost}:${emailPort}`)
+    
     this.transporter = nodemailer.createTransport({
-      host: this.configService.get('EMAIL_HOST'),
-      port: this.configService.get('EMAIL_PORT'),
-      secure: false,
+      host: emailHost,
+      port: parseInt(emailPort, 10),
+      secure: false, // true para 465, false para otros puertos
       auth: {
-        user: this.configService.get('EMAIL_USER'),
-        pass: this.configService.get('EMAIL_PASS'),
+        user: emailUser,
+        pass: emailPass,
       },
+      // Opciones adicionales para mejor compatibilidad
+      tls: {
+        rejectUnauthorized: false, // Para servidores con certificados autofirmados
+      },
+    })
+
+    // Verificar la conexión al servidor de correo
+    this.transporter.verify((error, success) => {
+      if (error) {
+        this.logger.error(`❌ Error al verificar conexión con servidor de correo: ${error.message}`)
+      } else {
+        this.logger.log('✅ Conexión con servidor de correo verificada correctamente')
+      }
     })
   }
 
@@ -25,12 +58,13 @@ export class ContactService {
     const mailOptions = {
       from: this.configService.get('EMAIL_FROM'),
       to: 'contacto@antheacapital.com',
+      replyTo: dto.email, // Permitir responder directamente al cliente
       subject: hasPropertyInfo ? `Solicitud de información - Propiedad` : 'Nuevo contacto desde la web',
       html: `
         <h2>${hasPropertyInfo ? 'Solicitud de información sobre propiedad' : 'Nuevo mensaje de contacto'}</h2>
         <p><strong>Nombre:</strong> ${dto.name} ${dto.surname}</p>
-        <p><strong>Email:</strong> ${dto.email}</p>
-        <p><strong>Teléfono:</strong> ${dto.phone}</p>
+        <p><strong>Email:</strong> <a href="mailto:${dto.email}">${dto.email}</a></p>
+        <p><strong>Teléfono:</strong> <a href="tel:${dto.phone}">${dto.phone}</a></p>
         ${hasPropertyInfo ? `
           <hr style="margin: 20px 0; border: none; border-top: 2px solid #C9A961;">
           <h3 style="color: #C9A961;">Información de la Propiedad:</h3>
@@ -44,9 +78,35 @@ export class ContactService {
         <p><strong>Mensaje:</strong></p>
         <p style="white-space: pre-wrap;">${dto.message}</p>
       `,
+      text: `
+${hasPropertyInfo ? 'Solicitud de información sobre propiedad' : 'Nuevo mensaje de contacto'}
+
+Nombre: ${dto.name} ${dto.surname}
+Email: ${dto.email}
+Teléfono: ${dto.phone}
+${hasPropertyInfo ? `
+--- Información de la Propiedad ---
+${dto.propertyType ? `Tipo: ${dto.propertyType}` : ''}
+${dto.propertyTitle ? `Título: ${dto.propertyTitle}` : ''}
+${dto.propertyPrice ? `Precio: ${dto.propertyPrice}` : ''}
+${dto.propertyId ? `ID Propiedad: ${dto.propertyId}` : ''}
+${dto.propertyUrl ? `Enlace: ${dto.propertyUrl}` : ''}
+--- Fin Información de la Propiedad ---
+` : ''}
+Mensaje:
+${dto.message}
+      `.trim(),
     }
 
-    return this.transporter.sendMail(mailOptions)
+    try {
+      this.logger.log(`Enviando correo a: contacto@antheacapital.com desde: ${mailOptions.from}`)
+      const result = await this.transporter.sendMail(mailOptions)
+      this.logger.log(`✅ Correo enviado correctamente. MessageId: ${result.messageId}`)
+      return result
+    } catch (error) {
+      this.logger.error(`❌ Error al enviar correo: ${error.message}`, error.stack)
+      throw error
+    }
   }
 
   async sendValuationEmail(dto: ValuationDto) {

@@ -25,6 +25,7 @@ const ContactForm = ({ propertyId, propertyTitle, propertyUrl, propertyPrice, pr
   } = useForm<ContactFormType & { marketing?: boolean }>()
 
   const onSubmit = async (data: ContactFormType & { marketing?: boolean }) => {
+    setError('') // Limpiar errores previos
     try {
       // Si hay información de propiedad, agregarla al mensaje
       let messageWithPropertyInfo = data.message
@@ -39,7 +40,13 @@ const ContactForm = ({ propertyId, propertyTitle, propertyUrl, propertyPrice, pr
         messageWithPropertyInfo = `${data.message}\n\n--- Información de la Propiedad ---\n${propertyInfo.join('\n')}`
       }
       
-      await contactService.sendContact({
+      console.log('[ContactForm] Enviando mensaje de contacto...', {
+        email: data.email,
+        name: data.name,
+        hasPropertyInfo: !!(propertyTitle || propertyUrl || propertyPrice || propertyType),
+      })
+      
+      const response = await contactService.sendContact({
         ...data,
         message: messageWithPropertyInfo,
         propertyId,
@@ -49,11 +56,15 @@ const ContactForm = ({ propertyId, propertyTitle, propertyUrl, propertyPrice, pr
         propertyType,
         consent: true,
       })
+      
+      console.log('[ContactForm] ✅ Mensaje enviado correctamente:', response)
       setSubmitted(true)
       reset()
       setTimeout(() => setSubmitted(false), 5000)
-    } catch (err) {
-      setError(tString('contact.form.error'))
+    } catch (err: any) {
+      console.error('[ContactForm] ❌ Error al enviar mensaje:', err)
+      const errorMessage = err?.response?.data?.message || err?.message || tString('contact.form.error')
+      setError(errorMessage)
     }
   }
 
