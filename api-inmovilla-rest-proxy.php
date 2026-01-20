@@ -41,15 +41,8 @@ $order = $_GET['order'] ?? '';
  * Realizar petición a la API REST de Inmovilla
  */
 function callInmovillaAPI($endpoint, $params = []) {
-    // Construir URL base
-    $url = INMOVILLA_API_BASE_URL . $endpoint;
-    
-    // Agregar parámetros a la URL
-    if (!empty($params)) {
-        $url .= '?' . http_build_query($params);
-    }
-    
-    // Construir URL base
+    // Construir URL base según documentación oficial
+    // URL: https://procesos.inmovilla.com/api/v1
     $url = INMOVILLA_API_BASE_URL . $endpoint;
     
     // Agregar parámetros a la URL
@@ -62,6 +55,9 @@ function callInmovillaAPI($endpoint, $params = []) {
     
     // Según la documentación oficial: https://procesos.apinmo.com/api/v1/apidoc/
     // El token debe ir en el header con la key "Token" (no "Authorization: Bearer")
+    // Headers requeridos según documentación:
+    // - Content-Type: application/json
+    // - Token: {tu_token}
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
