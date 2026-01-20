@@ -95,70 +95,104 @@ try {
         case 'propiedades':
             // Obtener todas las propiedades con datos completos directamente
             // Usar el endpoint /propiedades sin ?listado para obtener datos completos
-            $params = [];
-            if ($limit > 0) {
-                $params['limit'] = $limit;
-            }
-            if ($offset > 0) {
-                $params['offset'] = $offset;
-            }
-            if ($where) {
-                $params['where'] = $where;
-            }
-            if ($order) {
-                $params['order'] = $order;
-            }
-            
-            $response = callInmovillaAPI('/propiedades', $params);
-            $decoded = json_decode($response, true);
-            
-            error_log("[API REST Proxy] Respuesta de /propiedades (primeros 1000 chars): " . substr($response, 0, 1000));
-            
-            // Extraer propiedades de la respuesta
-            $propiedadesCompletas = [];
-            if (is_array($decoded)) {
-                // Si es un array directo
-                $propiedadesCompletas = $decoded;
-            } elseif (isset($decoded['data']) && is_array($decoded['data'])) {
-                // Si está dentro de 'data'
-                $propiedadesCompletas = $decoded['data'];
-            } elseif (isset($decoded['paginacion']) && is_array($decoded['paginacion'])) {
-                // Si está dentro de 'paginacion'
-                $propiedadesCompletas = $decoded['paginacion'];
-            }
-            
-            // Procesar cada propiedad para construir URLs de imágenes
-            foreach ($propiedadesCompletas as &$propiedad) {
-                // Asegurar que cod_ofer esté presente
-                if (!isset($propiedad['cod_ofer']) && isset($propiedad['id'])) {
-                    $propiedad['cod_ofer'] = $propiedad['id'];
+            try {
+                $params = [];
+                if ($limit > 0) {
+                    $params['limit'] = $limit;
+                }
+                if ($offset > 0) {
+                    $params['offset'] = $offset;
+                }
+                if ($where) {
+                    $params['where'] = $where;
+                }
+                if ($order) {
+                    $params['order'] = $order;
                 }
                 
-                $codOfer = $propiedad['cod_ofer'] ?? null;
-                if (!$codOfer) {
-                    continue;
+                error_log("[API REST Proxy] Llamando a /propiedades con params: " . json_encode($params));
+                
+                $response = callInmovillaAPI('/propiedades', $params);
+                
+                if (empty($response)) {
+                    throw new Exception('La API de Inmovilla devolvió una respuesta vacía');
                 }
                 
-                // Construir URLs de imágenes si numfotos > 0
-                $numfotos = isset($propiedad['numfotos']) ? intval($propiedad['numfotos']) : 0;
-                $fotoletra = isset($propiedad['fotoletra']) ? $propiedad['fotoletra'] : '1';
-                $numagencia = isset($propiedad['numagencia']) ? $propiedad['numagencia'] : INMOVILLA_NUMAGENCIA;
+                error_log("[API REST Proxy] Respuesta de /propiedades (primeros 1000 chars): " . substr($response, 0, 1000));
                 
-                if ($numfotos > 0 && !isset($propiedad['imagenes'])) {
-                    $imagenes = [];
-                    for ($j = 1; $j <= $numfotos; $j++) {
-                        // Formato: https://fotos15.apinmo.com/{numagencia}/{cod_ofer}/{fotoletra}-{numero}.jpg
-                        $urlImagen = "https://fotos15.apinmo.com/{$numagencia}/{$codOfer}/{$fotoletra}-{$j}.jpg";
-                        $imagenes[] = $urlImagen;
+                $decoded = json_decode($response, true);
+                
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    error_log("[API REST Proxy] Error decodificando JSON: " . json_last_error_msg());
+                    error_log("[API REST Proxy] Respuesta completa: " . substr($response, 0, 2000));
+                    throw new Exception('Error decodificando JSON de /propiedades: ' . json_last_error_msg());
+                }
+                
+                // Extraer propiedades de la respuesta
+                $propiedadesCompletas = [];
+                if (is_array($decoded)) {
+                    // Si es un array directo
+                    $propiedadesCompletas = $decoded;
+                    error_log("[API REST Proxy] Propiedades encontradas en array directo: " . count($propiedadesCompletas));
+                } elseif (isset($decoded['data']) && is_array($decoded['data'])) {
+                    // Si está dentro de 'data'
+                    $propiedadesCompletas = $decoded['data'];
+                    error_log("[API REST Proxy] Propiedades encontradas en data: " . count($propiedadesCompletas));
+                } elseif (isset($decoded['paginacion']) && is_array($decoded['paginacion'])) {
+                    // Si está dentro de 'paginacion'
+                    $propiedadesCompletas = $decoded['paginacion'];
+                    error_log("[API REST Proxy] Propiedades encontradas en paginacion: " . count($propiedadesCompletas));
+                } else {
+                    error_log("[API REST Proxy] Estructura de respuesta no reconocida. Keys disponibles: " . implode(', ', array_keys($decoded ?? [])));
+                    // Intentar extraer de cualquier estructura posible
+                    if (isset($decoded) && is_array($decoded)) {
+                        foreach ($decoded as $key => $value) {
+                            if (is_array($value) && !empty($value)) {
+                                $propiedadesCompletas = $value;
+                                error_log("[API REST Proxy] Propiedades encontradas en {$key}: " . count($propiedadesCompletas));
+                                break;
+                            }
+                        }
                     }
-                    $propiedad['imagenes'] = $imagenes;
                 }
+                
+                // Procesar cada propiedad para construir URLs de imágenes
+                foreach ($propiedadesCompletas as &$propiedad) {
+                    // Asegurar que cod_ofer esté presente
+                    if (!isset($propiedad['cod_ofer']) && isset($propiedad['id'])) {
+                        $propiedad['cod_ofer'] = $propiedad['id'];
+                    }
+                    
+                    $codOfer = $propiedad['cod_ofer'] ?? null;
+                    if (!$codOfer) {
+                        continue;
+                    }
+                    
+                    // Construir URLs de imágenes si numfotos > 0
+                    $numfotos = isset($propiedad['numfotos']) ? intval($propiedad['numfotos']) : 0;
+                    $fotoletra = isset($propiedad['fotoletra']) ? $propiedad['fotoletra'] : '1';
+                    $numagencia = isset($propiedad['numagencia']) ? $propiedad['numagencia'] : INMOVILLA_NUMAGENCIA;
+                    
+                    if ($numfotos > 0 && !isset($propiedad['imagenes'])) {
+                        $imagenes = [];
+                        for ($j = 1; $j <= $numfotos; $j++) {
+                            // Formato: https://fotos15.apinmo.com/{numagencia}/{cod_ofer}/{fotoletra}-{numero}.jpg
+                            $urlImagen = "https://fotos15.apinmo.com/{$numagencia}/{$codOfer}/{$fotoletra}-{$j}.jpg";
+                            $imagenes[] = $urlImagen;
+                        }
+                        $propiedad['imagenes'] = $imagenes;
+                    }
+                }
+                unset($propiedad); // Liberar referencia
+                
+                error_log("[API REST Proxy] Total propiedades obtenidas: " . count($propiedadesCompletas));
+                
+                $data = ['paginacion' => $propiedadesCompletas];
+            } catch (Exception $e) {
+                error_log("[API REST Proxy] Error en case propiedades: " . $e->getMessage());
+                error_log("[API REST Proxy] Stack trace: " . $e->getTraceAsString());
+                throw $e; // Re-lanzar para que se capture en el catch general
             }
-            unset($propiedad); // Liberar referencia
-            
-            error_log("[API REST Proxy] Total propiedades obtenidas: " . count($propiedadesCompletas));
-            
-            $data = ['paginacion' => $propiedadesCompletas];
             break;
             
         case 'ficha':
