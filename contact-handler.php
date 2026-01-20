@@ -231,6 +231,10 @@ if (false && class_exists('PHPMailer\PHPMailer\PHPMailer')) {
     
     // 1. Intentar primero con la API SMTP de mxroute (más confiable)
     error_log("[ContactHandler] Intentando enviar correo vía API SMTP de mxroute");
+    // Asegurar que el subject y body estén en UTF-8
+    $subjectUtf8 = mb_convert_encoding($subject, 'UTF-8', 'auto');
+    $htmlBodyUtf8 = mb_convert_encoding($htmlBody, 'UTF-8', 'auto');
+    
     $apiData = [
         'server' => 'fusion.mxrouting.net',
         'username' => $smtpUser,
@@ -238,8 +242,8 @@ if (false && class_exists('PHPMailer\PHPMailer\PHPMailer')) {
         'from' => $fromEmail,
         'to' => $toEmail,
         'replyto' => $email,
-        'subject' => $subject,
-        'body' => $htmlBody
+        'subject' => $subjectUtf8,
+        'body' => $htmlBodyUtf8
     ];
     
     $ch = curl_init($mxrouteApiUrl);
@@ -298,12 +302,17 @@ if (false && class_exists('PHPMailer\PHPMailer\PHPMailer')) {
         
         // Si todos los servidores SMTP fallan, intentar mail() como último recurso
         error_log("[ContactHandler] Todos los servidores SMTP fallaron, intentando mail() nativo");
+        // Asegurar UTF-8 en subject y headers
+        $subjectUtf8 = mb_convert_encoding($subject, 'UTF-8', 'auto');
+        $htmlBodyUtf8 = mb_convert_encoding($htmlBody, 'UTF-8', 'auto');
         $headers = "MIME-Version: 1.0\r\n";
         $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-        $headers .= "From: $fromEmail\r\n";
-        $headers .= "Reply-To: $email\r\n";
+        $headers .= "Content-Transfer-Encoding: 8bit\r\n";
+        $headers .= "From: =?UTF-8?B?" . base64_encode($fromEmail) . "?=\r\n";
+        $headers .= "Reply-To: =?UTF-8?B?" . base64_encode($email) . "?=\r\n";
+        $headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
         
-        if (mail($toEmail, $subject, $htmlBody, $headers)) {
+        if (mail($toEmail, $subjectUtf8, $htmlBodyUtf8, $headers)) {
             error_log("[ContactHandler] ⚠️ mail() devolvió true, pero puede que el correo no se haya enviado realmente");
             echo json_encode([
                 'success' => true,
