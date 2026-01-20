@@ -55,6 +55,7 @@ export async function translateText(
   // Verificar cache primero
   const cacheKey = getCacheKey(text, targetLang)
   if (translationCache[cacheKey]) {
+    console.log(`[TranslationService] Cache hit para: "${text.substring(0, 30)}..." (${targetLang})`)
     return translationCache[cacheKey]
   }
 
@@ -65,6 +66,7 @@ export async function translateText(
       const parsedCache = JSON.parse(storedCache)
       if (parsedCache[cacheKey]) {
         translationCache[cacheKey] = parsedCache[cacheKey]
+        console.log(`[TranslationService] Cache localStorage hit para: "${text.substring(0, 30)}..." (${targetLang})`)
         return parsedCache[cacheKey]
       }
     } catch (e) {
@@ -76,8 +78,11 @@ export async function translateText(
     const targetCode = getLanguageCode(targetLang)
     const sourceCode = getLanguageCode(sourceLang)
 
+    console.log(`[TranslationService] Traduciendo "${text.substring(0, 50)}..." de ${sourceCode} a ${targetCode}`)
+
     // MyMemory Translation API (gratuita, límite de 1000 caracteres por request)
-    const maxLength = 500 // Limitar para evitar problemas con textos muy largos
+    // Aumentar el límite para descripciones más largas
+    const maxLength = 2000 // Aumentado para permitir descripciones más largas
     const textToTranslate = text.length > maxLength ? text.substring(0, maxLength) + '...' : text
 
     const response = await fetch(
@@ -91,7 +96,18 @@ export async function translateText(
     const data = await response.json()
 
     if (data.responseStatus === 200 && data.responseData && data.responseData.translatedText) {
-      const translated = data.responseData.translatedText
+      let translated = data.responseData.translatedText
+      
+      // Limpiar la traducción (a veces la API devuelve texto con caracteres extra)
+      translated = translated.trim()
+      
+      // Si la traducción es igual al original o está vacía, intentar de nuevo o retornar original
+      if (translated === text || translated.length === 0) {
+        console.warn(`[TranslationService] La traducción es igual al original o está vacía para: "${text.substring(0, 30)}..."`)
+        return text
+      }
+
+      console.log(`[TranslationService] ✅ Traducido: "${text.substring(0, 30)}..." -> "${translated.substring(0, 30)}..."`)
 
       // Guardar en cache
       translationCache[cacheKey] = translated
@@ -117,11 +133,11 @@ export async function translateText(
 
       return translated
     } else {
-      console.warn('Translation API returned unexpected format:', data)
+      console.warn('[TranslationService] Translation API returned unexpected format:', data)
       return text
     }
   } catch (error) {
-    console.error('Error translating text:', error)
+    console.error('[TranslationService] Error translating text:', error)
     // En caso de error, retornar el texto original
     return text
   }

@@ -46,18 +46,33 @@ const PropertyDetail = () => {
     const translateProperty = async () => {
       setTranslating(true)
       try {
+        console.log(`[PropertyDetail] Traduciendo propiedad al idioma: ${language}`)
+        console.log(`[PropertyDetail] Título original: ${property.title}`)
+        console.log(`[PropertyDetail] Descripción original (longitud): ${property.description?.length || 0}`)
+        
         const [translatedTitle, translatedDescription] = await Promise.all([
           translateText(property.title, language, 'es'),
           translateText(property.description || '', language, 'es'),
         ])
 
-        setTranslatedProperty({
-          ...property,
-          title: translatedTitle,
-          description: translatedDescription,
-        })
+        console.log(`[PropertyDetail] Título traducido: ${translatedTitle}`)
+        console.log(`[PropertyDetail] Descripción traducida (longitud): ${translatedDescription?.length || 0}`)
+
+        // Verificar que las traducciones sean diferentes del original (o al menos que no sean vacías)
+        if (translatedTitle && translatedDescription) {
+          setTranslatedProperty({
+            ...property,
+            title: translatedTitle,
+            description: translatedDescription,
+          })
+          console.log(`[PropertyDetail] ✅ Propiedad traducida correctamente`)
+        } else {
+          console.warn(`[PropertyDetail] ⚠️ Traducción incompleta, usando propiedad original`)
+          setTranslatedProperty(property)
+        }
       } catch (error) {
-        console.error('Error translating property:', error)
+        console.error('[PropertyDetail] ❌ Error translating property:', error)
+        // En caso de error, mantener la propiedad original pero mostrar un mensaje
         setTranslatedProperty(property)
       } finally {
         setTranslating(false)
