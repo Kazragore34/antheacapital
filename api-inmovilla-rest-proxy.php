@@ -22,8 +22,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // Configuración de Inmovilla API REST
+// Token REST generado desde el panel de Inmovilla
 define('INMOVILLA_API_TOKEN', 'F614ADA147C30D2D08FF53714B8CC23F');
 define('INMOVILLA_NUMAGENCIA', '13740');
+// URL base de la API REST de Inmovilla (verificar en documentación)
 define('INMOVILLA_API_BASE_URL', 'https://procesos.apinmo.com/api/v1');
 
 // Obtener parámetros
@@ -77,6 +79,7 @@ function callInmovillaAPI($endpoint, $params = []) {
 
 try {
     $data = null;
+    $response = null;
     
     switch ($action) {
         case 'propiedades':
@@ -97,7 +100,19 @@ try {
             }
             
             $response = callInmovillaAPI('/propiedades', $params);
-            $data = json_decode($response, true);
+            $decoded = json_decode($response, true);
+            
+            // Adaptar estructura de respuesta al formato esperado por el frontend
+            // La API REST puede devolver directamente un array o un objeto con 'data'
+            if (isset($decoded['data'])) {
+                $data = ['paginacion' => $decoded['data']];
+            } elseif (isset($decoded['paginacion'])) {
+                $data = $decoded;
+            } elseif (is_array($decoded)) {
+                $data = ['paginacion' => $decoded];
+            } else {
+                $data = ['paginacion' => []];
+            }
             break;
             
         case 'ficha':
@@ -109,7 +124,18 @@ try {
             $response = callInmovillaAPI('/propiedades/' . $codOfer, [
                 'agencia' => INMOVILLA_NUMAGENCIA
             ]);
-            $data = json_decode($response, true);
+            $decoded = json_decode($response, true);
+            
+            // Adaptar estructura de respuesta
+            if (isset($decoded['data'])) {
+                $data = ['ficha' => [$decoded['data']]];
+            } elseif (isset($decoded['ficha'])) {
+                $data = $decoded;
+            } elseif (is_array($decoded) && !isset($decoded['success'])) {
+                $data = ['ficha' => [$decoded]];
+            } else {
+                $data = ['ficha' => []];
+            }
             break;
             
         case 'destacados':
@@ -120,7 +146,18 @@ try {
                 'limit' => $limit,
                 'order' => $order ?: 'precio'
             ]);
-            $data = json_decode($response, true);
+            $decoded = json_decode($response, true);
+            
+            // Adaptar estructura de respuesta
+            if (isset($decoded['data'])) {
+                $data = ['destacados' => $decoded['data']];
+            } elseif (isset($decoded['destacados'])) {
+                $data = $decoded;
+            } elseif (is_array($decoded)) {
+                $data = ['destacados' => $decoded];
+            } else {
+                $data = ['destacados' => []];
+            }
             break;
             
         default:
@@ -128,10 +165,12 @@ try {
     }
     
     if (json_last_error() !== JSON_ERROR_NONE) {
+        error_log('[API REST Proxy] Error decodificando JSON: ' . json_last_error_msg());
+        error_log('[API REST Proxy] Respuesta recibida: ' . substr($response ?? '', 0, 1000));
         throw new Exception('Error decodificando JSON: ' . json_last_error_msg() . '. Respuesta: ' . substr($response ?? '', 0, 500));
     }
     
-    // Devolver respuesta JSON
+    // Devolver respuesta JSON en el formato esperado por el frontend
     echo json_encode([
         'success' => true,
         'action' => $action,
