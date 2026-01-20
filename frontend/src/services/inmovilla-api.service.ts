@@ -84,12 +84,14 @@ class InmovillaAPIService {
       console.log(`[InmovillaAPI] Respuesta recibida:`, result)
 
       // La API REST devuelve directamente un array según la documentación
-      // Estructura: [{cod_ofer: ..., ref: ..., ...}, ...]
+      // Estructura del proxy: {success: true, data: {paginacion: [{cod_ofer: ..., ref: ..., ...}, ...]}}
       let apiProperties = []
-      if (Array.isArray(result.data)) {
-        apiProperties = result.data
-      } else if (Array.isArray(result.data?.paginacion)) {
-        apiProperties = result.data.paginacion
+      if (result.success && result.data) {
+        if (Array.isArray(result.data.paginacion)) {
+          apiProperties = result.data.paginacion
+        } else if (Array.isArray(result.data)) {
+          apiProperties = result.data
+        }
       } else if (Array.isArray(result.paginacion)) {
         apiProperties = result.paginacion
       } else if (Array.isArray(result)) {
@@ -97,6 +99,10 @@ class InmovillaAPIService {
       }
 
       console.log(`[InmovillaAPI] Propiedades extraídas: ${apiProperties.length}`)
+      if (apiProperties.length > 0) {
+        console.log(`[InmovillaAPI] Primera propiedad:`, apiProperties[0])
+        console.log(`[InmovillaAPI] Keys de la primera propiedad:`, Object.keys(apiProperties[0]))
+      }
 
       // Transformar propiedades de la API al formato interno
       const properties = this.transformProperties(apiProperties)
