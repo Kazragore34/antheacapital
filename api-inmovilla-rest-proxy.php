@@ -21,6 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
+
 // Configuración de Inmovilla API REST
 // Token REST generado desde el panel de Inmovilla
 // Documentación: https://procesos.apinmo.com/api/v1/apidoc/
@@ -130,12 +131,19 @@ try {
                     error_log("[API REST Proxy] Obteniendo detalles completos de propiedad {$codOfer} ({$i}/{$maxPropiedades})");
                     
                     // Usar el endpoint que sabemos que funciona: /propiedades/{codOfer}
-                    // NO usar try-catch aquí - si falla, queremos saber por qué
-                    $responseDetalle = @callInmovillaAPI('/propiedades/' . $codOfer, []);
+                    try {
+                        $responseDetalle = callInmovillaAPI('/propiedades/' . $codOfer, []);
+                    } catch (Exception $e) {
+                        error_log("[API REST Proxy] ERROR obteniendo detalles de {$codOfer}: " . $e->getMessage());
+                        // Si falla obtener detalles, usar datos básicos para que al menos se muestre algo
+                        $propiedadesCompletas[] = $propBasica;
+                        continue;
+                    }
                     
                     if (empty($responseDetalle)) {
                         error_log("[API REST Proxy] ERROR CRÍTICO: Respuesta vacía para {$codOfer}");
-                        // NO usar datos básicos - esto es un error que debemos resolver
+                        // Usar datos básicos si no se pueden obtener detalles
+                        $propiedadesCompletas[] = $propBasica;
                         continue;
                     }
                     
@@ -144,6 +152,8 @@ try {
                     if (json_last_error() !== JSON_ERROR_NONE) {
                         error_log("[API REST Proxy] ERROR CRÍTICO: Error decodificando JSON para {$codOfer}: " . json_last_error_msg());
                         error_log("[API REST Proxy] Respuesta raw (primeros 1000 chars): " . substr($responseDetalle, 0, 1000));
+                        // Usar datos básicos si no se puede decodificar
+                        $propiedadesCompletas[] = $propBasica;
                         continue;
                     }
                     
@@ -161,11 +171,15 @@ try {
                         if (isset($detalleDecoded['data'])) {
                             error_log("[API REST Proxy] Keys de data: " . implode(', ', array_keys($detalleDecoded['data'])));
                         }
-                        continue; // NO usar datos básicos - esto es un error
+                        // Usar datos básicos si no se puede extraer estructura
+                        $propiedadesCompletas[] = $propBasica;
+                        continue;
                     }
                     
                     if (!$propiedadCompleta || !is_array($propiedadCompleta)) {
                         error_log("[API REST Proxy] ❌ ERROR: No se pudo extraer datos completos para {$codOfer}");
+                        // Usar datos básicos si no se puede extraer
+                        $propiedadesCompletas[] = $propBasica;
                         continue;
                     }
                     
