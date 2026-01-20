@@ -47,8 +47,63 @@ export const propertiesService = {
         console.log(`[PropertiesService] ${propertiesCache.length} propiedades cargadas desde API`)
       }
       
-      // Aplicar filtros adicionales si es necesario (la API ya filtra, pero por si acaso)
-      return propertiesCache
+      // Aplicar filtros localmente después de obtener las propiedades del caché
+      let filteredProperties = propertiesCache || []
+      
+      // Filtrar por tipo
+      if (filters?.type && filters.type !== 'todos' && filters.type !== '') {
+        const filterType = filters.type.toLowerCase()
+        if (filterType === 'venta') {
+          filteredProperties = filteredProperties.filter(p => p.type === 'venta')
+        } else if (filterType === 'alquiler') {
+          filteredProperties = filteredProperties.filter(p => p.type === 'alquiler')
+        } else if (filterType === 'alquiler-opcion-compra') {
+          // Filtrar por alquiler con opción a compra (si existe el campo)
+          filteredProperties = filteredProperties.filter(p => p.type === 'alquiler' && p.features?.optionToBuy)
+        }
+        console.log(`[PropertiesService] Filtrado por tipo "${filterType}": ${filteredProperties.length} de ${propertiesCache.length} propiedades`)
+      }
+      
+      // Filtrar por ciudad
+      if (filters?.city && filters.city.trim() !== '') {
+        const cityFilter = filters.city.toLowerCase().trim()
+        filteredProperties = filteredProperties.filter(p => 
+          p.location.city?.toLowerCase().includes(cityFilter) ||
+          p.location.address?.toLowerCase().includes(cityFilter)
+        )
+        console.log(`[PropertiesService] Filtrado por ciudad "${filters.city}": ${filteredProperties.length} propiedades`)
+      }
+      
+      // Filtrar por precio mínimo
+      if (filters?.minPrice && filters.minPrice > 0) {
+        filteredProperties = filteredProperties.filter(p => p.price >= filters.minPrice!)
+        console.log(`[PropertiesService] Filtrado por precio mínimo ${filters.minPrice}: ${filteredProperties.length} propiedades`)
+      }
+      
+      // Filtrar por precio máximo
+      if (filters?.maxPrice && filters.maxPrice > 0) {
+        filteredProperties = filteredProperties.filter(p => p.price <= filters.maxPrice!)
+        console.log(`[PropertiesService] Filtrado por precio máximo ${filters.maxPrice}: ${filteredProperties.length} propiedades`)
+      }
+      
+      // Filtrar por habitaciones
+      if (filters?.bedrooms && filters.bedrooms > 0) {
+        filteredProperties = filteredProperties.filter(p => 
+          (p.features.bedrooms || 0) >= filters.bedrooms!
+        )
+        console.log(`[PropertiesService] Filtrado por habitaciones ${filters.bedrooms}+: ${filteredProperties.length} propiedades`)
+      }
+      
+      // Filtrar por superficie mínima
+      if (filters?.minArea && filters.minArea > 0) {
+        filteredProperties = filteredProperties.filter(p => 
+          (p.features.area || 0) >= filters.minArea!
+        )
+        console.log(`[PropertiesService] Filtrado por superficie mínima ${filters.minArea}m²: ${filteredProperties.length} propiedades`)
+      }
+      
+      console.log(`[PropertiesService] Devolviendo ${filteredProperties.length} propiedades después de aplicar filtros`)
+      return filteredProperties
     } catch (error) {
       console.error('[PropertiesService] Error fetching properties from API:', error)
       return []
