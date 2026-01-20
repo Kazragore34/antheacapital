@@ -81,9 +81,10 @@ function callInmovillaAPI($endpoint, $params = []) {
     }
     
     if ($httpCode !== 200) {
-        error_log('[API REST Proxy] HTTP Error ' . $httpCode . ': ' . substr($response, 0, 500));
-        // NO lanzar excepción aquí - devolver la respuesta para que el código pueda manejarla
-        // throw new Exception('HTTP Error ' . $httpCode . ': ' . substr($response, 0, 200));
+        $errorMsg = substr($response, 0, 500);
+        error_log('[API REST Proxy] HTTP Error ' . $httpCode . ': ' . $errorMsg);
+        // Lanzar excepción con el mensaje de error para que se maneje correctamente
+        throw new Exception('HTTP Error ' . $httpCode . ': ' . $errorMsg);
     }
     
     return $response;
@@ -102,7 +103,18 @@ try {
             try {
                 // Paso 1: Obtener listado básico
                 $response = callInmovillaAPI('/propiedades/?listado', []);
+                
+                // Verificar que la respuesta no esté vacía
+                if (empty($response)) {
+                    throw new Exception('La API de Inmovilla devolvió una respuesta vacía para el listado básico');
+                }
+                
                 $decoded = json_decode($response, true);
+                
+                // Verificar que el JSON se decodificó correctamente
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    throw new Exception('Error decodificando JSON del listado básico: ' . json_last_error_msg() . '. Respuesta: ' . substr($response, 0, 500));
+                }
                 
                 // Extraer listado básico
                 $listadoBasico = [];
@@ -110,6 +122,8 @@ try {
                     $listadoBasico = $decoded;
                 } elseif (isset($decoded['data']) && is_array($decoded['data'])) {
                     $listadoBasico = $decoded['data'];
+                } elseif (isset($decoded['error'])) {
+                    throw new Exception('Error de la API: ' . ($decoded['mensaje'] ?? $decoded['error']));
                 }
                 
                 error_log("[API REST Proxy] Listado básico obtenido: " . count($listadoBasico) . " propiedades");
@@ -142,11 +156,20 @@ try {
                             error_log("[API REST Proxy] Intento {$intentos}/{$maxIntentos} para obtener detalles de {$codOfer}");
                             $responseDetalle = callInmovillaAPI('/propiedades/' . $codOfer, []);
                             
+                            // Verificar que la respuesta no esté vacía y sea válida
                             if (!empty($responseDetalle)) {
-                                break; // Éxito, salir del loop
+                                // Verificar que sea JSON válido antes de continuar
+                                $testDecoded = json_decode($responseDetalle, true);
+                                if (json_last_error() === JSON_ERROR_NONE && !isset($testDecoded['error'])) {
+                                    break; // Éxito, salir del loop
+                                } else {
+                                    error_log("[API REST Proxy] Respuesta inválida o con error para {$codOfer}: " . substr($responseDetalle, 0, 200));
+                                    $responseDetalle = null; // Resetear para reintentar
+                                }
                             }
                         } catch (Exception $e) {
                             error_log("[API REST Proxy] Intento {$intentos} falló para {$codOfer}: " . $e->getMessage());
+                            $responseDetalle = null; // Resetear para reintentar
                             if ($intentos < $maxIntentos) {
                                 usleep(200000); // Esperar 0.2 segundos antes de reintentar
                             }
