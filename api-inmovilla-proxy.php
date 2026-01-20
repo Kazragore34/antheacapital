@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // Configuración de Inmovilla
 // Credenciales de producción configuradas
 define('INMOVILLA_NUMAGENCIA', '13740'); // Número de agencia de Anthea Capital
-define('INMOVILLA_PASSWORD', 'Ast19722026'); // Contraseña de acceso a la API
+define('INMOVILLA_PASSWORD', 'Ast19722026.'); // Contraseña de acceso a la API (con punto final)
 define('INMOVILLA_IDIOMA', '1'); // 1 = Español
 
 // Incluir la librería de Inmovilla
