@@ -285,21 +285,14 @@ jobs:
         echo "✅ Verificación completada"
     
     - name: Deploy to Hostinger (SFTP)
-      uses: SamKirkland/FTP-Deploy-Action@4.3.0
+      uses: appleboy/scp-action@master
       with:
-        server: ${{ secrets.FTP_SERVER }}
+        host: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        protocol: sftp
         port: 65002
-        local-dir: ./deploy/
-        server-dir: /public_html/
-        exclude: |
-          **/.git*
-          **/.git*/**
-          **/node_modules/.cache/**
-          **/.DS_Store
-        dangerous-clean-slate: false
-        dry-run: false
-        log-level: verbose
+        source: "./deploy/*"
+        target: "/public_html/"
+        strip_components: 1
+        rm: false
 
