@@ -134,6 +134,15 @@ $order = $_GET['order'] ?? 'precioinmo, precioalq';
 
 
 try {
+    // Verificar que las funciones de Inmovilla estén disponibles
+    if (!function_exists('Procesos')) {
+        throw new Exception('La función Procesos no está disponible. Verifica que apiinmovilla.php esté incluido correctamente.');
+    }
+    
+    if (!function_exists('PedirDatos')) {
+        throw new Exception('La función PedirDatos no está disponible. Verifica que apiinmovilla.php esté incluido correctamente.');
+    }
+    
     // Limpiar array de peticiones global
     $GLOBALS['arrpeticiones'] = array();
     
@@ -176,17 +185,23 @@ try {
     
     // Verificar que la respuesta no esté vacía
     if (empty($jsonResponse)) {
-        throw new Exception('La API de Inmovilla devolvió una respuesta vacía');
+        throw new Exception('La API de Inmovilla devolvió una respuesta vacía. Verifica las credenciales (numagencia: ' . INMOVILLA_NUMAGENCIA . ')');
     }
     
-    // Limpiar posibles caracteres BOM o espacios al inicio
+    // Limpiar posibles caracteres BOM o espacios al inicio/final
     $jsonResponse = trim($jsonResponse);
     
+    // Log para debugging (solo primeros 1000 caracteres)
+    $responsePreview = substr($jsonResponse, 0, 1000);
+    error_log('[API Proxy] Respuesta recibida (primeros 1000 chars): ' . $responsePreview);
+    
     // Verificar si la respuesta parece ser JSON
-    if (substr($jsonResponse, 0, 1) !== '{' && substr($jsonResponse, 0, 1) !== '[') {
+    $firstChar = substr($jsonResponse, 0, 1);
+    if ($firstChar !== '{' && $firstChar !== '[') {
         // La respuesta puede ser un error o HTML
-        error_log('[API Proxy] Respuesta no JSON recibida: ' . substr($jsonResponse, 0, 500));
-        throw new Exception('La API de Inmovilla devolvió una respuesta que no es JSON válido. Verifica las credenciales.');
+        error_log('[API Proxy] Respuesta no JSON recibida. Primer carácter: ' . $firstChar);
+        error_log('[API Proxy] Respuesta completa (primeros 2000 chars): ' . substr($jsonResponse, 0, 2000));
+        throw new Exception('La API de Inmovilla devolvió una respuesta que no es JSON válido. Verifica las credenciales. Respuesta: ' . substr($jsonResponse, 0, 500));
     }
     
     // Decodificar JSON
@@ -194,10 +209,9 @@ try {
     
     if (json_last_error() !== JSON_ERROR_NONE) {
         $errorMsg = json_last_error_msg();
-        $responsePreview = substr($jsonResponse, 0, 500);
         error_log('[API Proxy] Error decodificando JSON: ' . $errorMsg);
-        error_log('[API Proxy] Respuesta recibida (primeros 500 chars): ' . $responsePreview);
-        throw new Exception('Error decodificando JSON: ' . $errorMsg . '. Respuesta: ' . $responsePreview);
+        error_log('[API Proxy] Respuesta recibida (primeros 2000 chars): ' . substr($jsonResponse, 0, 2000));
+        throw new Exception('Error decodificando JSON: ' . $errorMsg . '. Respuesta recibida: ' . substr($jsonResponse, 0, 500));
     }
     
     // Devolver respuesta JSON
