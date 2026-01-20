@@ -223,11 +223,23 @@ try {
                 
                 error_log("[API REST Proxy] Total propiedades completas obtenidas: " . count($propiedadesCompletas));
                 
+                // Si no se obtuvieron propiedades completas, usar al menos las básicas
+                if (count($propiedadesCompletas) === 0 && count($listadoBasico) > 0) {
+                    error_log("[API REST Proxy] ⚠️ No se pudieron obtener detalles completos, usando datos básicos");
+                    $propiedadesCompletas = array_slice($listadoBasico, 0, $maxPropiedades);
+                }
+                
                 $data = ['paginacion' => $propiedadesCompletas];
             } catch (Exception $e) {
                 error_log("[API REST Proxy] Error en case propiedades: " . $e->getMessage());
                 error_log("[API REST Proxy] Stack trace: " . $e->getTraceAsString());
-                throw $e; // Re-lanzar para que se capture en el catch general
+                // En lugar de lanzar excepción, devolver datos básicos si están disponibles
+                if (isset($listadoBasico) && count($listadoBasico) > 0) {
+                    error_log("[API REST Proxy] ⚠️ Usando datos básicos debido a error");
+                    $data = ['paginacion' => array_slice($listadoBasico, 0, min(count($listadoBasico), $limit > 0 ? $limit : 100))];
+                } else {
+                    throw $e; // Solo lanzar si no hay datos básicos disponibles
+                }
             }
             break;
             
