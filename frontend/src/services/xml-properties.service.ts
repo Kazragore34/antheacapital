@@ -13,9 +13,21 @@ function transformInmovillaProperty(prop: any): Property | null {
       return null
     }
 
-    // Tipo de propiedad
-    const tipoInmo = prop.ofertas_tipo_inmo || prop.tipo_inmo || ''
-    const tipo = tipoInmo.toLowerCase().includes('venta') || tipoInmo.toLowerCase().includes('vender') ? 'venta' : 'alquiler'
+    // Tipo de propiedad - buscar en diferentes campos
+    const tipoInmo = prop.ofertas_tipo_inmo || prop.tipo_inmo || prop.ofertas_tipo || prop.tipo || ''
+    let tipo = 'alquiler' // Por defecto
+    
+    // Determinar tipo basado en precio o campo tipo
+    if (tipoInmo.toLowerCase().includes('venta') || tipoInmo.toLowerCase().includes('vender')) {
+      tipo = 'venta'
+    } else if (tipoInmo.toLowerCase().includes('alquiler') || tipoInmo.toLowerCase().includes('alquiler')) {
+      tipo = 'alquiler'
+    } else {
+      // Si no hay tipo claro, inferir del precio
+      const precioInmo = parseFloat(prop.ofertas_precioinmo || prop.precioinmo || '0') || 0
+      const precioAlq = parseFloat(prop.ofertas_precioalq || prop.precioalq || '0') || 0
+      tipo = precioInmo > 0 ? 'venta' : (precioAlq > 0 ? 'alquiler' : 'alquiler')
+    }
 
     // Precio
     const precioInmo = parseFloat(prop.ofertas_precioinmo || prop.precioinmo || '0') || 0
@@ -58,18 +70,31 @@ function transformInmovillaProperty(prop: any): Property | null {
     const piscina = prop.ofertas_piscina_prop === '1' || prop.piscina_prop === '1' || prop.ofertas_piscina_com === '1' || prop.piscina_com === '1'
     const amueblado = prop.ofertas_muebles === '1' || prop.ofertas_muebles === 1 || prop.muebles === '1' || prop.muebles === 1
 
-    // Imágenes
+    // Imágenes - manejar estructura <fotos><foto>...</foto></fotos>
     const imagenes: string[] = []
-    if (prop.ofertas_foto1) imagenes.push(prop.ofertas_foto1)
-    if (prop.ofertas_foto2) imagenes.push(prop.ofertas_foto2)
-    if (prop.ofertas_foto3) imagenes.push(prop.ofertas_foto3)
-    if (prop.ofertas_foto4) imagenes.push(prop.ofertas_foto4)
-    if (prop.ofertas_foto5) imagenes.push(prop.ofertas_foto5)
-    if (prop.foto1) imagenes.push(prop.foto1)
-    if (prop.foto2) imagenes.push(prop.foto2)
-    if (prop.foto3) imagenes.push(prop.foto3)
-    if (prop.foto4) imagenes.push(prop.foto4)
-    if (prop.foto5) imagenes.push(prop.foto5)
+    
+    // Primero intentar desde estructura <fotos>
+    if (prop.fotos) {
+      if (Array.isArray(prop.fotos.foto)) {
+        imagenes.push(...prop.fotos.foto.filter((url: string) => url && url.trim().startsWith('http')))
+      } else if (typeof prop.fotos.foto === 'string' && prop.fotos.foto.trim().startsWith('http')) {
+        imagenes.push(prop.fotos.foto)
+      }
+    }
+    
+    // Fallback a campos individuales
+    if (imagenes.length === 0) {
+      if (prop.ofertas_foto1) imagenes.push(prop.ofertas_foto1)
+      if (prop.ofertas_foto2) imagenes.push(prop.ofertas_foto2)
+      if (prop.ofertas_foto3) imagenes.push(prop.ofertas_foto3)
+      if (prop.ofertas_foto4) imagenes.push(prop.ofertas_foto4)
+      if (prop.ofertas_foto5) imagenes.push(prop.ofertas_foto5)
+      if (prop.foto1) imagenes.push(prop.foto1)
+      if (prop.foto2) imagenes.push(prop.foto2)
+      if (prop.foto3) imagenes.push(prop.foto3)
+      if (prop.foto4) imagenes.push(prop.foto4)
+      if (prop.foto5) imagenes.push(prop.foto5)
+    }
 
     const property: Property = {
       _id: codOfer,
@@ -135,31 +160,53 @@ function extractPropertiesFromXML(xmlDoc: Document): any[] {
   const propiedades: any[] = []
   const propiedadNodes = xmlDoc.querySelectorAll('propiedad')
   
-  propiedadNodes.forEach((propNode) => {
+  console.log(`[XMLPropertiesService] Encontrados ${propiedadNodes.length} nodos <propiedad>`)
+  
+  propiedadNodes.forEach((propNode, index) => {
     const prop: any = {}
     
-    // Extraer todos los elementos hijos
-    propNode.childNodes.forEach((child) => {
-      if (child.nodeType === 1) { // Element node
-        const nodeName = child.nodeName
-        const nodeValue = child.textContent || ''
-        
-        // Si tiene estructura con <datos>, procesar también
-        if (nodeName === 'datos') {
-          const datos: any = {}
-          child.childNodes.forEach((datoChild) => {
-            if (datoChild.nodeType === 1) {
-              datos[datoChild.nodeName] = datoChild.textContent || ''
+    // Extraer todos los elementos hijos directamente
+    Array.from(propNode.children).forEach((child) => {
+      const nodeName = child.nodeName
+      
+      // Si tiene estructura con <datos>, procesar también
+      if (nodeName === 'datos') {
+        const datos: any = {}
+        Array.from(child.children).forEach((datoChild) => {
+          datos[datoChild.nodeName] = datoChild.textContent || ''
+        })
+        prop.datos = datos
+        // Combinar datos con propiedades del nivel superior (datos tiene prioridad)
+        Object.assign(prop, datos)
+      } 
+      // Si tiene estructura con <fotos>, procesar las imágenes
+      else if (nodeName === 'fotos') {
+        const fotos: string[] = []
+        Array.from(child.children).forEach((fotoChild) => {
+          if (fotoChild.nodeName === 'foto' || fotoChild.tagName.toLowerCase() === 'foto') {
+            const fotoUrl = fotoChild.textContent?.trim() || ''
+            if (fotoUrl && fotoUrl.startsWith('http')) {
+              fotos.push(fotoUrl)
             }
-          })
-          prop.datos = datos
-          // Combinar datos con propiedades del nivel superior
-          Object.assign(prop, datos)
-        } else {
-          prop[nodeName] = nodeValue
-        }
+          }
+        })
+        prop.fotos = { foto: fotos }
+      } 
+      // Otros campos directos
+      else {
+        prop[nodeName] = child.textContent || ''
       }
     })
+    
+    // Log primera propiedad para debugging
+    if (index === 0) {
+      console.log('[XMLPropertiesService] Primera propiedad extraída:', {
+        keys: Object.keys(prop),
+        codOfer: prop.ofertas_cod_ofer || prop.datos?.ofertas_cod_ofer,
+        hasFotos: !!prop.fotos,
+        fotosCount: prop.fotos?.foto?.length || 0
+      })
+    }
     
     propiedades.push(prop)
   })

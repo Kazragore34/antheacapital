@@ -6,57 +6,26 @@ Ya configuraste el SPF en Hostinger con `include:externo.inmovilla.com`. ¡Perfe
 
 ---
 
-## 📋 Paso 2: Configurar el Backend
+## 📋 Paso 2: Frontend Lee XML Directamente (SIN BACKEND)
 
-### 2.1. Instalar Dependencias del Backend
+### 2.1. ✅ Configuración Completada
 
-Abre una terminal en la carpeta del proyecto y ejecuta:
+**IMPORTANTE:** Debido a las limitaciones de Hostinger (no permite ejecutar Node.js), el frontend ahora lee el XML de Inmovilla **directamente desde el navegador**, sin necesidad de un backend ejecutándose.
 
-```bash
-cd backend
-npm install
-```
+### 2.2. Cómo Funciona
 
-Esto instalará la nueva dependencia `xml2js` que agregamos para leer el XML.
+- El frontend hace una petición HTTP directamente a: `https://procesos.inmovilla.com/xml/xml2demo/2-web.xml`
+- Parsea el XML usando `DOMParser` del navegador
+- Transforma las propiedades al formato interno
+- Las muestra en la página `/propiedades`
 
-### 2.2. Configurar Variables de Entorno (Opcional)
+### 2.3. URL del XML
 
-El backend ya está configurado para usar la URL de prueba por defecto:
-- **URL XML:** `https://procesos.inmovilla.com/xml/xml2demo/2-web.xml`
+- **URL XML de Prueba:** `https://procesos.inmovilla.com/xml/xml2demo/2-web.xml`
 - **Número de Agencia:** `2`
 - **Password:** `82ku9xz2aw3`
 
-Si quieres cambiar estos valores en el futuro, crea o edita el archivo `backend/.env`:
-
-```env
-# URL del XML de Inmovilla
-INMOVILLA_XML_URL=https://procesos.inmovilla.com/xml/xml2demo/2-web.xml
-
-# Credenciales de Inmovilla (para futuras integraciones con API)
-INMOVILLA_NUMAGENCIA=2
-INMOVILLA_PASSWORD=82ku9xz2aw3
-
-# Ruta local alternativa (si prefieres usar archivo local)
-# INMOVILLA_XML_PATH=./archivos en bruto/listado.xml
-```
-
-**Nota:** Por ahora, el backend leerá directamente del XML. Las credenciales están guardadas por si en el futuro quieres usar la API de Inmovilla.
-
-### 2.3. Probar el Backend Localmente (Opcional)
-
-Si quieres probar que el backend lee correctamente el XML antes de desplegar:
-
-```bash
-cd backend
-npm run start:dev
-```
-
-Luego prueba en tu navegador o con curl:
-```bash
-curl http://localhost:3001/api/properties
-```
-
-Deberías ver las propiedades del XML de prueba.
+**Nota:** Cuando tengas la URL real de producción de Inmovilla, solo necesitas cambiar la constante `XML_URL` en `frontend/src/services/xml-properties.service.ts`.
 
 ---
 
@@ -129,15 +98,7 @@ Espera unos minutos a que termine el deploy y luego verifica:
 2. Accede a: `https://antheacapital.com/cliente/index.php?cliente=2`
    - Debe mostrar el panel de clientes de Inmovilla
 
-#### b) Verificar Backend
-
-1. Accede a: `https://antheacapital.com/api/properties`
-   - Debe devolver un JSON con las propiedades del XML de prueba
-
-2. Accede a: `https://antheacapital.com/api/properties/by-cod/395378`
-   - Debe devolver los detalles de la propiedad con codOfer 395378
-
-#### c) Verificar Frontend
+#### b) Verificar Frontend (Lee XML Directamente)
 
 1. Accede a: `https://antheacapital.com/propiedades`
    - Debe mostrar las propiedades del XML de Inmovilla
@@ -156,20 +117,22 @@ Espera unos minutos a que termine el deploy y luego verifica:
 
 ## 🔧 Solución de Problemas
 
-### El backend no carga propiedades
+### El frontend no carga propiedades desde el XML
 
-1. **Verifica que el XML sea accesible:**
-   ```bash
-   curl https://procesos.inmovilla.com/xml/xml2demo/2-web.xml
-   ```
+1. **Verifica que el XML sea accesible desde el navegador:**
+   - Abre directamente: `https://procesos.inmovilla.com/xml/xml2demo/2-web.xml`
+   - Debe mostrar el XML sin errores
 
-2. **Revisa los logs del backend en Hostinger:**
-   - Ve al panel de Hostinger
-   - Node.js > Ver logs
-   - Busca errores relacionados con XML
+2. **Verifica CORS:**
+   - Abre la consola del navegador (F12)
+   - Busca errores de CORS al cargar el XML
+   - Si hay errores de CORS, contacta a Inmovilla para que habiliten CORS en su servidor
 
-3. **Verifica variables de entorno:**
-   - Asegúrate de que el backend tenga acceso a internet para descargar el XML
+3. **Revisa los logs en la consola del navegador:**
+   - Abre `https://antheacapital.com/propiedades`
+   - Abre la consola (F12 → Console)
+   - Busca mensajes que empiecen con `[XMLPropertiesService]`
+   - Debe mostrar: "Cargando XML desde...", "XML cargado...", "Encontradas X propiedades..."
 
 ### Los archivos PHP no funcionan
 
@@ -187,25 +150,29 @@ Espera unos minutos a que termine el deploy y luego verifica:
 ### El frontend no muestra propiedades
 
 1. **Abre la consola del navegador (F12):**
-   - Busca errores de JavaScript
-   - Verifica que las llamadas a la API funcionen
+   - Ve a la pestaña "Console"
+   - Busca errores de JavaScript o CORS
+   - Verifica los mensajes de `[XMLPropertiesService]` y `[Properties]`
 
-2. **Verifica que el backend esté funcionando:**
-   - Prueba `https://antheacapital.com/api/properties` directamente
+2. **Verifica la pestaña "Network":**
+   - Busca la petición al XML: `https://procesos.inmovilla.com/xml/xml2demo/2-web.xml`
+   - Debe tener status 200 (éxito)
+   - Si hay error 404 o CORS, el XML no se está cargando
 
-3. **Verifica CORS:**
-   - El backend debe permitir peticiones desde el frontend
+3. **Verifica que el XML tenga propiedades:**
+   - Abre directamente: `https://procesos.inmovilla.com/xml/xml2demo/2-web.xml`
+   - Debe tener al menos un nodo `<propiedad>`
 
 ---
 
 ## 📝 Resumen de lo que Ya Está Listo
 
 ✅ **Código implementado:**
-- Backend lee XML de Inmovilla automáticamente
-- Transforma propiedades al formato interno
-- Endpoint para buscar por codOfer
-- Frontend detecta `post_id` y redirige
-- Archivos PHP creados y listos
+- Frontend lee XML de Inmovilla directamente desde el navegador (sin backend necesario)
+- Transforma propiedades al formato interno usando `DOMParser`
+- Maneja estructura `<datos>` y `<fotos>` del XML
+- Frontend detecta `post_id` y redirige correctamente
+- Archivos PHP creados y listos (`ficha/index.php`, `cliente/index.php`)
 - `.htaccess` configurado para PHP
 - Workflow de deploy actualizado
 
@@ -213,26 +180,29 @@ Espera unos minutos a que termine el deploy y luego verifica:
 - Ya configuraste el SPF en Hostinger
 
 ⏳ **Lo que falta hacer:**
-1. Instalar dependencias del backend (`npm install` en `backend/`)
-2. Hacer commit y push (o subir archivos PHP manualmente)
-3. Verificar que todo funcione
+1. Verificar que el deploy se haya completado correctamente
+2. Probar que las propiedades se muestren en `/propiedades`
+3. Probar la redirección desde `/ficha/index.php?codigo=2_395378`
 
 ---
 
 ## 🎯 Siguiente Paso Inmediato
 
-**Ejecuta estos comandos:**
+**El código ya está subido y el deploy debería estar ejecutándose automáticamente.**
 
-```bash
-# 1. Instalar dependencias del backend
-cd backend
-npm install
+1. **Espera a que termine el deploy** (5-10 minutos)
+   - Ve a: https://github.com/Kazragore34/antheacapital/actions
+   - Verifica que el último workflow haya terminado con éxito (✓)
 
-# 2. Volver a la raíz y hacer commit
-cd ..
-git add .
-git commit -m "feat: Integración completa con Inmovilla CRM"
-git push origin main
-```
+2. **Verifica que las propiedades se muestren:**
+   - Abre: `https://antheacapital.com/propiedades`
+   - Abre la consola del navegador (F12 → Console)
+   - Debe mostrar mensajes como:
+     - `[XMLPropertiesService] Cargando XML desde: ...`
+     - `[XMLPropertiesService] XML cargado (...)`
+     - `[XMLPropertiesService] Encontradas X propiedades en XML`
+     - `[Properties] ✅ Setting X properties`
 
-Luego espera a que termine el deploy y verifica que todo funcione según el Paso 4.2.
+3. **Si no se muestran propiedades:**
+   - Comparte los mensajes de la consola del navegador
+   - Verifica si hay errores de CORS en la pestaña "Network"
