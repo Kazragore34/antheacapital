@@ -1,6 +1,7 @@
 import { Property } from '../types'
 
-const XML_URL = 'https://procesos.inmovilla.com/xml/xml2demo/2-web.xml'
+// Usar proxy PHP para evitar problemas de CORS
+const XML_URL = '/xml-proxy.php'
 
 // Transformar propiedad del XML al formato Property
 function transformInmovillaProperty(prop: any): Property | null {

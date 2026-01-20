@@ -121,6 +121,12 @@ jobs:
           echo "✅ Copiado carpeta cliente/ (PHP de Inmovilla)"
         fi
         
+        # Copiar xml-proxy.php si existe
+        if [ -f "xml-proxy.php" ]; then
+          cp xml-proxy.php deploy/
+          echo "✅ Copiado xml-proxy.php (proxy CORS para XML)"
+        fi
+        
         # Backend - COPIAR TODO LO NECESARIO
         echo "📦 Preparando backend para deploy..."
         mkdir -p deploy/backend

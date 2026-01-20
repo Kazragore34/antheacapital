@@ -52,10 +52,12 @@ const PropertyFilters = ({ onFilterChange }: PropertyFiltersProps) => {
     <div className="bg-gray-800 border border-gray-700 p-6 rounded-lg shadow-lg mb-8">
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label htmlFor="filter-type" className="block text-sm font-medium text-gray-300 mb-2">
             Tipo
           </label>
           <select
+            id="filter-type"
+            name="type"
             value={filters.type}
             onChange={(e) => handleChange('type', e.target.value)}
             className="input-field"
@@ -71,10 +73,12 @@ const PropertyFilters = ({ onFilterChange }: PropertyFiltersProps) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label htmlFor="filter-city" className="block text-sm font-medium text-gray-300 mb-2">
             Ciudad
           </label>
           <input
+            id="filter-city"
+            name="city"
             type="text"
             value={filters.city}
             onChange={(e) => handleChange('city', e.target.value)}
@@ -84,10 +88,12 @@ const PropertyFilters = ({ onFilterChange }: PropertyFiltersProps) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label htmlFor="filter-min-price" className="block text-sm font-medium text-gray-300 mb-2">
             Precio Mín.
           </label>
           <input
+            id="filter-min-price"
+            name="minPrice"
             type="number"
             value={filters.minPrice}
             onChange={(e) => handleChange('minPrice', e.target.value)}
@@ -97,10 +103,12 @@ const PropertyFilters = ({ onFilterChange }: PropertyFiltersProps) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label htmlFor="filter-max-price" className="block text-sm font-medium text-gray-300 mb-2">
             Precio Máx.
           </label>
           <input
+            id="filter-max-price"
+            name="maxPrice"
             type="number"
             value={filters.maxPrice}
             onChange={(e) => handleChange('maxPrice', e.target.value)}
@@ -110,10 +118,12 @@ const PropertyFilters = ({ onFilterChange }: PropertyFiltersProps) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label htmlFor="filter-bedrooms" className="block text-sm font-medium text-gray-300 mb-2">
             Habitaciones
           </label>
           <select
+            id="filter-bedrooms"
+            name="bedrooms"
             value={filters.bedrooms}
             onChange={(e) => handleChange('bedrooms', e.target.value)}
             className="input-field"
@@ -128,10 +138,12 @@ const PropertyFilters = ({ onFilterChange }: PropertyFiltersProps) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label htmlFor="filter-min-area" className="block text-sm font-medium text-gray-300 mb-2">
             Superficie Mín.
           </label>
           <input
+            id="filter-min-area"
+            name="minArea"
             type="number"
             value={filters.minArea}
             onChange={(e) => handleChange('minArea', e.target.value)}
