@@ -100,79 +100,68 @@ const PropertyDetail = () => {
 
   return (
     <div className="min-h-screen bg-black-soft">
-      {/* Minimalist Image Gallery */}
-      {property.images && Array.isArray(property.images) && property.images.length > 0 && (
-        <section className="relative bg-black-soft">
-          <div className="container mx-auto px-4 py-6">
-            {/* Main Image Display - Clean and Minimal */}
-            <div className="relative mb-3 overflow-hidden">
-              <div className="relative aspect-[16/10] bg-gray-900">
-                <img
-                  src={property.images[selectedImageIndex]}
-                  alt={`${property.title} - Imagen ${selectedImageIndex + 1}`}
-                  className="w-full h-full object-cover cursor-pointer transition-opacity duration-200"
-                  onClick={() => {
-                    setLightboxIndex(selectedImageIndex)
-                    setLightboxOpen(true)
-                  }}
-                  onError={(e) => {
-                    e.currentTarget.src = 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1200'
-                  }}
-                />
-                {/* Minimalist counter - only show if more than 1 image */}
-                {property.images.length > 1 && (
-                  <div className="absolute bottom-3 right-3 bg-black/40 backdrop-blur-sm text-white px-3 py-1.5 rounded-md text-xs font-medium">
-                    {selectedImageIndex + 1} / {property.images.length}
-                  </div>
-                )}
-                {/* Subtle click indicator */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-                  <div className="bg-black/30 backdrop-blur-sm rounded-full p-3">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Minimalist Thumbnail Gallery */}
-            {property.images.length > 1 && (
-              <div className="flex gap-2 justify-center">
-                {property.images.map((img, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImageIndex(index)}
-                    className={`relative flex-shrink-0 w-16 h-16 rounded overflow-hidden transition-all duration-200 ${
-                      selectedImageIndex === index
-                        ? 'ring-1 ring-white/50 opacity-100'
-                        : 'opacity-50 hover:opacity-75'
-                    }`}
-                    aria-label={`Ver imagen ${index + 1}`}
-                  >
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Image Gallery - Sidebar */}
+          {property.images && Array.isArray(property.images) && property.images.length > 0 && (
+            <div className="lg:col-span-1 order-2 lg:order-1">
+              <div className="sticky top-24">
+                {/* Main Image Display - Compact */}
+                <div className="relative mb-3 overflow-hidden rounded-lg">
+                  <div className="relative aspect-square bg-gray-900">
                     <img
-                      src={img}
-                      alt={`${property.title} - Miniatura ${index + 1}`}
-                      className="w-full h-full object-cover"
+                      src={property.images[selectedImageIndex]}
+                      alt={`${property.title} - Imagen ${selectedImageIndex + 1}`}
+                      className="w-full h-full object-cover cursor-pointer transition-opacity duration-200"
+                      onClick={() => {
+                        setLightboxIndex(selectedImageIndex)
+                        setLightboxOpen(true)
+                      }}
                       onError={(e) => {
-                        e.currentTarget.src = 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=200'
+                        e.currentTarget.src = 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1200'
                       }}
                     />
-                    {selectedImageIndex === index && (
-                      <div className="absolute inset-0 border border-white/30"></div>
+                    {/* Minimalist counter */}
+                    {property.images.length > 1 && (
+                      <div className="absolute bottom-2 right-2 bg-black/50 backdrop-blur-sm text-white px-2 py-1 rounded text-xs font-medium">
+                        {selectedImageIndex + 1} / {property.images.length}
+                      </div>
                     )}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </section>
-      )}
+                  </div>
+                </div>
 
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Compact Thumbnail Gallery */}
+                {property.images.length > 1 && (
+                  <div className="grid grid-cols-3 gap-2">
+                    {property.images.map((img, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setSelectedImageIndex(index)}
+                        className={`relative aspect-square rounded overflow-hidden transition-all duration-200 ${
+                          selectedImageIndex === index
+                            ? 'ring-2 ring-gold opacity-100'
+                            : 'opacity-60 hover:opacity-100'
+                        }`}
+                        aria-label={`Ver imagen ${index + 1}`}
+                      >
+                        <img
+                          src={img}
+                          alt={`${property.title} - Miniatura ${index + 1}`}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.src = 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=200'
+                          }}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Main Content */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 order-1 lg:order-2">
             <div className="mb-8">
               <div className="flex items-center gap-4 mb-4">
                 <span className={`px-4 py-2 rounded-full text-sm font-semibold ${
@@ -190,7 +179,7 @@ const PropertyDetail = () => {
                 {property.title}
               </h1>
               <p className="text-gray-300 text-lg mb-6">
-                {property.location?.address || 'Dirección no disponible'}, {property.location?.city || 'Ciudad no disponible'}, {property.location?.province || 'Provincia no disponible'}
+                {property.location?.address || t('properties.detail.addressNotAvailable')}, {property.location?.city || t('properties.detail.cityNotAvailable')}, {property.location?.province || t('properties.detail.provinceNotAvailable')}
               </p>
             </div>
 

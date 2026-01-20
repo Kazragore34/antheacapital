@@ -117,6 +117,9 @@ const translations: Record<Language, Translations> = {
         garden: 'Jardín',
         pool: 'Piscina',
         furnished: 'Amueblado',
+        addressNotAvailable: 'Dirección no disponible',
+        cityNotAvailable: 'Ciudad no disponible',
+        provinceNotAvailable: 'Provincia no disponible',
       },
     },
     // Contact
@@ -342,6 +345,9 @@ const translations: Record<Language, Translations> = {
         garden: 'Garden',
         pool: 'Pool',
         furnished: 'Furnished',
+        addressNotAvailable: 'Address not available',
+        cityNotAvailable: 'City not available',
+        provinceNotAvailable: 'Province not available',
       },
     },
     contact: {
@@ -563,6 +569,9 @@ const translations: Record<Language, Translations> = {
         garden: 'Jardin',
         pool: 'Piscine',
         furnished: 'Meublé',
+        addressNotAvailable: 'Adresse non disponible',
+        cityNotAvailable: 'Ville non disponible',
+        provinceNotAvailable: 'Province non disponible',
       },
     },
     contact: {
@@ -784,6 +793,9 @@ const translations: Record<Language, Translations> = {
         garden: 'Jardí',
         pool: 'Piscina',
         furnished: 'Moblat',
+        addressNotAvailable: 'Adreça no disponible',
+        cityNotAvailable: 'Ciutat no disponible',
+        provinceNotAvailable: 'Província no disponible',
       },
     },
     contact: {
@@ -1005,6 +1017,9 @@ const translations: Record<Language, Translations> = {
         garden: 'Garten',
         pool: 'Pool',
         furnished: 'Möbliert',
+        addressNotAvailable: 'Adresse nicht verfügbar',
+        cityNotAvailable: 'Stadt nicht verfügbar',
+        provinceNotAvailable: 'Provinz nicht verfügbar',
       },
     },
     contact: {
@@ -1226,6 +1241,9 @@ const translations: Record<Language, Translations> = {
         garden: 'Giardino',
         pool: 'Piscina',
         furnished: 'Arredato',
+        addressNotAvailable: 'Indirizzo non disponibile',
+        cityNotAvailable: 'Città non disponibile',
+        provinceNotAvailable: 'Provincia non disponibile',
       },
     },
     contact: {
@@ -1407,6 +1425,9 @@ const translations: Record<Language, Translations> = {
         garden: 'Jardim',
         pool: 'Piscina',
         furnished: 'Mobiliado',
+        addressNotAvailable: 'Endereço não disponível',
+        cityNotAvailable: 'Cidade não disponível',
+        provinceNotAvailable: 'Província não disponível',
       },
     },
     contact: {

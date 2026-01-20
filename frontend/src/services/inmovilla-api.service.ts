@@ -295,19 +295,33 @@ class InmovillaAPIService {
       })
 
       // Ubicación
-      const ciudad = apiProp.ciudad_ciudad || apiProp.ciudad || ''
-      const zona = apiProp.zonas_zona || apiProp.zona || ''
       const cp = apiProp.ofertas_cp || apiProp.cp || ''
+      const ciudad = apiProp.ciudad_ciudad || apiProp.ciudad || this.getCityFromCP(cp) || ''
+      const zona = apiProp.zonas_zona || apiProp.zona || ''
       const provincia = (apiProp.provincias_provincia || apiProp.provincia || this.extractProvinceFromCP(cp) || ciudad).trim()
       const calle = apiProp.ofertas_calle || apiProp.calle || ''
       const numero = apiProp.ofertas_numero || apiProp.numero || ''
       const direccion = [calle, numero].filter(Boolean).join(' ') || zona || ciudad
 
-      // Título y descripción - la API REST devuelve tituloes y descripciones
+      // Título y descripción - buscar campos multiidioma según el idioma actual
       const ref = apiProp.ref || codOfer
+      const currentLang = typeof window !== 'undefined' ? (localStorage.getItem('language') || 'es') : 'es'
       
-      // Buscar título en múltiples campos posibles (incluyendo campos de API REST)
-      const titulo = apiProp.tituloes  // Campo de API REST
+      // Mapeo de idiomas a sufijos de campos de la API
+      const langSuffixes: { [key: string]: string } = {
+        'es': 'es',
+        'en': 'en',
+        'fr': 'fr',
+        'ca': 'ca',
+        'de': 'de',
+        'it': 'it',
+        'pt': 'pt',
+      }
+      const langSuffix = langSuffixes[currentLang] || 'es'
+      
+      // Buscar título en el idioma actual, luego español como fallback
+      const titulo = apiProp[`titulo${langSuffix}`] 
+        || apiProp.tituloes  // Campo de API REST (español)
         || apiProp.ofertas_titulo1 
         || apiProp.titulo1 
         || apiProp.ofertas_titulo2 
@@ -316,19 +330,11 @@ class InmovillaAPIService {
         || apiProp.nombre
         || `Propiedad ${ref}`
       
-      console.log(`[InmovillaAPI] Título encontrado:`, titulo)
-      console.log(`[InmovillaAPI] Campos de título disponibles:`, {
-        tituloes: apiProp.tituloes, // Campo de API REST
-        ofertas_titulo1: apiProp.ofertas_titulo1,
-        titulo1: apiProp.titulo1,
-        ofertas_titulo2: apiProp.ofertas_titulo2,
-        titulo2: apiProp.titulo2,
-        titulo: apiProp.titulo,
-        nombre: apiProp.nombre
-      })
+      console.log(`[InmovillaAPI] Título encontrado (idioma: ${currentLang}):`, titulo)
       
-      // Buscar descripción en múltiples campos posibles (incluyendo campos de API REST)
-      const descripcion = apiProp.descripciones  // Campo de API REST
+      // Buscar descripción en el idioma actual, luego español como fallback
+      const descripcion = apiProp[`descripcion${langSuffix}`]
+        || apiProp.descripciones  // Campo de API REST (español)
         || apiProp.ofertas_descrip1 
         || apiProp.descrip1 
         || apiProp.ofertas_descrip2 
@@ -479,6 +485,47 @@ class InmovillaAPIService {
       28: 'Madrid',
     }
     return provincias[cpNum] || ''
+  }
+
+  /**
+   * Obtener ciudad desde código postal
+   */
+  private getCityFromCP(cp: string): string {
+    if (!cp) return ''
+    const cpNum = parseInt(cp)
+    
+    // Mapeo de códigos postales comunes de Madrid a ciudades
+    const cpToCity: { [key: number]: string } = {
+      28001: 'Madrid',
+      28002: 'Madrid',
+      28003: 'Madrid',
+      28004: 'Madrid',
+      28005: 'Madrid',
+      28006: 'Madrid',
+      28007: 'Madrid',
+      28008: 'Madrid',
+      28009: 'Madrid',
+      28010: 'Madrid',
+      28011: 'Madrid',
+      28012: 'Madrid',
+      28013: 'Madrid',
+      28014: 'Madrid',
+      28015: 'Madrid',
+      28016: 'Madrid',
+      28020: 'Madrid',
+      28028: 'Madrid',
+      28036: 'Madrid',
+      28045: 'Madrid',
+      28046: 'Madrid',
+      28300: 'Aranjuez',
+      28310: 'Aranjuez',
+      28320: 'Aranjuez',
+      28330: 'Aranjuez',
+      28340: 'Aranjuez',
+      28350: 'Aranjuez',
+    }
+    
+    return cpToCity[cpNum] || ''
   }
 }
 
