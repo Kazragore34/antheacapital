@@ -1,0 +1,6 @@
+# Configuración para Hostinger Node.js
+# Este archivo ayuda a Hostinger a identificar que es una aplicación Node.js
+
+# Si Hostinger usa Apache con mod_rewrite para Node.js
+RewriteEngine On
+RewriteRule ^(.*)$ http://localhost:3001/$1 [P,L]
