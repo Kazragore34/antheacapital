@@ -340,6 +340,16 @@ class InmovillaAPIService {
       // Imágenes - buscar en múltiples campos posibles
       const images: string[] = []
       
+      // Primero buscar en el array 'imagenes' que puede venir del proxy PHP
+      if (Array.isArray(apiProp.imagenes)) {
+        apiProp.imagenes.forEach((img: any) => {
+          const url = typeof img === 'string' ? img : img.url || img.src
+          if (url && !images.includes(url)) {
+            images.push(url)
+          }
+        })
+      }
+      
       // Buscar en campos directos como foto1, foto2, etc.
       for (let i = 1; i <= 20; i++) {
         const fotoKey = `ofertas_foto${i}`
@@ -364,16 +374,23 @@ class InmovillaAPIService {
         }
       }
       
-      // Buscar también en arrays de imágenes
-      if (Array.isArray(apiProp.imagenes)) {
-        apiProp.imagenes.forEach((img: any) => {
-          const url = typeof img === 'string' ? img : img.url || img.src
-          if (url && !images.includes(url)) {
-            images.push(url)
+      // Si no hay imágenes pero hay numfotos, construir URLs
+      // Formato: https://fotos15.apinmo.com/{numagencia}/{cod_ofer}/{fotoletra}-{numero}.jpg
+      if (images.length === 0) {
+        const numfotos = parseInt(apiProp.numfotos?.toString() || '0') || 0
+        const fotoletra = apiProp.fotoletra?.toString() || '1'
+        const numagencia = apiProp.numagencia?.toString() || '13740'
+        
+        if (numfotos > 0) {
+          for (let i = 1; i <= numfotos; i++) {
+            const urlImagen = `https://fotos15.apinmo.com/${numagencia}/${codOfer}/${fotoletra}-${i}.jpg`
+            images.push(urlImagen)
           }
-        })
+          console.log(`[InmovillaAPI] Construidas ${numfotos} URLs de imágenes usando numfotos=${numfotos}, fotoletra=${fotoletra}`)
+        }
       }
       
+      // Buscar también en arrays de fotos
       if (Array.isArray(apiProp.fotos)) {
         apiProp.fotos.forEach((img: any) => {
           const url = typeof img === 'string' ? img : img.url || img.src

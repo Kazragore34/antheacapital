@@ -163,6 +163,23 @@ try {
                         $propiedadCompleta['cod_ofer'] = $codOfer;
                     }
                     
+                    // Construir URLs de imágenes si numfotos > 0
+                    // Las imágenes de Inmovilla están en: https://fotos15.apinmo.com/{numagencia}/{cod_ofer}/{foto}.jpg
+                    $numfotos = isset($propiedadCompleta['numfotos']) ? intval($propiedadCompleta['numfotos']) : 0;
+                    $fotoletra = isset($propiedadCompleta['fotoletra']) ? $propiedadCompleta['fotoletra'] : '1';
+                    $numagencia = isset($propiedadCompleta['numagencia']) ? $propiedadCompleta['numagencia'] : INMOVILLA_NUMAGENCIA;
+                    
+                    if ($numfotos > 0 && !isset($propiedadCompleta['imagenes'])) {
+                        $imagenes = [];
+                        for ($j = 1; $j <= $numfotos; $j++) {
+                            // Formato: https://fotos15.apinmo.com/{numagencia}/{cod_ofer}/{fotoletra}-{numero}.jpg
+                            $urlImagen = "https://fotos15.apinmo.com/{$numagencia}/{$codOfer}/{$fotoletra}-{$j}.jpg";
+                            $imagenes[] = $urlImagen;
+                        }
+                        $propiedadCompleta['imagenes'] = $imagenes;
+                        error_log("[API REST Proxy] Propiedad {$codOfer} - Construidas {$numfotos} URLs de imágenes");
+                    }
+                    
                     // Verificar que tenga campos adicionales (tituloes, descripciones, etc.)
                     $camposEsperados = ['tituloes', 'descripciones', 'precioalq', 'precioinmo', 'calle', 'numero'];
                     $camposEncontrados = array_intersect(array_keys($propiedadCompleta), $camposEsperados);
