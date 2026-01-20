@@ -103,31 +103,56 @@ try {
             // Solución: obtener listado básico y luego detalles completos usando /propiedades/{codOfer}
             try {
                 // Paso 1: Obtener listado básico
+                error_log("[API REST Proxy] ========== INICIO OBTENCIÓN PROPIEDADES ==========");
+                error_log("[API REST Proxy] Llamando a /propiedades/?listado");
                 $response = callInmovillaAPI('/propiedades/?listado', []);
                 
                 // Verificar que la respuesta no esté vacía
                 if (empty($response)) {
+                    error_log("[API REST Proxy] ❌ ERROR: Respuesta vacía del endpoint /propiedades/?listado");
                     throw new Exception('La API de Inmovilla devolvió una respuesta vacía para el listado básico');
                 }
+                
+                error_log("[API REST Proxy] Respuesta recibida (primeros 500 chars): " . substr($response, 0, 500));
                 
                 $decoded = json_decode($response, true);
                 
                 // Verificar que el JSON se decodificó correctamente
                 if (json_last_error() !== JSON_ERROR_NONE) {
+                    error_log("[API REST Proxy] ❌ ERROR: Error decodificando JSON: " . json_last_error_msg());
+                    error_log("[API REST Proxy] Respuesta completa: " . $response);
                     throw new Exception('Error decodificando JSON del listado básico: ' . json_last_error_msg() . '. Respuesta: ' . substr($response, 0, 500));
                 }
+                
+                error_log("[API REST Proxy] JSON decodificado correctamente. Tipo: " . gettype($decoded));
+                error_log("[API REST Proxy] Keys del objeto decodificado: " . (is_array($decoded) ? implode(', ', array_keys($decoded)) : 'No es array'));
                 
                 // Extraer listado básico
                 $listadoBasico = [];
                 if (is_array($decoded)) {
                     $listadoBasico = $decoded;
+                    error_log("[API REST Proxy] Listado básico extraído directamente del array");
                 } elseif (isset($decoded['data']) && is_array($decoded['data'])) {
                     $listadoBasico = $decoded['data'];
+                    error_log("[API REST Proxy] Listado básico extraído de decoded['data']");
                 } elseif (isset($decoded['error'])) {
+                    error_log("[API REST Proxy] ❌ ERROR de la API: " . ($decoded['mensaje'] ?? $decoded['error']));
                     throw new Exception('Error de la API: ' . ($decoded['mensaje'] ?? $decoded['error']));
+                } else {
+                    error_log("[API REST Proxy] ⚠️ ADVERTENCIA: Estructura no reconocida. Tipo: " . gettype($decoded));
+                    if (is_array($decoded)) {
+                        error_log("[API REST Proxy] Keys disponibles: " . implode(', ', array_keys($decoded)));
+                    }
                 }
                 
                 error_log("[API REST Proxy] Listado básico obtenido: " . count($listadoBasico) . " propiedades");
+                
+                if (count($listadoBasico) === 0) {
+                    error_log("[API REST Proxy] ❌ ERROR CRÍTICO: El listado básico está vacío. No hay propiedades para procesar.");
+                    error_log("[API REST Proxy] Respuesta completa de la API: " . json_encode($decoded, JSON_PRETTY_PRINT));
+                    $data = ['paginacion' => []];
+                    break; // Salir del switch
+                }
                 
                 // Paso 2: Obtener detalles completos de cada propiedad usando /propiedades/{codOfer}
                 // Limitar a las primeras propiedades para evitar timeout
@@ -285,13 +310,25 @@ try {
                 error_log("[API REST Proxy] Total propiedades completas obtenidas: " . count($propiedadesCompletas));
                 
                 // NO usar datos básicos como fallback - solo devolver propiedades con datos completos
+                error_log("[API REST Proxy] ========== RESUMEN FINAL ==========");
+                error_log("[API REST Proxy] Total propiedades en listado básico: " . count($listadoBasico));
+                error_log("[API REST Proxy] Total propiedades procesadas: " . $maxPropiedades);
+                error_log("[API REST Proxy] Total propiedades completas obtenidas: " . count($propiedadesCompletas));
+                
                 if (count($propiedadesCompletas) === 0) {
-                    error_log("[API REST Proxy] ⚠️ No se pudieron obtener detalles completos de ninguna propiedad");
+                    error_log("[API REST Proxy] ❌ ERROR CRÍTICO: No se pudieron obtener detalles completos de ninguna propiedad");
+                    error_log("[API REST Proxy] Esto puede deberse a:");
+                    error_log("[API REST Proxy] 1. El endpoint /propiedades/{codOfer} está fallando para todas las propiedades");
+                    error_log("[API REST Proxy] 2. Las propiedades no tienen la estructura esperada (data.ficha[0])");
+                    error_log("[API REST Proxy] 3. Las propiedades no tienen título, descripción ni precio");
+                    error_log("[API REST Proxy] 4. Hay errores HTTP (400, 401, 404) en las llamadas a la API");
                     // Devolver array vacío en lugar de datos básicos
                     $data = ['paginacion' => []];
                 } else {
+                    error_log("[API REST Proxy] ✅ ÉXITO: Se obtuvieron " . count($propiedadesCompletas) . " propiedades completas");
                     $data = ['paginacion' => $propiedadesCompletas];
                 }
+                error_log("[API REST Proxy] ========== FIN OBTENCIÓN PROPIEDADES ==========");
             } catch (Exception $e) {
                 error_log("[API REST Proxy] Error en case propiedades: " . $e->getMessage());
                 error_log("[API REST Proxy] Stack trace: " . $e->getTraceAsString());
