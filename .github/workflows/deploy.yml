@@ -28,7 +28,19 @@ jobs:
     - name: Build Frontend
       run: |
         cd frontend
+        # Limpiar build anterior para evitar código antiguo
+        rm -rf dist node_modules/.vite
+        echo "🧹 Build anterior limpiado"
+        # Rebuild sin caché
         npm run build
+        echo "✅ Frontend build completado"
+        # Verificar que no hay referencias a XML en el código compilado
+        if grep -r "XMLPropertiesService\|xml-proxy\|xml-properties" dist/ 2>/dev/null; then
+          echo "⚠️ WARNING: Se encontraron referencias a XML en el build!"
+          exit 1
+        else
+          echo "✅ Verificado: No hay referencias a XML en el build"
+        fi
     
     - name: Install Backend Dependencies
       run: |
