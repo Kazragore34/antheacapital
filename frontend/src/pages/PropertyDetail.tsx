@@ -147,7 +147,7 @@ const PropertyDetail = () => {
         )}
         
         {/* Header Section: Image + Form Side by Side */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-4">
           {/* Main Image - Left Side */}
           {displayProperty.images && Array.isArray(displayProperty.images) && displayProperty.images.length > 0 && (
             <div className="lg:col-span-2">
@@ -194,7 +194,7 @@ const PropertyDetail = () => {
         </div>
 
         {/* Property Info Section */}
-        <div className="mb-8">
+        <div className="mb-6">
           <div className="flex items-center gap-4 mb-4">
             <span className={`px-4 py-2 rounded-full text-sm font-semibold ${
               displayProperty.type === 'venta' 
@@ -216,7 +216,7 @@ const PropertyDetail = () => {
         </div>
 
         {/* Description Section */}
-        <div className="mb-8">
+        <div className="mb-6">
           <h2 className="font-serif text-2xl mb-4 text-white">{t('properties.detail.description')}</h2>
           <p className="text-gray-300 leading-relaxed whitespace-pre-line">
             {displayProperty.description}
@@ -225,7 +225,7 @@ const PropertyDetail = () => {
 
         {/* Image Gallery - Below Description */}
         {displayProperty.images && Array.isArray(displayProperty.images) && displayProperty.images.length > 1 && (
-          <div className="mb-8">
+          <div className="mb-6">
             <h2 className="font-serif text-2xl mb-4 text-white">{t('properties.detail.gallery') || 'Galería de Imágenes'}</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {displayProperty.images.map((img, index) => (
