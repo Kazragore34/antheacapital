@@ -149,12 +149,12 @@ if ($hasPropertyInfo) {
 $textBody .= "\nMensaje:\n$message";
 
 // Usar PHPMailer si está disponible, sino usar mail() nativo
-if (class_exists('PHPMailer\PHPMailer\PHPMailer')) {
-    // Usar PHPMailer (más confiable)
-    use PHPMailer\PHPMailer\PHPMailer;
-    use PHPMailer\PHPMailer\Exception;
-    
-    require_once 'vendor/autoload.php';
+// Nota: PHPMailer requiere instalación previa. Por ahora usamos mail() nativo que funciona en Hostinger
+if (false && class_exists('PHPMailer\PHPMailer\PHPMailer')) {
+    // Código para PHPMailer (deshabilitado por ahora)
+    // require_once 'vendor/autoload.php';
+    // use PHPMailer\PHPMailer\PHPMailer;
+    // use PHPMailer\PHPMailer\Exception;
     
     $mail = new PHPMailer(true);
     
