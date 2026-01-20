@@ -128,7 +128,41 @@ try {
                 
                 try {
                     // Obtener detalles completos de esta propiedad
-                    $responseDetalle = callInmovillaAPI('/propiedades/' . $codOfer, []);
+                    // Intentar diferentes formatos de endpoint según la documentación
+                    // Formato 1: /propiedades/{cod_ofer}
+                    // Formato 2: /propiedades/?cod_ofer={cod_ofer}
+                    // Formato 3: /propiedades/?id={cod_ofer}
+                    $responseDetalle = null;
+                    $endpointsToTry = [
+                        '/propiedades/' . $codOfer,
+                        '/propiedades/?cod_ofer=' . $codOfer,
+                        '/propiedades/?id=' . $codOfer,
+                        '/propiedad/' . $codOfer,
+                        '/propiedad/?cod_ofer=' . $codOfer
+                    ];
+                    
+                    $lastError = null;
+                    foreach ($endpointsToTry as $endpoint) {
+                        try {
+                            error_log("[API REST Proxy] Intentando endpoint: {$endpoint}");
+                            $responseDetalle = callInmovillaAPI($endpoint, []);
+                            $testDecoded = json_decode($responseDetalle, true);
+                            
+                            // Si no hay error 404, usar este endpoint
+                            if (!isset($testDecoded['error']) || strpos($responseDetalle, '404') === false) {
+                                error_log("[API REST Proxy] Endpoint exitoso: {$endpoint}");
+                                break;
+                            }
+                        } catch (Exception $e) {
+                            $lastError = $e->getMessage();
+                            error_log("[API REST Proxy] Endpoint {$endpoint} falló: " . $e->getMessage());
+                            continue;
+                        }
+                    }
+                    
+                    if (!$responseDetalle) {
+                        throw new Exception("Todos los endpoints fallaron. Último error: " . $lastError);
+                    }
                     
                     error_log("[API REST Proxy] Respuesta raw para {$codOfer}: " . substr($responseDetalle, 0, 500));
                     
