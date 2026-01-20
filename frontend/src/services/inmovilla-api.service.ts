@@ -8,9 +8,9 @@ import { Property } from '../types'
  * - Búsqueda específica por codOfer
  */
 class InmovillaAPIService {
-  // Usar API antigua de Inmovilla (devuelve datos completos: título, precio, imágenes, características)
-  // Requiere que la IP del servidor esté autorizada en el panel de Inmovilla
-  private readonly API_URL = '/api-inmovilla-proxy.php'
+  // Usar API REST de Inmovilla (funciona sin autorización de IP)
+  // El endpoint 'propiedades' obtiene listado básico y luego detalles completos usando 'ficha'
+  private readonly API_URL = '/api-inmovilla-rest-proxy.php'
 
   /**
    * Obtener todas las propiedades con filtros opcionales

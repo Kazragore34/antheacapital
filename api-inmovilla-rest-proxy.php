@@ -93,10 +93,8 @@ try {
     
     switch ($action) {
         case 'propiedades':
-            // Obtener todas las propiedades
-            // Según la documentación oficial: GET /propiedades/?listado devuelve solo datos básicos
-            // Para obtener propiedades completas, primero obtenemos el listado básico
-            // y luego obtenemos los detalles completos de cada propiedad
+            // Obtener todas las propiedades usando la API REST
+            // Estrategia: obtener listado básico y luego detalles completos usando el endpoint 'ficha' que sabemos que funciona
             $response = callInmovillaAPI('/propiedades/?listado', []);
             $decoded = json_decode($response, true);
             
@@ -108,12 +106,12 @@ try {
                 $listadoBasico = $decoded['data'];
             }
             
-            // Obtener detalles completos de cada propiedad
+            // Obtener detalles completos de cada propiedad usando el endpoint 'ficha' que sabemos que funciona
             // Limitar a 50 propiedades para evitar timeout (se puede aumentar después)
             $propiedadesCompletas = [];
             $maxPropiedades = min(count($listadoBasico), 50);
             
-            error_log("[API REST Proxy] Obteniendo detalles de " . $maxPropiedades . " propiedades");
+            error_log("[API REST Proxy] Obteniendo detalles de " . $maxPropiedades . " propiedades usando endpoint ficha");
             
             for ($i = 0; $i < $maxPropiedades; $i++) {
                 $propBasica = $listadoBasico[$i];
@@ -124,45 +122,12 @@ try {
                     continue;
                 }
                 
-                error_log("[API REST Proxy] Obteniendo detalles de propiedad {$codOfer}");
+                error_log("[API REST Proxy] Obteniendo detalles de propiedad {$codOfer} usando ficha");
                 
                 try {
-                    // Obtener detalles completos de esta propiedad
-                    // Intentar diferentes formatos de endpoint según la documentación
-                    // Formato 1: /propiedades/{cod_ofer}
-                    // Formato 2: /propiedades/?cod_ofer={cod_ofer}
-                    // Formato 3: /propiedades/?id={cod_ofer}
-                    $responseDetalle = null;
-                    $endpointsToTry = [
-                        '/propiedades/' . $codOfer,
-                        '/propiedades/?cod_ofer=' . $codOfer,
-                        '/propiedades/?id=' . $codOfer,
-                        '/propiedad/' . $codOfer,
-                        '/propiedad/?cod_ofer=' . $codOfer
-                    ];
-                    
-                    $lastError = null;
-                    foreach ($endpointsToTry as $endpoint) {
-                        try {
-                            error_log("[API REST Proxy] Intentando endpoint: {$endpoint}");
-                            $responseDetalle = callInmovillaAPI($endpoint, []);
-                            $testDecoded = json_decode($responseDetalle, true);
-                            
-                            // Si no hay error 404, usar este endpoint
-                            if (!isset($testDecoded['error']) || strpos($responseDetalle, '404') === false) {
-                                error_log("[API REST Proxy] Endpoint exitoso: {$endpoint}");
-                                break;
-                            }
-                        } catch (Exception $e) {
-                            $lastError = $e->getMessage();
-                            error_log("[API REST Proxy] Endpoint {$endpoint} falló: " . $e->getMessage());
-                            continue;
-                        }
-                    }
-                    
-                    if (!$responseDetalle) {
-                        throw new Exception("Todos los endpoints fallaron. Último error: " . $lastError);
-                    }
+                    // Usar el endpoint 'ficha' que sabemos que funciona
+                    // Este endpoint devuelve los datos completos de la propiedad
+                    $responseDetalle = callInmovillaAPI('/propiedades/' . $codOfer, []);
                     
                     error_log("[API REST Proxy] Respuesta raw para {$codOfer}: " . substr($responseDetalle, 0, 500));
                     
