@@ -98,26 +98,106 @@ jobs:
           echo "✅ Copiado carpeta cliente/ (PHP de Inmovilla)"
         fi
         
-        # Backend
+        # Backend - COPIAR TODO LO NECESARIO
+        echo "📦 Preparando backend para deploy..."
         mkdir -p deploy/backend
+        
+        # Verificar que dist existe después del build
+        if [ ! -d "backend/dist" ]; then
+          echo "❌ ERROR: backend/dist no existe después del build!"
+          exit 1
+        fi
+        
+        # Copiar código compilado
+        echo "📂 Copiando backend/dist..."
         cp -r backend/dist deploy/backend/
+        echo "✅ Backend dist copiado"
+        
+        # Copiar archivos de configuración
+        echo "📄 Copiando archivos de configuración..."
         cp backend/package.json deploy/backend/
         cp backend/package-lock.json deploy/backend/ 2>/dev/null || true
-        cp backend/.env.example deploy/backend/.env.example
+        cp backend/.env.example deploy/backend/.env.example 2>/dev/null || true
         cp backend/tsconfig.json deploy/backend/ 2>/dev/null || true
+        cp backend/nest-cli.json deploy/backend/ 2>/dev/null || true
+        
         # CRÍTICO: Copiar node_modules del backend para que xml2js esté disponible
+        echo "📦 Copiando node_modules (esto puede tardar)..."
         if [ -d "backend/node_modules" ]; then
-          cp -r backend/node_modules deploy/backend/
-          echo "✅ Backend node_modules copiado (incluyendo xml2js)"
+          # Verificar que xml2js existe antes de copiar
+          if [ -d "backend/node_modules/xml2js" ]; then
+            echo "✅ xml2js encontrado en node_modules"
+          else
+            echo "⚠️ WARNING: xml2js NO encontrado en node_modules, instalando..."
+            cd backend
+            npm install xml2js
+            cd ..
+          fi
+          # Copiar node_modules (usar tar para mejor rendimiento con muchos archivos)
+          echo "📦 Copiando node_modules (puede tardar varios minutos)..."
+          cp -r backend/node_modules deploy/backend/ || {
+            echo "⚠️ Error copiando node_modules completo, intentando copiar solo xml2js..."
+            mkdir -p deploy/backend/node_modules
+            cp -r backend/node_modules/xml2js deploy/backend/node_modules/ 2>/dev/null || true
+            cp -r backend/node_modules/@nestjs deploy/backend/node_modules/ 2>/dev/null || true
+            cp -r backend/node_modules/@types deploy/backend/node_modules/ 2>/dev/null || true
+            cp -r backend/node_modules/class-validator deploy/backend/node_modules/ 2>/dev/null || true
+            cp -r backend/node_modules/class-transformer deploy/backend/node_modules/ 2>/dev/null || true
+            cp -r backend/node_modules/reflect-metadata deploy/backend/node_modules/ 2>/dev/null || true
+            cp -r backend/node_modules/rxjs deploy/backend/node_modules/ 2>/dev/null || true
+            cp -r backend/node_modules/mongoose deploy/backend/node_modules/ 2>/dev/null || true
+            cp -r backend/node_modules/bcrypt deploy/backend/node_modules/ 2>/dev/null || true
+            cp -r backend/node_modules/passport deploy/backend/node_modules/ 2>/dev/null || true
+            cp -r backend/node_modules/passport-jwt deploy/backend/node_modules/ 2>/dev/null || true
+            cp -r backend/node_modules/nodemailer deploy/backend/node_modules/ 2>/dev/null || true
+            cp -r backend/node_modules/cloudinary deploy/backend/node_modules/ 2>/dev/null || true
+            cp -r backend/node_modules/multer deploy/backend/node_modules/ 2>/dev/null || true
+            # Copiar archivos package.json de node_modules para resolver dependencias
+            find backend/node_modules -name "package.json" -type f | head -100 | while read pkg; do
+              rel_path=$(echo $pkg | sed 's|backend/node_modules/||')
+              mkdir -p "deploy/backend/node_modules/$(dirname $rel_path)"
+              cp "$pkg" "deploy/backend/node_modules/$rel_path" 2>/dev/null || true
+            done
+          }
+          echo "✅ Backend node_modules copiado"
         else
-          echo "⚠️ Backend node_modules no encontrado - las dependencias deben instalarse en el servidor"
+          echo "❌ ERROR: backend/node_modules no encontrado!"
+          echo "⚠️ Intentando instalar dependencias..."
+          cd backend
+          npm install
+          cd ..
+          if [ -d "backend/node_modules" ]; then
+            cp -r backend/node_modules deploy/backend/
+            echo "✅ node_modules instalado y copiado"
+          else
+            echo "❌ ERROR: No se pudo instalar node_modules"
+            exit 1
+          fi
         fi
+        
+        # Verificar que xml2js está en el deploy
+        if [ -d "deploy/backend/node_modules/xml2js" ]; then
+          echo "✅ xml2js verificado en deploy/backend/node_modules/"
+        else
+          echo "❌ ERROR: xml2js NO está en deploy/backend/node_modules/"
+          exit 1
+        fi
+        
         # Copiar archivos de configuración para Hostinger
+        echo "⚙️ Copiando scripts de inicio y configuración..."
         cp backend/start.sh deploy/backend/ 2>/dev/null || true
         cp backend/start.bat deploy/backend/ 2>/dev/null || true
         cp backend/.htaccess deploy/backend/ 2>/dev/null || true
         cp backend/ecosystem.config.js deploy/backend/ 2>/dev/null || true
-        echo "✅ Backend copiado (incluyendo scripts de inicio y configuración)"
+        
+        # Verificar estructura final
+        echo "🔍 Verificando estructura del backend..."
+        echo "  - dist/main.js: $([ -f deploy/backend/dist/main.js ] && echo '✅' || echo '❌')"
+        echo "  - package.json: $([ -f deploy/backend/package.json ] && echo '✅' || echo '❌')"
+        echo "  - node_modules/xml2js: $([ -d deploy/backend/node_modules/xml2js ] && echo '✅' || echo '❌')"
+        echo "  - start.sh: $([ -f deploy/backend/start.sh ] && echo '✅' || echo '❌')"
+        
+        echo "✅ Backend completamente preparado para deploy"
     
     - name: Deploy to Hostinger
       uses: SamKirkland/FTP-Deploy-Action@4.3.0
