@@ -28,8 +28,23 @@ define('INMOVILLA_PASSWORD', 'Ast19722026.'); // Contraseña de acceso a la API 
 define('INMOVILLA_IDIOMA', '1'); // 1 = Español
 
 // Incluir la librería de Inmovilla
-$apiPath = __DIR__ . '/archivos en bruto/api_cliente/api_cliente/cliente/apiinmovilla.php';
-if (file_exists($apiPath)) {
+// Intentar múltiples rutas posibles
+$possiblePaths = [
+    __DIR__ . '/archivos en bruto/api_cliente/api_cliente/cliente/apiinmovilla.php',
+    __DIR__ . '/archivos en bruto/api_cliente/cliente/apiinmovilla.php',
+    dirname(__DIR__) . '/archivos en bruto/api_cliente/api_cliente/cliente/apiinmovilla.php',
+    dirname(__DIR__) . '/archivos en bruto/api_cliente/cliente/apiinmovilla.php',
+];
+
+$apiPath = null;
+foreach ($possiblePaths as $path) {
+    if (file_exists($path)) {
+        $apiPath = $path;
+        break;
+    }
+}
+
+if ($apiPath && file_exists($apiPath)) {
     require_once $apiPath;
 } else {
     // Si no existe el archivo, crear funciones básicas inline

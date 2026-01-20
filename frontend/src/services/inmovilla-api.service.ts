@@ -90,6 +90,8 @@ class InmovillaAPIService {
       return properties
     } catch (error) {
       console.error('[InmovillaAPI] Error cargando propiedades:', error)
+      // NO usar XML como fallback - si la API falla, devolver vacío
+      // Esto fuerza a que se solucione el problema de la API en lugar de usar datos antiguos
       return []
     }
   }
