@@ -456,6 +456,7 @@ class InmovillaAPIService {
           garden: jardin || undefined,
           pool: piscina || undefined,
           furnished: amueblado || undefined,
+          optionToBuy: apiProp.opcioncompra === 1 || apiProp.opcioncompra === '1' || false,
         },
         images: images.length > 0 ? images : ['https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1200'],
         status: 'published',

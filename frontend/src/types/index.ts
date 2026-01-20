@@ -21,6 +21,7 @@ export interface Property {
     garden?: boolean
     pool?: boolean
     furnished?: boolean
+    optionToBuy?: boolean // Opción a compra (para alquiler con opción a compra)
   }
   images: string[]
   status: 'published' | 'draft'

@@ -58,8 +58,22 @@ export const propertiesService = {
         } else if (filterType === 'alquiler') {
           filteredProperties = filteredProperties.filter(p => p.type === 'alquiler')
         } else if (filterType === 'alquiler-opcion-compra') {
-          // Filtrar por alquiler con opción a compra (si existe el campo)
+          // Filtrar por alquiler con opción a compra
           filteredProperties = filteredProperties.filter(p => p.type === 'alquiler' && p.features?.optionToBuy)
+        } else if (filterType === 'propiedades') {
+          // "Propiedades" muestra todas las propiedades (venta y alquiler)
+          // No filtrar, mostrar todas
+        } else if (filterType === 'habitaciones') {
+          // "Habitaciones" muestra solo propiedades con habitaciones (excluye parkings, trasteros, etc.)
+          filteredProperties = filteredProperties.filter(p => (p.features.bedrooms || 0) > 0)
+        } else if (filterType === 'traspasos') {
+          // "Traspasos" muestra propiedades de traspaso
+          // Buscar en el título o descripción la palabra "traspaso" o verificar si hay precio de traspaso
+          filteredProperties = filteredProperties.filter(p => {
+            const title = (p.title || '').toLowerCase()
+            const desc = (p.description || '').toLowerCase()
+            return title.includes('traspaso') || desc.includes('traspaso')
+          })
         }
         console.log(`[PropertiesService] Filtrado por tipo "${filterType}": ${filteredProperties.length} de ${propertiesCache.length} propiedades`)
       }
