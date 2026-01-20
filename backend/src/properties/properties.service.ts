@@ -270,10 +270,15 @@ export class PropertiesService {
     try {
       // Extraer cod_ofer (campo clave de Inmovilla)
       // El XML tiene: <ofertas_cod_ofer>6664661</ofertas_cod_ofer> dentro de <datos>
-      const codOfer = prop.ofertas_cod_ofer?.toString() || prop.datos?.ofertas_cod_ofer?.toString() || prop.datos?.id?.toString() || prop.id?.toString() || ''
-      if (!codOfer) {
-        console.warn('[PropertiesService] Property without cod_ofer, skipping. Available keys:', Object.keys(prop).slice(0, 10).join(', '))
-        return null
+      // También puede estar en diferentes ubicaciones según la versión del XML
+      const codOfer = prop.ofertas_cod_ofer?.toString() 
+        || prop.datos?.ofertas_cod_ofer?.toString() 
+        || prop.datos?.id?.toString() 
+        || prop.id?.toString() 
+        || `temp_${Date.now()}_${Math.random()}` // Generar ID temporal si no existe
+      
+      if (!codOfer || codOfer.startsWith('temp_')) {
+        console.warn('[PropertiesService] Property without cod_ofer, using temporary ID. Available keys:', Object.keys(prop).slice(0, 10).join(', '))
       }
       
       console.log(`[PropertiesService] Transforming property ${codOfer}`)
