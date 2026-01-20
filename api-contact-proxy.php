@@ -87,8 +87,10 @@ if ($error) {
     http_response_code(503);
     echo json_encode([
         'success' => false,
-        'message' => 'El backend no está disponible',
+        'message' => 'El backend no está disponible. Por favor, verifica que el backend de Node.js esté corriendo en el puerto 3001.',
         'error' => $error,
+        'backendUrl' => $backendUrl,
+        'hint' => 'El backend debe estar corriendo. Verifica en el panel de Hostinger > Node.js que la aplicación esté activa.',
     ]);
     exit;
 }
