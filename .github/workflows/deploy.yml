@@ -34,6 +34,8 @@ jobs:
       run: |
         cd backend
         npm ci
+        # Verificar que xml2js esté instalado
+        npm list xml2js || npm install xml2js
     
     - name: Build Backend
       run: |
@@ -103,6 +105,13 @@ jobs:
         cp backend/package-lock.json deploy/backend/ 2>/dev/null || true
         cp backend/.env.example deploy/backend/.env.example
         cp backend/tsconfig.json deploy/backend/ 2>/dev/null || true
+        # CRÍTICO: Copiar node_modules del backend para que xml2js esté disponible
+        if [ -d "backend/node_modules" ]; then
+          cp -r backend/node_modules deploy/backend/
+          echo "✅ Backend node_modules copiado (incluyendo xml2js)"
+        else
+          echo "⚠️ Backend node_modules no encontrado - las dependencias deben instalarse en el servidor"
+        fi
         echo "✅ Backend copiado"
     
     - name: Deploy to Hostinger
