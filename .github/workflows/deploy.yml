@@ -284,12 +284,14 @@ jobs:
         echo ""
         echo "✅ Verificación completada"
     
-    - name: Deploy to Hostinger
+    - name: Deploy to Hostinger (SFTP)
       uses: SamKirkland/FTP-Deploy-Action@4.3.0
       with:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
+        protocol: sftp
+        port: 65002
         local-dir: ./deploy/
         server-dir: /public_html/
         exclude: |
