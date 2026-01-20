@@ -94,22 +94,25 @@ try {
     switch ($action) {
         case 'propiedades':
             // Obtener todas las propiedades
-            // Según la documentación oficial: GET /propiedades/?listado
-            // Este endpoint NO requiere parámetros adicionales, solo el token en el header
+            // Según la documentación oficial: GET /propiedades/?listado devuelve solo datos básicos
+            // Para obtener propiedades completas, necesitamos usar el endpoint sin ?listado
+            // pero la documentación indica que /propiedades/?listado es para listar
+            // Probamos primero con el listado básico y luego obtenemos detalles completos
             $response = callInmovillaAPI('/propiedades/?listado', []);
             $decoded = json_decode($response, true);
             
-            // Adaptar estructura de respuesta al formato esperado por el frontend
-            // La API REST puede devolver directamente un array o un objeto con 'data'
-            if (isset($decoded['data'])) {
-                $data = ['paginacion' => $decoded['data']];
-            } elseif (isset($decoded['paginacion'])) {
-                $data = $decoded;
-            } elseif (is_array($decoded)) {
-                $data = ['paginacion' => $decoded];
-            } else {
-                $data = ['paginacion' => []];
+            // El listado básico devuelve un array de propiedades con solo: cod_ofer, ref, nodisponible, prospecto, fechaact
+            $listadoBasico = [];
+            if (is_array($decoded)) {
+                $listadoBasico = $decoded;
+            } elseif (isset($decoded['data']) && is_array($decoded['data'])) {
+                $listadoBasico = $decoded['data'];
             }
+            
+            // Si tenemos propiedades básicas, obtener detalles completos de cada una
+            // Pero esto sería muy lento con muchas propiedades, así que por ahora
+            // devolvemos el listado básico y el frontend puede obtener detalles cuando sea necesario
+            $data = ['paginacion' => $listadoBasico];
             break;
             
         case 'ficha':

@@ -239,15 +239,14 @@ class InmovillaAPIService {
       const numero = apiProp.ofertas_numero || apiProp.numero || ''
       const direccion = [calle, numero].filter(Boolean).join(' ') || zona || ciudad
 
-      // Título y descripción
-      const titulo = apiProp.ofertas_titulo1 || apiProp.titulo1 || apiProp.ofertas_titulo2 || apiProp.titulo2 || `Propiedad en ${ciudad || 'Aranjuez'}`
+      // Título y descripción - usar ref si está disponible, sino codOfer
+      const ref = apiProp.ref || codOfer
+      const titulo = apiProp.ofertas_titulo1 || apiProp.titulo1 || apiProp.ofertas_titulo2 || apiProp.titulo2 || `Propiedad ${ref}`
       const descripcion = apiProp.ofertas_descrip1 || apiProp.descrip1 || apiProp.ofertas_descrip2 || apiProp.descrip2 || apiProp.ofertas_tinterior || apiProp.tinterior || ''
 
-      // Filtrar si no hay datos válidos
-      if (precio === 0 && !titulo && !ciudad) {
-        console.warn(`[InmovillaAPI] Property ${codOfer} sin datos válidos, saltando`)
-        return null
-      }
+      // El listado básico solo tiene cod_ofer, ref, nodisponible, prospecto, fechaact
+      // Si no hay más datos, crear una propiedad básica que se completará al hacer clic
+      // No filtrar propiedades del listado básico, solo las que no tienen codOfer
 
       // Características
       const habitaciones = parseInt(apiProp.ofertas_habdobles || apiProp.habdobles || apiProp.ofertas_habitaciones || apiProp.habitaciones || '0') || 0
