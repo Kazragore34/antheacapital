@@ -351,8 +351,17 @@ try {
                     error_log("[API REST Proxy] 2. Las propiedades no tienen la estructura esperada (data.ficha[0])");
                     error_log("[API REST Proxy] 3. Las propiedades no tienen título, descripción ni precio");
                     error_log("[API REST Proxy] 4. Hay errores HTTP (400, 401, 404) en las llamadas a la API");
-                    // Devolver array vacío en lugar de datos básicos
-                    $data = ['paginacion' => []];
+                    
+                    // Devolver información de debug en la respuesta
+                    $data = [
+                        'paginacion' => [],
+                        'debug' => [
+                            'listado_basico_count' => count($listadoBasico),
+                            'propiedades_procesadas' => $maxPropiedades,
+                            'propiedades_completas' => 0,
+                            'mensaje' => 'No se pudieron obtener detalles completos. Revisa los logs del servidor para más detalles.'
+                        ]
+                    ];
                 } else {
                     error_log("[API REST Proxy] ✅ ÉXITO: Se obtuvieron " . count($propiedadesCompletas) . " propiedades completas");
                     $data = ['paginacion' => $propiedadesCompletas];
