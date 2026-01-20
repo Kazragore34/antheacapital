@@ -80,24 +80,36 @@ jobs:
     - name: Prepare Deployment
       run: |
         mkdir -p deploy
-        # PRIORIDAD: Copiar archivos de la raíz primero (generados por deploy-frontend.bat)
-        # Estos son los archivos que realmente se deben subir
-        if [ -f index.html ]; then
-          cp index.html deploy/
-          echo "✅ Copiado index.html de la raíz"
-        else
-          # Fallback: usar el de frontend/dist
-          cp frontend/dist/index.html deploy/
-          echo "⚠️ Usando index.html de frontend/dist (fallback)"
+        # CRÍTICO: Usar SOLO el código compilado recién construido de frontend/dist
+        # NO usar archivos de la raíz que pueden estar desactualizados
+        echo "📦 Copiando código compilado desde frontend/dist..."
+        
+        if [ ! -d "frontend/dist" ]; then
+          echo "❌ ERROR: frontend/dist no existe después del build!"
+          exit 1
         fi
         
-        if [ -d assets ]; then
-          cp -r assets deploy/
-          echo "✅ Copiado assets/ de la raíz"
+        # Copiar index.html desde frontend/dist (SIEMPRE el más reciente)
+        cp frontend/dist/index.html deploy/
+        echo "✅ Copiado index.html desde frontend/dist"
+        
+        # Copiar assets desde frontend/dist (SIEMPRE el más reciente)
+        if [ -d "frontend/dist/assets" ]; then
+          cp -r frontend/dist/assets deploy/
+          echo "✅ Copiado assets/ desde frontend/dist"
         else
-          # Fallback: usar el de frontend/dist
-          cp -r frontend/dist/assets deploy/ 2>/dev/null || true
-          echo "⚠️ Usando assets/ de frontend/dist (fallback)"
+          echo "❌ ERROR: frontend/dist/assets no existe!"
+          exit 1
+        fi
+        
+        # Verificar que el código compilado NO tiene referencias a XML
+        if grep -r "XMLPropertiesService\|xml-proxy\|xml-properties" frontend/dist/ 2>/dev/null; then
+          echo "❌ ERROR: El código compilado todavía tiene referencias a XML!"
+          echo "🔍 Buscando referencias..."
+          grep -r "XMLPropertiesService\|xml-proxy\|xml-properties" frontend/dist/ || true
+          exit 1
+        else
+          echo "✅ Verificado: El código compilado NO tiene referencias a XML"
         fi
         
         # Copiar .htaccess (prioridad: raíz > frontend/dist)
