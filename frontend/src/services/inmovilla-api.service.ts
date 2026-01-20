@@ -188,11 +188,15 @@ class InmovillaAPIService {
    */
   private transformProperty(apiProp: any): Property | null {
     try {
-      // Extraer codOfer
-      const codOfer = apiProp.ofertas_cod_ofer?.toString() || apiProp.id?.toString() || ''
+      // Extraer codOfer - la API REST devuelve cod_ofer (con guión bajo)
+      const codOfer = apiProp.cod_ofer?.toString() 
+        || apiProp.ofertas_cod_ofer?.toString() 
+        || apiProp.id?.toString() 
+        || ''
       
       if (!codOfer) {
-        console.warn('[InmovillaAPI] Property sin codOfer, saltando')
+        console.warn('[InmovillaAPI] Property sin codOfer, saltando. Keys disponibles:', Object.keys(apiProp).slice(0, 10))
+        console.warn('[InmovillaAPI] Propiedad completa:', apiProp)
         return null
       }
 
