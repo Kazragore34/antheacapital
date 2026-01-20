@@ -386,10 +386,30 @@ try {
     ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
     
 } catch (Exception $e) {
-    http_response_code(500);
+    // Determinar código HTTP apropiado basado en el mensaje de error
+    $httpCode = 500;
+    $errorMessage = $e->getMessage();
+    
+    // Si el error es de autenticación (401), usar código 401
+    if (strpos($errorMessage, '401') !== false || strpos($errorMessage, 'token') !== false || strpos($errorMessage, 'autenticación') !== false) {
+        $httpCode = 401;
+    }
+    // Si el error es de parámetros faltantes (400), usar código 400
+    elseif (strpos($errorMessage, '400') !== false || strpos($errorMessage, 'parámetros') !== false || strpos($errorMessage, 'Faltan') !== false) {
+        $httpCode = 400;
+    }
+    // Si el error es de recurso no encontrado (404), usar código 404
+    elseif (strpos($errorMessage, '404') !== false || strpos($errorMessage, 'No encontrado') !== false) {
+        $httpCode = 404;
+    }
+    
+    http_response_code($httpCode);
+    error_log('[API REST Proxy] Error capturado: ' . $errorMessage);
+    error_log('[API REST Proxy] Stack trace: ' . $e->getTraceAsString());
+    
     echo json_encode([
         'success' => false,
-        'error' => $e->getMessage(),
+        'error' => $errorMessage,
         'timestamp' => time()
     ], JSON_UNESCAPED_UNICODE);
 }
