@@ -111,16 +111,34 @@ function sendEmailViaSMTP($host, $port, $user, $pass, $from, $to, $replyTo, $sub
         ];
     }
     
-    // Construir mensaje
-    $message = "From: $from\r\n";
-    $message .= "To: $to\r\n";
-    $message .= "Reply-To: $replyTo\r\n";
-    $message .= "Subject: $subject\r\n";
+    // Construir mensaje con codificación UTF-8 correcta
+    $message = "From: =?UTF-8?B?" . base64_encode($from) . "?=\r\n";
+    $message .= "To: =?UTF-8?B?" . base64_encode($to) . "?=\r\n";
+    $message .= "Reply-To: =?UTF-8?B?" . base64_encode($replyTo) . "?=\r\n";
+    $message .= "Subject: =?UTF-8?B?" . base64_encode($subject) . "?=\r\n";
     $message .= "MIME-Version: 1.0\r\n";
-    $message .= "Content-Type: text/html; charset=UTF-8\r\n";
+    $message .= "Content-Type: multipart/alternative; boundary=\"_boundary_" . md5(uniqid()) . "\"\r\n";
+    $message .= "Content-Transfer-Encoding: 8bit\r\n";
+    $message .= "X-Mailer: PHP/" . phpversion() . "\r\n";
     $message .= "\r\n";
-    $message .= $htmlBody;
-    $message .= "\r\n.\r\n";
+    
+    // Parte de texto plano
+    $message .= "--_boundary_" . md5(uniqid()) . "\r\n";
+    $message .= "Content-Type: text/plain; charset=UTF-8\r\n";
+    $message .= "Content-Transfer-Encoding: 8bit\r\n";
+    $message .= "\r\n";
+    $message .= $textBody . "\r\n";
+    
+    // Parte HTML
+    $message .= "--_boundary_" . md5(uniqid()) . "\r\n";
+    $message .= "Content-Type: text/html; charset=UTF-8\r\n";
+    $message .= "Content-Transfer-Encoding: 8bit\r\n";
+    $message .= "\r\n";
+    $message .= $htmlBody . "\r\n";
+    
+    // Cerrar mensaje
+    $message .= "--_boundary_" . md5(uniqid()) . "--\r\n";
+    $message .= ".\r\n";
     
     fputs($socket, $message);
     $response = fgets($socket, 515);

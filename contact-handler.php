@@ -99,11 +99,16 @@ $subject = $hasPropertyInfo
     ? 'Solicitud de información - Propiedad' 
     : 'Nuevo contacto desde la web';
 
+// Asegurar que todo el contenido esté en UTF-8
+mb_internal_encoding('UTF-8');
+mb_http_output('UTF-8');
+
 // Cuerpo HTML del correo
 $htmlBody = '
 <!DOCTYPE html>
 <html>
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="UTF-8">
     <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
