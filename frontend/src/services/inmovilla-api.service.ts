@@ -8,8 +8,8 @@ import { Property } from '../types'
  * - Búsqueda específica por codOfer
  */
 class InmovillaAPIService {
-  // Usar API REST con token (más moderna y segura)
-  private readonly API_URL = '/api-inmovilla-rest-proxy.php'
+  // Usar API de Inmovilla con apiinmovilla.php (numagencia/password)
+  private readonly API_URL = '/api-inmovilla-proxy.php'
 
   /**
    * Obtener todas las propiedades con filtros opcionales
