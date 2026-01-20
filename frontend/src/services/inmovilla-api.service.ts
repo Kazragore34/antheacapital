@@ -227,20 +227,26 @@ class InmovillaAPIService {
         return null
       }
 
-      // Determinar tipo
-      // El listado básico no tiene información de tipo/precio, usar 'venta' por defecto
-      // Los detalles completos se obtendrán al hacer clic en la propiedad
+      // Determinar tipo - la API REST devuelve keyacci (2 = alquiler, probablemente)
+      // También podemos inferir del precio
       const tipoInmo = apiProp.ofertas_tipo_inmo || apiProp.tipo_inmo || ''
+      const keyacci = apiProp.keyacci // API REST: 2 = alquiler, probablemente 1 = venta
+      
       let tipo: 'venta' | 'alquiler' = 'venta' // Por defecto venta
       
-      if (tipoInmo && tipoInmo.toLowerCase().includes('venta') || tipoInmo && tipoInmo.toLowerCase().includes('vender')) {
+      // Determinar por keyacci primero (más confiable)
+      if (keyacci === 2 || keyacci === '2') {
+        tipo = 'alquiler'
+      } else if (keyacci === 1 || keyacci === '1') {
+        tipo = 'venta'
+      } else if (tipoInmo && tipoInmo.toLowerCase().includes('venta') || tipoInmo && tipoInmo.toLowerCase().includes('vender')) {
         tipo = 'venta'
       } else if (tipoInmo && tipoInmo.toLowerCase().includes('alquiler') || tipoInmo && tipoInmo.toLowerCase().includes('alquilar')) {
         tipo = 'alquiler'
       } else {
-        // Si no hay tipo en el listado básico, intentar inferir del precio si está disponible
-        const precioVenta = parseFloat(apiProp.ofertas_precioinmo || apiProp.precioinmo || '0') || 0
-        const precioAlq = parseFloat(apiProp.ofertas_precioalq || apiProp.precioalq || '0') || 0
+        // Inferir del precio si está disponible
+        const precioVenta = parseFloat(apiProp.precioinmo?.toString() || apiProp.ofertas_precioinmo?.toString() || '0') || 0
+        const precioAlq = parseFloat(apiProp.precioalq?.toString() || apiProp.ofertas_precioalq?.toString() || '0') || 0
         if (precioVenta > 0 && precioAlq === 0) {
           tipo = 'venta'
         } else if (precioAlq > 0 && precioVenta === 0) {
@@ -248,14 +254,23 @@ class InmovillaAPIService {
         } else if (precioVenta > 0 && precioAlq > 0) {
           tipo = 'venta' // Priorizar venta si ambos existen
         }
-        // Si no hay precio ni tipo, mantener 'venta' por defecto (no saltar la propiedad)
+        // Si no hay precio ni tipo, mantener 'venta' por defecto
       }
+      
+      console.log(`[InmovillaAPI] Tipo determinado:`, tipo, { keyacci, tipoInmo })
 
-      // Precio
-      let precio = parseFloat(apiProp.ofertas_precioinmo || apiProp.precioinmo || '0') || 0
+      // Precio - la API REST devuelve precioalq y precioinmo directamente
+      let precio = parseFloat(apiProp.precioinmo?.toString() || apiProp.ofertas_precioinmo?.toString() || apiProp.precioinmo?.toString() || '0') || 0
       if (precio === 0) {
-        precio = parseFloat(apiProp.ofertas_precioalq || apiProp.precioalq || '0') || 0
+        precio = parseFloat(apiProp.precioalq?.toString() || apiProp.ofertas_precioalq?.toString() || apiProp.precioalq?.toString() || '0') || 0
       }
+      
+      console.log(`[InmovillaAPI] Precio determinado:`, precio, {
+        precioinmo: apiProp.precioinmo,
+        precioalq: apiProp.precioalq,
+        ofertas_precioinmo: apiProp.ofertas_precioinmo,
+        ofertas_precioalq: apiProp.ofertas_precioalq
+      })
 
       // Ubicación
       const ciudad = apiProp.ciudad_ciudad || apiProp.ciudad || ''
@@ -266,11 +281,12 @@ class InmovillaAPIService {
       const numero = apiProp.ofertas_numero || apiProp.numero || ''
       const direccion = [calle, numero].filter(Boolean).join(' ') || zona || ciudad
 
-      // Título y descripción - usar ref si está disponible, sino codOfer
+      // Título y descripción - la API REST devuelve tituloes y descripciones
       const ref = apiProp.ref || codOfer
       
-      // Buscar título en múltiples campos posibles
-      const titulo = apiProp.ofertas_titulo1 
+      // Buscar título en múltiples campos posibles (incluyendo campos de API REST)
+      const titulo = apiProp.tituloes  // Campo de API REST
+        || apiProp.ofertas_titulo1 
         || apiProp.titulo1 
         || apiProp.ofertas_titulo2 
         || apiProp.titulo2
@@ -280,6 +296,7 @@ class InmovillaAPIService {
       
       console.log(`[InmovillaAPI] Título encontrado:`, titulo)
       console.log(`[InmovillaAPI] Campos de título disponibles:`, {
+        tituloes: apiProp.tituloes, // Campo de API REST
         ofertas_titulo1: apiProp.ofertas_titulo1,
         titulo1: apiProp.titulo1,
         ofertas_titulo2: apiProp.ofertas_titulo2,
@@ -288,7 +305,9 @@ class InmovillaAPIService {
         nombre: apiProp.nombre
       })
       
-      const descripcion = apiProp.ofertas_descrip1 
+      // Buscar descripción en múltiples campos posibles (incluyendo campos de API REST)
+      const descripcion = apiProp.descripciones  // Campo de API REST
+        || apiProp.ofertas_descrip1 
         || apiProp.descrip1 
         || apiProp.ofertas_descrip2 
         || apiProp.descrip2 
@@ -297,6 +316,8 @@ class InmovillaAPIService {
         || apiProp.descripcion
         || apiProp.descrip
         || ''
+      
+      console.log(`[InmovillaAPI] Descripción encontrada (longitud: ${descripcion.length}):`, descripcion.substring(0, 100))
 
       // El listado básico solo tiene cod_ofer, ref, nodisponible, prospecto, fechaact
       // Si no hay más datos, crear una propiedad básica que se completará al hacer clic
