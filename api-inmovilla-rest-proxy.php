@@ -94,23 +94,9 @@ try {
     switch ($action) {
         case 'propiedades':
             // Obtener todas las propiedades
-            // Según la documentación, el endpoint puede requerir parámetros específicos
-            // Probamos primero sin parámetros, luego con los necesarios
-            $params = [];
-            
-            // Si hay límite, agregarlo
-            if ($limit > 0) {
-                $params['limit'] = $limit;
-            }
-            
-            // Si hay offset, agregarlo
-            if ($offset > 0) {
-                $params['offset'] = $offset;
-            }
-            
-            // Nota: La API REST puede requerir que estos parámetros vayan en el body de un POST
-            // Por ahora probamos con GET y query params
-            $response = callInmovillaAPI('/propiedades/', $params);
+            // Según la documentación oficial: GET /propiedades/?listado
+            // Este endpoint NO requiere parámetros adicionales, solo el token en el header
+            $response = callInmovillaAPI('/propiedades/?listado', []);
             $decoded = json_decode($response, true);
             
             // Adaptar estructura de respuesta al formato esperado por el frontend
