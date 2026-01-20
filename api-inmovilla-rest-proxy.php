@@ -49,6 +49,18 @@ function callInmovillaAPI($endpoint, $params = []) {
     }
     
     error_log('[API REST Proxy] Llamando a: ' . $url);
+    error_log('[API REST Proxy] Token: ' . substr(INMOVILLA_API_TOKEN, 0, 10) . '...');
+    
+    // Intentar diferentes formatos de autenticación según la documentación de Inmovilla
+    // Formato 1: Token como parámetro en la URL (más común en APIs REST de Inmovilla)
+    $params['token'] = INMOVILLA_API_TOKEN;
+    $params['numagencia'] = INMOVILLA_NUMAGENCIA;
+    
+    // Reconstruir URL con parámetros
+    $url = INMOVILLA_API_BASE_URL . $endpoint;
+    if (!empty($params)) {
+        $url .= '?' . http_build_query($params);
+    }
     
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
@@ -57,10 +69,8 @@ function callInmovillaAPI($endpoint, $params = []) {
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
     curl_setopt($ch, CURLOPT_TIMEOUT, 30);
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Authorization: Bearer ' . INMOVILLA_API_TOKEN,
         'Content-Type: application/json',
-        'Accept: application/json',
-        'X-Agencia: ' . INMOVILLA_NUMAGENCIA
+        'Accept: application/json'
     ]);
     
     $response = curl_exec($ch);
@@ -124,9 +134,7 @@ try {
                 throw new Exception('codOfer es requerido para la acción ficha');
             }
             
-            $response = callInmovillaAPI('/propiedades/' . $codOfer, [
-                'agencia' => INMOVILLA_NUMAGENCIA
-            ]);
+            $response = callInmovillaAPI('/propiedades/' . $codOfer, []);
             $decoded = json_decode($response, true);
             
             // Adaptar estructura de respuesta
@@ -144,7 +152,6 @@ try {
         case 'destacados':
             // Obtener propiedades destacadas
             $response = callInmovillaAPI('/propiedades', [
-                'agencia' => INMOVILLA_NUMAGENCIA,
                 'destacado' => 1,
                 'limit' => $limit,
                 'order' => $order ?: 'precio'
