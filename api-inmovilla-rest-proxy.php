@@ -21,6 +21,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
+// Aumentar tiempo de ejecución y memoria para evitar timeouts
+set_time_limit(120); // 2 minutos
+ini_set('memory_limit', '256M');
 
 // Configuración de Inmovilla API REST
 // Token REST generado desde el panel de Inmovilla
@@ -65,7 +68,7 @@ function callInmovillaAPI($endpoint, $params = []) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 60); // Aumentar timeout a 60 segundos
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Content-Type: application/json',
         'Accept: application/json',
@@ -179,8 +182,11 @@ try {
                 
                 // Paso 2: Obtener detalles completos de cada propiedad usando /propiedades/{codOfer}
                 // Limitar a las primeras propiedades para evitar timeout
-                $maxPropiedades = min(count($listadoBasico), $limit > 0 ? $limit : 100);
+                // IMPORTANTE: Procesar solo las primeras 20 propiedades para evitar timeout
+                $maxPropiedades = min(count($listadoBasico), min($limit > 0 ? $limit : 20, 20));
                 $propiedadesCompletas = [];
+                
+                error_log("[API REST Proxy] Procesando máximo {$maxPropiedades} propiedades de " . count($listadoBasico) . " disponibles");
                 
                 for ($i = 0; $i < $maxPropiedades; $i++) {
                     $propBasica = $listadoBasico[$i];
