@@ -29,6 +29,12 @@ export class PropertiesService {
     return createdProperty.save()
   }
 
+  async deleteAll(): Promise<{ deletedCount: number }> {
+    const result = await this.propertyModel.deleteMany({}).exec()
+    console.log(`[PropertiesService] Deleted ${result.deletedCount} properties from MongoDB`)
+    return { deletedCount: result.deletedCount || 0 }
+  }
+
   async findAll(query: {
     type?: string
     city?: string

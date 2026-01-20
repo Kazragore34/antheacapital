@@ -70,5 +70,11 @@ export class PropertiesController {
   remove(@Param('id') id: string) {
     return this.propertiesService.remove(id)
   }
+
+  @Delete()
+  @UseGuards(JwtAuthGuard)
+  deleteAll() {
+    return this.propertiesService.deleteAll()
+  }
 }
 
