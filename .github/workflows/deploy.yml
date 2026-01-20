@@ -169,7 +169,13 @@ jobs:
           echo "✅ Copiado api-inmovilla-rest-proxy.php (proxy para API REST de Inmovilla)"
         fi
         
-        # Copiar api-contact-proxy.php (proxy temporal para /api/contact)
+        # Copiar contact-handler.php (handler PHP nativo para /api/contact)
+        if [ -f "contact-handler.php" ]; then
+          cp contact-handler.php deploy/
+          echo "✅ Copiado contact-handler.php (handler PHP nativo para /api/contact)"
+        fi
+        
+        # Copiar api-contact-proxy.php también (por si acaso)
         if [ -f "api-contact-proxy.php" ]; then
           cp api-contact-proxy.php deploy/
           echo "✅ Copiado api-contact-proxy.php (proxy temporal para /api/contact)"
